@@ -153,13 +153,13 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
 <article class="letter">
 
   <nav class="mnav" aria-label="Lompat ke bagian">
-    <a href="#g1">Mendesak</a><a href="#g2">Calon user</a><a href="#g3">User &amp; pengajar</a><a href="#g4">Belakang layar</a><a href="#g5">Tampilan baru</a><a href="#jadwal">Jadwal</a><a href="#biaya">Biaya</a>
+    <a href="#g1">Mendesak</a><a href="#g2">Calon user</a><a href="#g3">User &amp; pengajar</a><a href="#g4">Belakang layar</a><a href="#g5">Tampilan baru</a><a href="#g6">Admin panel</a><a href="#jadwal">Jadwal</a><a href="#biaya">Biaya</a>
   </nav>
 
   <div class="intro" style="margin-top:8px">
     <p>Assalamu'alaikum,</p>
     <p>Setelah saya audit dan pelajari website Nizhamiyyah Edu, mulai dari baca kode yang lagi jalan di server, coba semua halaman di laptop dan HP, sampai tes alur daftar sampai bayar, hasilnya ada 37 masalah. Kebanyakan kecil, tapi ada beberapa yang menurut saya harus diberesin secepatnya.</p>
-    <p>Saya tulis apa adanya di bawah. Tiap masalah ada penjelasan singkat kenapa itu jadi masalah, terus apa yang bakal saya kerjain. Di bagian akhir ada juga rencana desain ulang tampilannya. Semuanya, termasuk desain ulang itu, bisa selesai paling cepat 1 hari, paling lama 4 hari kerja.</p>
+    <p>Saya tulis apa adanya di bawah. Tiap masalah ada penjelasan singkat kenapa itu jadi masalah, terus apa yang bakal saya kerjain. Di bagian akhir ada juga rencana desain ulang tampilannya dan admin panel buat ngatur semua urusan website. Semuanya, termasuk desain ulang dan admin panel itu, bisa selesai paling cepat 1 hari, paling lama 4 hari kerja.</p>
   </div>
 
   <section class="grp" id="g1" aria-labelledby="g1h">
@@ -265,14 +265,31 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
     </ol>
   </section>
 
+  <section class="grp" id="g6" aria-labelledby="g6h">
+    <div class="grp-head"><span class="n">06</span><h2 id="g6h">Admin panel buat ngatur semua urusan website</h2></div>
+    <p class="grp-lead">Sekarang banyak hal di website cuma bisa diubah lewat kode. Saya bikinin satu admin panel, jadi tim Nizhamiyyah bisa ngurus semuanya sendiri tanpa perlu manggil programmer.</p>
+    <ol class="items">
+      <li class="item"><span class="k">22</span><h3>Kursus, pelajaran, dan pengajar.</h3>
+        <p>Tambah, edit, arsipkan, dan atur urutan kursus maupun pelajaran. Atur harga, jenjang, bidang ilmu, dan status tayang. Profil pengajar juga bisa diisi dan diubah dari sini.</p></li>
+      <li class="item"><span class="k">23</span><h3>User dan hak aksesnya.</h3>
+        <p>Liat daftar semua user, cari user tertentu, atur siapa yang jadi admin atau pengajar, dan aktifin atau nonaktifin akses kursus seseorang. Semua perubahan kecatat, jadi ketahuan siapa ngubah apa.</p></li>
+      <li class="item"><span class="k">24</span><h3>Pembayaran dan pendaftaran.</h3>
+        <p>Liat semua tagihan beserta statusnya (menunggu, lunas, gagal, atau kedaluwarsa), cek pembayaran yang nyangkut, dan buka akses kursus secara manual kalau dibutuhin.</p></li>
+      <li class="item"><span class="k">25</span><h3>Isi halaman website.</h3>
+        <p>Teks beranda, tanya jawab, kebijakan privasi, syarat dan ketentuan, kebijakan refund, dan nomor kontak bisa diubah langsung dari admin panel tanpa ngubah kode.</p></li>
+      <li class="item"><span class="k">26</span><h3>Ringkasan angka penting.</h3>
+        <p>Satu halaman yang nunjukin jumlah user baru, jumlah pendaftar tiap kursus, pemasukan, dan progres belajar user, biar gampang ngambil keputusan.</p></li>
+    </ol>
+  </section>
+
   <section class="grp" id="jadwal" aria-labelledby="jh">
-    <div class="grp-head"><span class="n">06</span><h2 id="jh">Jadwalnya, 1 sampai 4 hari</h2></div>
+    <div class="grp-head"><span class="n">07</span><h2 id="jh">Jadwalnya, 1 sampai 4 hari</h2></div>
     <p class="grp-lead">Paling cepat 1 hari kalau semua akses udah siap dari awal, paling lama 4 hari kerja. Tiap hari saya kabarin progresnya, dan semua perubahan saya ajuin dulu buat dicek sebelum naik ke website.</p>
     <div class="days">
       <div class="day first"><b>Hari 1</b><span>Upgrade Next.js dan React, ganti semua kunci, pasang pengaturan keamanan, arsip kursus, dan pesan error di semua form.</span></div>
       <div class="day"><b>Hari 2</b><span>Katalog publik, halaman detail kursus, halaman legal, dan tampilan baru beranda serta katalog.</span></div>
       <div class="day"><b>Hari 3</b><span>Status pembayaran, jalur notifikasi Mayar, dan tampilan baru dashboard serta halaman pelajaran.</span></div>
-      <div class="day"><b>Hari 4</b><span>Alat pengajar, catatan admin, perapian belakang layar, tes bareng tim, panduan, dan rilis.</span></div>
+      <div class="day"><b>Hari 4</b><span>Admin panel, alat pengajar, perapian belakang layar, tes bareng tim, panduan, dan rilis.</span></div>
     </div>
   </section>
 
@@ -302,6 +319,7 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
       <li><a href="#g3"><span>Ganggu user dan pengajar</span><small>4</small></a></li>
       <li><a href="#g4"><span>Rapiin di belakang layar</span><small>8</small></a></li>
       <li><a href="#g5"><span>Desain ulang tampilan</span><small>5</small></a></li>
+      <li><a href="#g6"><span>Admin panel</span><small>5</small></a></li>
       <li><a href="#jadwal"><span>Jadwal pengerjaan</span><small>1-4 hari</small></a></li>
       <li><a href="#biaya"><span>Biaya dan cara mulai</span><small></small></a></li>
     </ul>
@@ -310,13 +328,13 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
 </div>
 
 <div class="mbar" role="region" aria-label="Ringkasan biaya">
-  <span><b>Rp3,5 juta, 1-4 hari</b>37 masalah plus desain ulang</span>
+  <span><b>Rp3,5 juta, 1-4 hari</b>Plus desain ulang dan admin panel</span>
   <a href="#biaya">Lihat biaya</a>
 </div>
 
 <script>
 (function(){
-  var ids=['g1','g2','g3','g4','g5','jadwal','biaya'];
+  var ids=['g1','g2','g3','g4','g5','g6','jadwal','biaya'];
   var links=[].slice.call(document.querySelectorAll('.toc a, .mnav a'));
   function mark(id){
     links.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href')==='#'+id); });
