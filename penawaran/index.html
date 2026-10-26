@@ -7,567 +7,189 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap">
 <style>
-/* Layout: panel membulat bertumpuk di latar abu hangat. Audit di depan, lalu tindakan, lalu harga yang dihitung dari tindakan itu. Satu tema terang yang disengaja, mengikuti gaya penawaran Dar Dev. */
+/* Layout: satu lembar surat di atas latar abu hangat. Isinya cuma masalah dan perbaikannya. */
 :root{
-  --ground:#dad8d3; --panel:#f5f4ef; --card:#ffffff; --ink:#141414; --ink-2:#55534e; --line:#e2e0d9;
-  --lime:#e9f23a; --red:#b3261e; --red-bg:#fbe5e2; --orange:#a8520b; --orange-bg:#fcebd9;
-  --amber:#7a6100; --amber-bg:#f6efcf; --blue:#36606f; --blue-bg:#e3eef2; --green:#1d6b40; --green-bg:#e2f0e6;
+  --ground:#dad8d3; --paper:#fbfaf6; --ink:#161616; --ink-2:#56544f; --line:#e4e1d9; --mark:#e9f23a; --red:#a3271c;
   --font:"Inter Tight","Segoe UI",system-ui,sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
-body{background:var(--ground);color:var(--ink);font:400 17px/1.6 var(--font);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--ground);z-index:30}
-.page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
-h1,h2,h3{font-weight:400;margin:0;text-wrap:balance}
-h1{font-size:clamp(40px,5.4vw,64px);line-height:1.05;letter-spacing:-.025em}
-h2{font-size:clamp(28px,3.4vw,40px);line-height:1.12;letter-spacing:-.022em;max-width:22ch}
-h3{font-size:19px;font-weight:500;line-height:1.3;letter-spacing:-.01em}
-p{margin:0}
-a{color:inherit}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 18px/1.65 var(--font);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 56px}
+.sheet{max-width:780px;margin:0 auto;background:var(--paper);border-radius:18px;padding:clamp(28px,6vw,72px) clamp(22px,6vw,80px)}
+h1,h2,h3,p{margin:0}
+h1{overflow-wrap:anywhere;font-size:clamp(30px,4.4vw,46px);font-weight:500;line-height:1.1;letter-spacing:-.025em;text-wrap:balance}
+h2{font-size:24px;font-weight:600;letter-spacing:-.015em;line-height:1.25;margin-top:56px;padding-top:28px;border-top:1px solid var(--line);text-wrap:balance}
+h3{font-size:18px;font-weight:600;line-height:1.4}
+a{color:var(--ink)}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.eyebrow{font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
-.lede{font-size:19px;color:var(--ink-2);max-width:62ch}
-.num{font-variant-numeric:tabular-nums}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:10px;font:500 16px var(--font);text-decoration:none;border:1px solid transparent;cursor:pointer}
-.btn-lime{background:var(--lime);color:var(--ink)}
-.btn-lime:hover{background:#dfe82a}
-.btn-line{border-color:rgba(255,255,255,.7);color:#fff}
-.btn-line:hover{background:rgba(255,255,255,.12)}
-.btn-dark{background:var(--ink);color:#fff}
-
-/* nav */
-.nav{background:#fff;border-radius:14px;padding:10px 12px 10px 20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;position:sticky;top:max(10px,env(safe-area-inset-top,0px));z-index:20}
-.brand{display:flex;align-items:center;gap:10px;font-weight:500;text-decoration:none}
-.nav-links{display:flex;gap:4px 22px;flex-wrap:wrap;font-size:15px;flex:1;justify-content:center}
-.nav-links a{text-decoration:none;color:var(--ink-2);padding:10px 0}
-.nav-links a:hover{color:var(--ink)}
-@media (max-width:900px){.nav-links{display:none}}
-@media (max-width:560px){.nav{gap:12px}.nav .btn{min-height:40px;padding:0 14px;font-size:14px}.brand span{font-size:15px}}
-
-/* panels */
-.panel{background:var(--panel);border-radius:20px;padding:clamp(28px,4.2vw,52px);display:flex;flex-direction:column;gap:28px}
-.head{display:flex;flex-direction:column;gap:14px}
-.grid{display:grid;gap:14px}
-.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-@media (max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:620px){.g2{grid-template-columns:minmax(0,1fr)}}
-.card{background:var(--card);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.card p{color:var(--ink-2);font-size:16px}
-
-/* hero */
-.hero{border-radius:20px;background:linear-gradient(120deg,#5d625e,#b8b9b2);color:#fff;padding:clamp(32px,5vw,64px);display:flex;flex-wrap:wrap;gap:48px;align-items:center}
-.hero-copy{flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:22px}
-.hero-copy .lede{color:rgba(255,255,255,.92)}
-.hero-ctas{display:flex;flex-wrap:wrap;gap:10px}
-.hero-foot{display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.92)}
-.pill-num{background:var(--ink);color:#fff;border-radius:999px;min-width:44px;height:44px;padding:0 12px;display:grid;place-items:center;font-weight:600;font-size:15px}
-.device{flex:1 1 380px;min-width:0;max-width:480px;background:var(--ink);border-radius:22px;padding:10px;box-shadow:0 30px 60px rgba(0,0,0,.25)}
-.screen{background:#fff;color:var(--ink);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px}
-.ask{background:#f1f0eb;border-radius:12px;padding:14px 16px;font-size:15px}
-.bars{display:flex;flex-direction:column;gap:9px;font-size:14px}
-.bar{display:grid;grid-template-columns:72px minmax(0,1fr) 30px;gap:10px;align-items:center}
-.track{height:10px;background:#efeee9;border-radius:99px;overflow:hidden}
-.fill{height:100%;border-radius:99px}
-.bar b{font-weight:600;text-align:right}
-.note{background:var(--lime);border-radius:12px;padding:14px 16px;font-size:15px}
-.note small{display:block;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-
-/* severity */
-.sev{align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:3px 8px;white-space:nowrap}
-.s-crit{background:var(--red-bg);color:var(--red)} .s-high{background:var(--orange-bg);color:var(--orange)}
-.s-med{background:var(--amber-bg);color:var(--amber)} .s-low{background:var(--blue-bg);color:var(--blue)}
-.tally{background:var(--card);border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:18px;min-width:0}
-.tally b{font-size:clamp(40px,4.4vw,56px);font-weight:400;letter-spacing:-.03em;line-height:1}
-.tally span:last-child{color:var(--ink-2);font-size:15px}
-.method{display:flex;flex-wrap:wrap;gap:8px}
-.method span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;color:var(--ink-2)}
-
-/* statement */
-.statement{background:var(--ink);color:#fff;border-radius:20px;padding:clamp(32px,5vw,64px);display:flex;flex-direction:column;gap:22px}
-.statement .eyebrow{color:var(--lime)}
-.statement h2{font-size:clamp(32px,4.6vw,58px);max-width:18ch;line-height:1.06}
-.statement p{color:rgba(255,255,255,.78);font-size:19px;max-width:58ch}
-
-/* priority cards */
-.prio{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-@media (max-width:760px){.prio{grid-template-columns:minmax(0,1fr)}}
-.pc{background:var(--card);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 16px;min-width:0}
-.pc .top{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.pc .id{font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
-.pc h3{grid-column:1/-1}
-.pc dl{grid-column:1/-1;margin:0;display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px 14px;font-size:15px}
-.pc dt{color:var(--ink-2)}
-.pc dd{margin:0}
-.pc .cost{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:12px;font-size:14px;color:var(--ink-2)}
-.pc .cost b{color:var(--ink);font-weight:600}
-@media (max-width:480px){.pc dl{grid-template-columns:minmax(0,1fr)}.pc dt{margin-top:4px}}
-
-/* action table */
-.filters{display:flex;flex-wrap:wrap;gap:8px}
-.filters button{font:500 14px var(--font);border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:0 14px;min-height:40px;cursor:pointer}
-.filters button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
-.table-wrap{background:var(--card);border-radius:16px;overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:15px;min-width:760px}
-th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);background:#fbfbf8;position:sticky;top:0}
-td.id{color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;width:52px}
-td.days{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;width:72px}
-th.days{text-align:right}
-tr.phase td{background:var(--ink);color:#fff;font-weight:500;border-bottom:0}
-tr.phase td span{color:var(--lime)}
-tr.sub td{background:#f1f0eb;font-weight:600}
-tr.sub td.days{color:var(--ink)}
-tr.total td{background:var(--lime);font-weight:600;border-bottom:0}
-.act{color:var(--ink-2)}
-
-/* pricing */
-.phases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-@media (max-width:980px){.phases{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){.phases{grid-template-columns:minmax(0,1fr)}}
-.ph{background:var(--card);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.ph.first{background:var(--ink);color:#fff}
-.ph .eyebrow{font-size:12px}
-.ph.first .eyebrow{color:var(--lime)}
-.ph h3{font-size:21px}
-.ph .amt{font-size:clamp(30px,3vw,40px);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
-.ph .calc{font-size:14px;color:var(--ink-2)}
-.ph.first .calc{color:rgba(255,255,255,.72)}
-.closes{display:flex;flex-wrap:wrap;gap:6px}
-.closes span{font-size:12px;font-weight:600;border-radius:6px;padding:3px 8px}
-.ph ul{margin:0;padding-left:1.1em;font-size:14px;display:flex;flex-direction:column;gap:4px;color:var(--ink-2)}
-.ph.first ul{color:rgba(255,255,255,.82)}
-.packs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-@media (max-width:760px){.packs{grid-template-columns:minmax(0,1fr)}}
-.pack{border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.pack.min{background:var(--lime)}
-.pack.full{background:var(--card);border:1px solid var(--line)}
-.pack .amt{font-size:clamp(38px,4.6vw,56px);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
-.pack p{font-size:16px}
-.fine{font-size:14px;color:var(--ink-2)}
-
-/* try it */
-.try{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
-.qs{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:10px}
-.q{text-align:left;font:400 17px/1.4 var(--font);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;min-height:56px}
-.q[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
-.compare{flex:2 1 520px;min-width:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-@media (max-width:620px){.compare{grid-template-columns:minmax(0,1fr)}}
-.side{background:var(--card);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.side .tag{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
-.side.before .tag{color:var(--red)} .side.after .tag{color:var(--green)}
-.mock{border:1px solid var(--line);border-radius:12px;padding:14px;font-size:14px;display:flex;flex-direction:column;gap:10px;background:#fbfbf8;min-height:178px}
-.mock .field{border:1.5px solid #c9c7c0;border-radius:8px;padding:9px 11px;background:#fff}
-.mock .field.err{border-color:var(--red)}
-.mock .errtxt{color:var(--red);font-weight:500;font-size:13px}
-.mock .mbtn{background:#1b4d3b;color:#fff;border-radius:8px;padding:10px;text-align:center;font-weight:500}
-.mock .mbtn.danger{background:var(--red)}
-.mock .blank{flex:1;display:grid;place-items:center;text-align:center;background:#141414;color:#e9e9e4;border-radius:8px;padding:14px;font-size:13px}
-.side .res{font-size:15px;color:var(--ink-2)}
-
-/* good + design strip */
-.good{background:var(--green-bg);border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:10px}
-.good h3{color:var(--green)}
-.good ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px;font-size:16px}
-.strip{background:var(--card);border-radius:16px;padding:22px 24px;display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between}
-.strip p{color:var(--ink-2);max-width:60ch}
-
-/* timeline */
-.tl-wrap{background:var(--card);border-radius:16px;padding:22px;overflow-x:auto}
-.tl{min-width:720px;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px 6px;font-size:14px}
-.tl .wk{color:var(--ink-2);border-left:1px solid var(--line);padding:0 0 10px 8px}
-.tl .p{border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.tl .p b{font-weight:600}
-.p1{background:var(--lime)} .p2{background:#e6e4dd} .p3{background:#d4d2ca} .p4{background:var(--ink);color:#fff}
-
-/* closing */
-.closing{background:var(--lime);border-radius:20px;padding:clamp(32px,5vw,64px);display:flex;flex-direction:column;gap:22px}
-.closing h2{font-size:clamp(34px,4.6vw,58px);max-width:16ch;line-height:1.05}
-.closing p{font-size:19px;max-width:58ch}
-footer{text-align:center;font-size:14px;color:var(--ink-2);padding:12px 0}
+.from{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;font-size:15px;color:var(--ink-2);margin-bottom:40px}
+.from b{color:var(--ink);font-weight:600}
+.intro{display:flex;flex-direction:column;gap:18px;margin-top:28px}
+.intro p{color:#2c2b28}
+.lead{font-size:16px;color:var(--ink-2);margin-top:10px}
+ol.items{list-style:none;margin:28px 0 0;padding:0;display:flex;flex-direction:column;gap:30px;counter-reset:n}
+ol.items li{counter-increment:n;display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 10px}
+ol.items li::before{content:counter(n) ".";font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums;padding-top:1px}
+ol.items li > *{grid-column:2}
+ol.items p{color:#2c2b28}
+.fix{margin-top:6px;padding-left:14px;border-left:3px solid var(--mark)}
+.fix b{font-weight:600}
+.urgent{color:var(--red);font-weight:600}
+.plain{margin-top:20px;display:flex;flex-direction:column;gap:14px}
+.plain p{color:#2c2b28}
+ul.small{margin:12px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;color:#2c2b28}
+.steps{margin:20px 0 0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px}
+.close{margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
+.sign{margin-top:12px}
+.sign b{font-weight:600}
+.note{font-size:15px;color:var(--ink-2)}
+mark{background:var(--mark);padding:0 3px;border-radius:3px}
 </style>
 </head>
 <body>
 
 
-<div class="page">
+<article class="sheet">
 
-<nav class="nav" aria-label="Navigasi">
-  <a class="brand" href="#atas">
-    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="12" width="4" height="9" rx="1" fill="#141414"/><rect x="10" y="7" width="4" height="14" rx="1" fill="#141414"/><rect x="17" y="3" width="4" height="18" rx="1" fill="#141414"/></svg>
-    <span>Dar Dev × Nizhamiyyah</span>
-  </a>
-  <div class="nav-links">
-    <a href="#audit">Hasil audit</a><a href="#prioritas">Prioritas</a><a href="#tindakan">Semua tindakan</a><a href="#biaya">Biaya</a><a href="#jadwal">Jadwal</a>
-  </div>
-  <a class="btn btn-lime" href="#mulai" style="min-height:44px">Mulai Fase 1</a>
-</nav>
+<div class="from"><span>Dari <b>Dar Dev</b></span><span>Untuk tim Nizhamiyyah Edu · Oktober 2026</span></div>
 
-<!-- HERO -->
-<header class="hero" id="atas">
-  <div class="hero-copy">
-    <p class="eyebrow" style="color:rgba(255,255,255,.85)">Hasil audit belajarditimurtengah.com</p>
-    <h1>37 masalah ditemukan. 8 harus ditutup sekarang.</h1>
-    <p class="lede">Kami, Dar Dev, sudah membedah build production Nizhamiyyah Edu baris demi baris dan mengujinya langsung di browser. Setiap temuan di halaman ini punya tindakan perbaikan dan estimasi hari kerjanya sendiri. Harga penawaran ini dihitung langsung dari daftar tindakan tersebut.</p>
-    <div class="hero-ctas">
-      <a class="btn btn-lime" href="#audit">Lihat hasil audit</a>
-      <a class="btn btn-line" href="#biaya">Lihat cara harga dihitung</a>
-      <a class="btn btn-line" href="../audit/">Laporan lengkap</a>
-    </div>
-    <div class="hero-foot"><span class="pill-num">36</span><span>Hari kerja untuk menutup seluruh 37 temuan</span></div>
-  </div>
-  <div class="device" aria-label="Ringkasan temuan per tingkat keparahan">
-    <div class="screen">
-      <div class="ask">Seberapa parah kondisi belajarditimurtengah.com sekarang?</div>
-      <p style="font-size:13px;color:var(--ink-2)">Jumlah temuan per tingkat keparahan</p>
-      <div class="bars">
-        <div class="bar"><span>Kritis</span><div class="track"><div class="fill" style="width:6%;background:var(--red)"></div></div><b class="num">1</b></div>
-        <div class="bar"><span>Tinggi</span><div class="track"><div class="fill" style="width:44%;background:var(--orange)"></div></div><b class="num">7</b></div>
-        <div class="bar"><span>Sedang</span><div class="track"><div class="fill" style="width:100%;background:#a58a1e"></div></div><b class="num">16</b></div>
-        <div class="bar"><span>Rendah</span><div class="track"><div class="fill" style="width:81%;background:var(--blue)"></div></div><b class="num">13</b></div>
-      </div>
-      <div class="note"><small>Paling mendesak</small>Server bisa dibobol tanpa login karena versi Next.js dan React yang dipakai punya celah eksekusi kode jarak jauh.</div>
-    </div>
-  </div>
-</header>
+<h1>Apa yang bermasalah di belajarditimurtengah.com, dan cara saya membereskannya</h1>
 
-<!-- HASIL AUDIT -->
-<section class="panel" id="audit" aria-labelledby="a-h">
-  <div class="head">
-    <p class="eyebrow">Hasil audit</p>
-    <h2 id="a-h">Fondasinya bagus, tapi pengamannya bolong dan pintu masuknya macet</h2>
-    <p class="lede">Audit mencakup keamanan, alur pembayaran, bug, pengalaman pengguna, aksesibilitas, performa, kualitas kode, dan kepatuhan.</p>
-  </div>
-  <div class="grid g4">
-    <div class="tally"><span class="sev s-crit">Kritis</span><b class="num" style="color:var(--red)">1</b><span>Bisa dibobol tanpa login</span></div>
-    <div class="tally"><span class="sev s-high">Tinggi</span><b class="num" style="color:var(--orange)">7</b><span>Merugikan bisnis atau data sekarang</span></div>
-    <div class="tally"><span class="sev s-med">Sedang</span><b class="num" style="color:var(--amber)">16</b><span>Mengganggu siswa, pengajar, atau performa</span></div>
-    <div class="tally"><span class="sev s-low">Rendah</span><b class="num" style="color:var(--blue)">13</b><span>Kerapian, SEO, dan perawatan jangka panjang</span></div>
-  </div>
-  <div class="head" style="gap:10px">
-    <p class="eyebrow">Yang kami periksa</p>
-    <div class="method"><span>15 rute dan 13 server action</span><span>Webhook pembayaran Mayar</span><span>Login Google dan hak akses</span><span>Header keamanan HTTP</span><span>Versi framework dan dependensi</span><span>Tampilan desktop dan ponsel</span><span>Kontras warna dan keyboard</span><span>Query database per halaman</span></div>
-  </div>
-  <div class="good">
-    <h3>Yang sudah baik dan tidak perlu dibangun ulang</h3>
-    <ul>
-      <li>Pembayaran dicek ulang ke Mayar sebelum kelas dibuka, sehingga tidak bisa dipalsukan dari luar.</li>
-      <li>Setiap aksi pengajar dan admin mengecek peran dan kepemilikan kursus.</li>
-      <li>Siswa kursus berbayar tidak bisa membatalkan pendaftaran sendiri.</li>
-    </ul>
-  </div>
-</section>
-
-<!-- STATEMENT -->
-<section class="statement" aria-labelledby="s-h">
-  <p class="eyebrow">Temuan kritis</p>
-  <h2 id="s-h">Satu celah di framework bisa membuka seluruh server.</h2>
-  <p>Next.js 15.1.3 dan React 19.0.0 termasuk versi yang terdampak advisori keamanan Desember 2025. Lewat celah ini, orang luar bisa menjalankan kode di server, lalu membaca kunci database, kunci pembayaran Mayar, dan data siswa. Ini dikerjakan di hari pertama.</p>
-</section>
-
-<!-- PRIORITAS -->
-<section class="panel" id="prioritas" aria-labelledby="p-h">
-  <div class="head">
-    <p class="eyebrow">Prioritas</p>
-    <h2 id="p-h">8 temuan kritis dan tinggi, dan apa yang harus dilakukan</h2>
-    <p class="lede">Delapan temuan ini adalah alasan utama perbaikan perlu dimulai sekarang. Masing-masing kami tutup di Fase 1 dan Fase 2.</p>
-  </div>
-  <div class="prio">
-    <article class="pc"><div class="top"><span class="sev s-crit">Kritis</span><span class="id">K1</span></div><h3>Server bisa dibobol tanpa login</h3>
-      <dl><dt>Dampak</dt><dd>Kunci database, kunci Mayar, dan data siswa bisa dicuri.</dd><dt>Tindakan</dt><dd>Upgrade Next.js dan React ke versi yang sudah ditambal, lalu uji ulang semua halaman dan alur bayar.</dd></dl>
-      <div class="cost"><span>Fase 1</span><b class="num">1,5 hari</b></div></article>
-    <article class="pc"><div class="top"><span class="sev s-high">Tinggi</span><span class="id">K2</span></div><h3>Kunci rahasia ikut terbawa di file build</h3>
-      <dl><dt>Dampak</dt><dd>Siapa pun yang memegang salinan build bisa memalsukan permintaan ke server.</dd><dt>Tindakan</dt><dd>Ganti AUTH_SECRET, kunci Mayar, dan password database, lalu build ulang dengan kunci enkripsi dari env.</dd></dl>
-      <div class="cost"><span>Fase 1</span><b class="num">0,5 hari</b></div></article>
-    <article class="pc"><div class="top"><span class="sev s-high">Tinggi</span><span class="id">K3</span></div><h3>Tidak ada pengaman bawaan browser</h3>
-      <dl><dt>Dampak</dt><dd>Dashboard bisa dibingkai di situs lain untuk menjebak klik.</dd><dt>Tindakan</dt><dd>Pasang header keamanan (HSTS, CSP, X-Frame-Options, dan lainnya) dan sembunyikan versi framework.</dd></dl>
-      <div class="cost"><span>Fase 1</span><b class="num">0,5 hari</b></div></article>
-    <article class="pc"><div class="top"><span class="sev s-high">Tinggi</span><span class="id">P1</span></div><h3>Hapus kursus sekali klik</h3>
-      <dl><dt>Dampak</dt><dd>Siswa yang sudah membayar kehilangan akses, lalu meminta refund.</dd><dt>Tindakan</dt><dd>Ganti hapus dengan arsip, tambahkan konfirmasi, dan tolak penghapusan selama ada pembayaran lunas.</dd></dl>
-      <div class="cost"><span>Fase 1</span><b class="num">1 hari</b></div></article>
-    <article class="pc"><div class="top"><span class="sev s-high">Tinggi</span><span class="id">B1</span></div><h3>Pesan error tidak sampai ke pengguna</h3>
-      <dl><dt>Dampak</dt><dd>Salah ketik nomor WA saat checkout berakhir di layar error, tepat di langkah pembayaran.</dd><dt>Tindakan</dt><dd>Tampilkan pesan di bawah kolom isian pada semua form, dan tambahkan halaman error berbahasa Indonesia.</dd></dl>
-      <div class="cost"><span>Fase 1</span><b class="num">1,5 hari</b></div></article>
-    <article class="pc"><div class="top"><span class="sev s-high">Tinggi</span><span class="id">U1</span></div><h3>Enam tombol utama di beranda mati</h3>
-      <dl><dt>Dampak</dt><dd>Calon siswa mengklik "Jelajahi Katalog" lalu kembali ke beranda tanpa penjelasan.</dd><dt>Tindakan</dt><dd>Buka katalog untuk publik di /kursus, lengkap dengan filter, dan arahkan tombol login kembali ke halaman tujuan.</dd></dl>
-      <div class="cost"><span>Fase 2</span><b class="num">2,5 hari</b></div></article>
-    <article class="pc"><div class="top"><span class="sev s-high">Tinggi</span><span class="id">U2</span></div><h3>Tidak ada halaman kursus sebelum membeli</h3>
-      <dl><dt>Dampak</dt><dd>Calon siswa diminta membayar tanpa melihat silabus dan pengajarnya.</dd><dt>Tindakan</dt><dd>Buat halaman detail kursus publik: silabus, pengajar, harga, dan satu pelajaran pratinjau gratis.</dd></dl>
-      <div class="cost"><span>Fase 2</span><b class="num">2,5 hari</b></div></article>
-    <article class="pc"><div class="top"><span class="sev s-high">Tinggi</span><span class="id">L1</span></div><h3>Belum ada halaman legal</h3>
-      <dl><dt>Dampak</dt><dd>Melanggar UU PDP karena situs mengumpulkan email dan nomor WA, dan bisa ditolak payment gateway.</dd><dt>Tindakan</dt><dd>Buat halaman kebijakan privasi, syarat dan ketentuan, kebijakan refund, dan kontak, lalu tautkan di checkout.</dd></dl>
-      <div class="cost"><span>Fase 2</span><b class="num">1 hari</b></div></article>
-  </div>
-</section>
-
-<!-- CONTOH -->
-<section class="panel" id="contoh" aria-labelledby="c-h">
-  <div class="head">
-    <p class="eyebrow">Bukti langsung</p>
-    <h2 id="c-h">Tiga temuan yang bisa Anda coba sendiri</h2>
-    <p class="lede">Ketiganya kami uji langsung. Masing-masing juga jadi kriteria penerimaan: perbaikan dianggap selesai kalau hasilnya sudah seperti kolom kanan.</p>
-  </div>
-  <div class="try">
-    <div class="qs" role="group" aria-label="Pilih kejadian">
-      <button type="button" class="q" data-k="cta" aria-pressed="true">U1 · Calon siswa mengklik "Jelajahi Katalog Kursus"</button>
-      <button type="button" class="q" data-k="wa" aria-pressed="false">B1 · Siswa salah mengetik nomor WhatsApp saat checkout</button>
-      <button type="button" class="q" data-k="hapus" aria-pressed="false">P1 · Pengajar mengklik "Hapus" di kartu kursus</button>
-    </div>
-    <div class="compare" aria-live="polite">
-      <div class="side before"><span class="tag">Sekarang</span><div class="mock" id="m-before"></div><p class="res" id="r-before"></p></div>
-      <div class="side after"><span class="tag">Setelah diperbaiki</span><div class="mock" id="m-after"></div><p class="res" id="r-after"></p></div>
-    </div>
-  </div>
-</section>
-
-<!-- SEMUA TINDAKAN -->
-<section class="panel" id="tindakan" aria-labelledby="t-h">
-  <div class="head">
-    <p class="eyebrow">Semua tindakan</p>
-    <h2 id="t-h">37 temuan, 37 tindakan, 36 hari kerja</h2>
-    <p class="lede">Inilah dasar harga penawaran. Setiap baris adalah satu temuan audit beserta pekerjaan yang menutupnya dan estimasi waktunya. Beberapa temuan kecil yang dikerjakan bersamaan digabung dalam satu estimasi. Harga tiap fase mengikuti jumlah harinya.</p>
-  </div>
-  <div class="filters" role="group" aria-label="Saring menurut tingkat keparahan">
-    <button type="button" data-f="all" aria-pressed="true">Semua</button>
-    <button type="button" data-f="crit" aria-pressed="false">Kritis</button>
-    <button type="button" data-f="high" aria-pressed="false">Tinggi</button>
-    <button type="button" data-f="med" aria-pressed="false">Sedang</button>
-    <button type="button" data-f="low" aria-pressed="false">Rendah</button>
-  </div>
-  <div class="table-wrap">
-    <table id="acts">
-      <thead><tr><th>Kode</th><th>Tingkat</th><th>Temuan</th><th>Tindakan</th><th class="days">Hari</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</section>
-
-<!-- BIAYA -->
-<section class="panel" id="biaya" aria-labelledby="b-h">
-  <div class="head">
-    <p class="eyebrow">Biaya</p>
-    <h2 id="b-h">Seluruh 37 tindakan, Rp3,5 juta</h2>
-    <p class="lede">Harga total dibagi ke tiap fase sesuai bobot hari kerjanya di tabel tindakan. Total tidak akan melebihi Rp3,5 juta, walaupun setelah membaca source code ternyata ada pekerjaan tambahan. Anda membayar per fase, setelah hasilnya diterima.</p>
-  </div>
-  <div class="phases">
-    <div class="ph first">
-      <span class="eyebrow">Fase 1 · minggu 1 · harga pasti</span>
-      <h3>Amankan</h3>
-      <span class="amt">Rp500 rb</span>
-      <span class="calc num">5 hari kerja</span>
-      <div class="closes"><span class="s-crit">1 kritis</span><span class="s-high">4 tinggi</span></div>
-      <ul><li>Upgrade framework dan ganti kunci</li><li>Header keamanan</li><li>Arsip kursus</li><li>Pesan error di semua form</li></ul>
-    </div>
-    <div class="ph">
-      <span class="eyebrow">Fase 2 · minggu 2–4</span>
-      <h3>Buka pintu masuk</h3>
-      <span class="amt">Rp1,35 jt</span>
-      <span class="calc num">14 hari kerja</span>
-      <div class="closes"><span class="s-high">3 tinggi</span><span class="s-med">7 sedang</span><span class="s-low">1 rendah</span></div>
-      <ul><li>Katalog dan halaman kursus publik</li><li>Beranda baru dan halaman legal</li><li>Status bayar nyata dan webhook aman</li><li>Staging untuk uji pembayaran</li></ul>
-    </div>
-    <div class="ph">
-      <span class="eyebrow">Fase 3 · minggu 5–7</span>
-      <h3>Rapikan</h3>
-      <span class="amt">Rp1,45 jt</span>
-      <span class="calc num">15 hari kerja</span>
-      <div class="closes"><span class="s-med">9 sedang</span><span class="s-low">12 rendah</span></div>
-      <ul><li>Dashboard dan halaman pelajaran baru</li><li>Alat pengajar</li><li>Kecepatan, validasi, dan kode</li><li>SEO dan perbaikan kecil</li></ul>
-    </div>
-    <div class="ph">
-      <span class="eyebrow">Fase 4 · minggu 8</span>
-      <h3>Serah terima</h3>
-      <span class="amt">Rp200 rb</span>
-      <span class="calc num">2 hari kerja</span>
-      <div class="closes"><span style="background:#efeee9">Uji dan pelatihan</span></div>
-      <ul><li>Uji bersama tim</li><li>Panduan admin dan pengajar</li><li>Pelatihan 90 menit</li></ul>
-    </div>
-  </div>
-  <div class="packs">
-    <div class="pack min">
-      <span class="eyebrow" style="color:var(--ink)">Paket minimum · Fase 1 + 2</span>
-      <span class="amt">Rp1,85 jt</span>
-      <p>Menutup <b>semua 8 temuan kritis dan tinggi</b>, ditambah 8 temuan lain. Situs aman, calon siswa bisa melihat katalog, dan pembayaran tercatat dengan benar. Selesai dalam 4 minggu.</p>
-    </div>
-    <div class="pack full">
-      <span class="eyebrow">Paket lengkap · Fase 1–4</span>
-      <span class="amt">Rp3,5 jt</span>
-      <p>Menutup <b>seluruh 37 temuan</b>, memasang desain baru di semua halaman, dan menyerahkan situs yang bisa dirawat tim Anda sendiri. Selesai dalam 8 minggu.</p>
-    </div>
-  </div>
-  <p class="fine">Semua harga belum termasuk pajak, hosting, domain, dan biaya transaksi Mayar, yang dibayar langsung ke penyedianya. Perawatan setelah serah terima bersifat opsional: Rp1.500.000 per bulan untuk update keamanan, pengecekan backup, dan perubahan kecil sampai 1 hari kerja, dengan respons 1 hari kerja.</p>
-  <div class="strip">
-    <div style="display:flex;flex-direction:column;gap:4px"><h3>Desain baru sudah termasuk</h3><p>Prototipe beranda, dashboard, katalog dengan checkout, dan halaman pelajaran sudah jadi dan bisa diklik. Pemasangannya masuk ke Fase 2 dan 3.</p></div>
-    <a class="btn btn-dark" href="../desain-html/dashboard.html">Lihat prototipe</a>
-  </div>
-</section>
-
-<!-- JADWAL -->
-<section class="panel" id="jadwal" aria-labelledby="j-h">
-  <div class="head">
-    <p class="eyebrow">Waktu pengerjaan: 8 minggu</p>
-    <h2 id="j-h">Celah kritis tertutup di minggu pertama</h2>
-    <p class="lede">Anda tidak perlu menunggu sampai akhir. Pembayaran dilakukan setiap kali satu fase selesai dan diterima.</p>
-  </div>
-  <div class="tl-wrap">
-    <div class="tl" role="img" aria-label="Jadwal: Fase 1 minggu 1, Fase 2 minggu 2 sampai 4, Fase 3 minggu 5 sampai 7, Fase 4 minggu 8">
-      <span class="wk">Minggu 1</span><span class="wk">2</span><span class="wk">3</span><span class="wk">4</span><span class="wk">5</span><span class="wk">6</span><span class="wk">7</span><span class="wk">8</span>
-      <div class="p p1" style="grid-column:1 / span 1"><b>Fase 1</b><span>5 temuan</span></div>
-      <div class="p p2" style="grid-column:2 / span 3"><b>Fase 2 · Buka pintu masuk</b><span>11 temuan</span></div>
-      <div class="p p3" style="grid-column:5 / span 3"><b>Fase 3 · Rapikan</b><span>21 temuan</span></div>
-      <div class="p p4" style="grid-column:8 / span 1"><b>Fase 4</b><span>Serah terima</span></div>
-    </div>
-  </div>
-  <div class="grid g2">
-    <div class="card"><span class="eyebrow">Fase 1 selesai jika</span><p style="color:var(--ink)">Situs berjalan di versi Next.js dan React yang sudah ditambal, semua kunci sudah diganti, header keamanan terpasang, hapus kursus meminta konfirmasi, dan pesan error tampil di form.</p></div>
-    <div class="card"><span class="eyebrow">Fase 2 selesai jika</span><p style="color:var(--ink)">Tamu bisa membuka katalog dan detail kursus tanpa login, lalu menyelesaikan pembayaran sandbox dari awal sampai kelas terbuka, dengan status bayar yang benar.</p></div>
-    <div class="card"><span class="eyebrow">Fase 3 selesai jika</span><p style="color:var(--ink)">Dashboard dan halaman pelajaran tampil seperti prototipe, beranda tampil dari cache, dan pengajar bisa mengurutkan pelajaran.</p></div>
-    <div class="card"><span class="eyebrow">Fase 4 selesai jika</span><p style="color:var(--ink)">Tim Anda bisa menjalankan dan merilis situs sendiri dengan panduan yang kami serahkan.</p></div>
-  </div>
-</section>
-
-<!-- SIAPKAN -->
-<section class="panel" aria-labelledby="k-h">
-  <div class="head">
-    <p class="eyebrow">Yang perlu disiapkan</p>
-    <h2 id="k-h">Empat akses untuk memulai</h2>
-  </div>
-  <div class="grid g2">
-    <div class="card"><h3>Repo source code</h3><p>Akses baca dan tulis, supaya semua perubahan masuk lewat pull request yang bisa Anda tinjau.</p></div>
-    <div class="card"><h3>Hosting dan database</h3><p>Akses panel Hostinger untuk mengganti env dan membuat lingkungan staging.</p></div>
-    <div class="card"><h3>Akun Mayar</h3><p>Kunci mode sandbox untuk menguji pembayaran tanpa uang sungguhan.</p></div>
-    <div class="card"><h3>Google Cloud Console</h3><p>Untuk menambah URL staging ke login Google dan mengganti secret OAuth.</p></div>
-  </div>
-</section>
-
-<!-- CLOSING -->
-<section class="closing" id="mulai" aria-labelledby="m-h">
-  <p class="eyebrow" style="color:var(--ink)">Langkah berikutnya</p>
-  <h2 id="m-h">37 temuan, 8 minggu, Rp3,5 juta.</h2>
-  <p>Kirim akses repo dan hosting, lalu kita mulai dari Fase 1. Di akhir minggu pertama, celah kritis sudah tertutup. Usulan ini berlaku 30 hari.</p>
-  <p style="font-weight:500">Hormat kami, Dar Dev</p>
-</section>
-
-<footer>Nizhamiyyah Edu · Penawaran Dar Dev untuk belajarditimurtengah.com · Oktober 2026</footer>
+<div class="intro">
+<p>Assalamu'alaikum.</p>
+<p>Beberapa hari ini saya membongkar website Nizhamiyyah Edu: membaca kode yang sedang berjalan di server, mencoba semua halaman di laptop dan HP, dan mengecek alur pendaftaran sampai pembayaran. Totalnya saya menemukan 37 masalah. Sebagian besar kecil, tapi ada beberapa yang menurut saya perlu ditangani secepatnya.</p>
+<p>Di bawah ini saya tulis apa adanya. Untuk tiap masalah ada penjelasan singkat kenapa itu jadi masalah, lalu apa yang akan saya kerjakan.</p>
 </div>
 
-<script>
-(function(){
-  /* ---------- tabel tindakan ---------- */
-  var S = {crit:['Kritis','s-crit'], high:['Tinggi','s-high'], med:['Sedang','s-med'], low:['Rendah','s-low']};
-  var phases = [
-    { name:'Fase 1 · Amankan', note:'minggu 1', price:'Rp500 ribu', rows:[
-      ['K1','crit','Next.js dan React punya celah RCE','Upgrade ke versi bertambal, uji ulang semua halaman dan alur bayar',1.5],
-      ['K2','high','Kunci enkripsi ikut di file build','Ganti semua secret, build ulang dengan kunci dari env',0.5],
-      ['K3','high','Tidak ada security header','Pasang HSTS, CSP, X-Frame-Options, nosniff, Referrer-Policy',0.5],
-      ['P1','high','Hapus kursus tanpa konfirmasi','Arsip kursus, dialog konfirmasi, tolak hapus jika ada pembayaran lunas',1],
-      ['B1','high','Pesan error tidak tampil','Pesan di bawah kolom di semua form, halaman error berbahasa Indonesia',1.5]
-    ]},
-    { name:'Fase 2 · Buka pintu masuk', note:'minggu 2–4', price:'Rp1,35 juta', rows:[
-      ['U1','high','Enam tombol beranda mati, katalog wajib login','Katalog publik di /kursus, login kembali ke halaman tujuan',2],
-      ['U9','low','Katalog tanpa pencarian dan filter','Filter bidang, jenjang, dan gratis/berbayar',0.5],
-      ['U2','high','Tidak ada halaman kursus sebelum membeli','Halaman detail publik dengan silabus, pengajar, dan pratinjau',2.5],
-      ['L1','high','Belum ada halaman legal','Halaman privasi, syarat, refund, kontak, dan tautan di checkout',1],
-      ['P2','med','Order menumpuk dan bisa dobel','Tagihan kedaluwarsa, satu order menunggu per kursus, tombol terkunci',1.5],
-      ['P3','med','Status pembayaran tidak sesuai kenyataan','Tampilkan status nyata dan tombol bayar ulang',1.5],
-      ['K4','med','Webhook tanpa token dan rate limit','Verifikasi token Mayar, rate limit, respons generik',1],
-      ['U4','med','Beranda penuh klaim tanpa bukti','Pasang beranda baru sesuai prototipe',2],
-      ['U3','med','Tombol masuk tersembunyi di ponsel','Header ponsel dengan tombol masuk yang selalu terlihat',0.5],
-      ['A1','med','Kontras warna emas gagal WCAG','Warna teks baru yang lolos 4,5:1',0.25],
-      ['A2','med','Fokus keyboard tidak terlihat','Outline fokus di semua tombol dan tautan',0.25],
-      ['—','','Lingkungan staging','Salinan situs dan Mayar sandbox untuk menguji sebelum rilis',1]
-    ]},
-    { name:'Fase 3 · Rapikan', note:'minggu 5–7', price:'Rp1,45 juta', rows:[
-      ['U5','med','Dashboard penuh elemen mati','Pasang dashboard dan halaman pelajaran sesuai prototipe',3],
-      ['U6','med','Alat pengajar minim','Urut ulang pelajaran, editor dengan format, draf, daftar siswa',3],
-      ['B6','low','Materi kehilangan format dan teks Arab','Markdown yang aman dan blok teks Arab kanan-ke-kiri',0.5],
-      ['F1','med','Beranda dirender ulang tiap kunjungan','Beranda statis dengan pembaruan berkala',0.5],
-      ['F2','med','Query database berulang','Peran di sesi, cache pengguna, query paralel',1],
-      ['Q1','med','Logika hak akses tersebar','Satu modul pengaman untuk semua halaman dan aksi',1],
-      ['K6','low','Input tanpa validasi dan batas','Validasi skema di setiap aksi',1],
-      ['P4','med','Harga tidak bisa diubah, kursus langsung tayang','Edit harga dan kursus baru sebagai draf',0.5],
-      ['K5','med','Validasi URL video longgar','Daftar domain yang diizinkan dan iframe ber-sandbox',0.25],
-      ['K7','low','Perubahan peran tanpa catatan','Log aktivitas admin dan konfirmasi perubahan peran',0.75],
-      ['U8','low','SEO dan pratinjau tautan minim','Favicon, gambar pratinjau, sitemap, metadata per kursus',1],
-      ['U7','low','Halaman 404 bawaan','Halaman 404 dan error bermerek',0.25],
-      ['F3','low','Font memblokir render','Font di-host sendiri',0.25],
-      ['Q2','low','CSS sulit dirawat','Seragamkan breakpoint, buang !important dan gaya inline',1],
-      ['B2','med','Angka kursus aktif mentok di 3','Perbaikan kecil yang dikerjakan bersama',1],
-      ['B3','med','Tombol selesai error untuk pengajar','(termasuk di baris B2)',null],
-      ['B4','low','Karakter rusak di Profil','(termasuk di baris B2)',null],
-      ['B5','low','Slug judul Arab tidak berguna','(termasuk di baris B2)',null],
-      ['K8','low','Health check terbuka','(termasuk di baris B2)',null],
-      ['P5','low','Domain tertanam saat build','(termasuk di baris B2)',null],
-      ['A3','low','Target sentuh kecil','(termasuk di baris B2)',null]
-    ]},
-    { name:'Fase 4 · Serah terima', note:'minggu 8', price:'Rp200 ribu', rows:[
-      ['—','','Uji dan dokumentasi','Uji bersama tim, panduan admin dan pengajar, pelatihan 90 menit',2]
-    ]}
-  ];
-  function fmt(n){ return String(n).replace('.', ','); }
-  var tbody = document.querySelector('#acts tbody');
-  var html = '', grand = 0;
-  phases.forEach(function(ph){
-    var sum = ph.rows.reduce(function(s,r){ return s + (r[4] || 0); }, 0);
-    grand += sum;
-    html += '<tr class="phase"><td colspan="5">' + ph.name + ' <span>· ' + ph.note + '</span></td></tr>';
-    ph.rows.forEach(function(r){
-      var sev = r[1] ? '<span class="sev ' + S[r[1]][1] + '">' + S[r[1]][0] + '</span>' : '';
-      html += '<tr data-sev="' + (r[1] || 'none') + '"><td class="id">' + r[0] + '</td><td>' + sev + '</td><td>' + r[2] + '</td><td class="act">' + r[3] + '</td><td class="days">' + (r[4] == null ? '' : fmt(r[4])) + '</td></tr>';
-    });
-    html += '<tr class="sub"><td colspan="4">Subtotal ' + ph.name.split(' · ')[0] + ' · ' + ph.price + '</td><td class="days">' + fmt(sum) + '</td></tr>';
-  });
-  html += '<tr class="total"><td colspan="4">Total seluruh fase · Rp3,5 juta</td><td class="days">' + fmt(grand) + '</td></tr>';
-  tbody.innerHTML = html;
+<h2>Yang harus dibereskan minggu ini</h2>
+<p class="lead">Ini menyangkut keamanan server dan uang siswa.</p>
+<ol class="items">
+<li>
+<h3><span class="urgent">Server bisa dibobol tanpa login.</span></h3>
+<p>Website ini jalan di Next.js 15.1.3 dan React 19.0.0. Desember 2025 lalu ditemukan celah di versi-versi ini yang memungkinkan orang luar menjalankan perintah di server tanpa perlu login. Kalau itu terjadi, isi database, kunci pembayaran Mayar, dan data siswa bisa diambil.</p>
+<p class="fix"><b>Yang saya lakukan:</b> upgrade Next.js dan React ke versi yang sudah diperbaiki, lalu tes ulang semua halaman dan alur bayar supaya tidak ada yang rusak.</p>
+</li>
+<li>
+<h3>Kunci rahasia server ikut tersimpan di file build.</h3>
+<p>File hasil build yang ada di hosting menyimpan kunci enkripsi. Siapa pun yang pernah memegang salinan file itu bisa memalsukan permintaan ke server.</p>
+<p class="fix"><b>Yang saya lakukan:</b> ganti semua kunci (login Google, Mayar, password database), lalu build ulang dengan kunci enkripsi baru yang disimpan di pengaturan server.</p>
+</li>
+<li>
+<h3>Pengaman dasar dari browser belum dipasang.</h3>
+<p>Website belum mengirim header keamanan sama sekali. Akibatnya halaman dashboard bisa ditampilkan di dalam situs lain untuk menjebak orang mengklik tombol tertentu.</p>
+<p class="fix"><b>Yang saya lakukan:</b> pasang header keamanan standar dan sembunyikan informasi versi framework.</p>
+</li>
+<li>
+<h3>Kursus bisa terhapus dengan sekali klik.</h3>
+<p>Tombol "Hapus" di halaman Kelola Kursus langsung menghapus tanpa tanya. Yang ikut terhapus juga data pendaftaran siswa, termasuk yang sudah bayar. Satu salah klik bisa berujung komplain dan permintaan refund.</p>
+<p class="fix"><b>Yang saya lakukan:</b> ganti jadi "arsipkan" dengan konfirmasi. Kursus yang masih punya siswa berbayar tidak bisa dihapus permanen.</p>
+</li>
+<li>
+<h3>Pesan error tidak pernah muncul ke pengguna.</h3>
+<p>Contohnya waktu siswa salah ketik nomor WhatsApp saat checkout. Pesan "nomor tidak valid" sebenarnya sudah ada di kode, tapi yang muncul justru layar error kosong. Ini terjadi tepat di langkah pembayaran.</p>
+<p class="fix"><b>Yang saya lakukan:</b> tampilkan pesan error di bawah kolom yang salah di semua form, dan siapkan halaman error berbahasa Indonesia untuk kejadian tak terduga.</p>
+</li>
+</ol>
 
-  var fbtns = [].slice.call(document.querySelectorAll('.filters button'));
-  fbtns.forEach(function(b){ b.addEventListener('click', function(){
-    var f = b.getAttribute('data-f');
-    fbtns.forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
-    [].slice.call(tbody.querySelectorAll('tr[data-sev]')).forEach(function(tr){
-      tr.hidden = !(f === 'all' || tr.getAttribute('data-sev') === f);
-    });
-  }); });
+<h2>Yang bikin calon siswa batal daftar</h2>
+<p class="lead">Ini yang paling berpengaruh ke jumlah pendaftar.</p>
+<ol class="items">
+<li>
+<h3>Enam tombol utama di beranda tidak berfungsi untuk pengunjung baru.</h3>
+<p>"Jelajahi Katalog Kursus", "Masuk ke Portal", dan empat tombol lain mengarah ke halaman yang butuh login. Pengunjung yang belum login cuma dikembalikan ke beranda tanpa penjelasan. Saya sudah coba sendiri, dan rasanya seperti websitenya rusak.</p>
+<p class="fix"><b>Yang saya lakukan:</b> buka katalog untuk umum, lengkap dengan pencarian dan filter bidang ilmu. Login baru diminta waktu mendaftar, dan setelah login siswa kembali ke kursus yang tadi dipilih.</p>
+</li>
+<li>
+<h3>Calon siswa tidak bisa melihat isi kursus sebelum membayar.</h3>
+<p>Di katalog cuma ada judul, deskripsi singkat, dan harga. Silabus dan pengajar baru kelihatan setelah terdaftar.</p>
+<p class="fix"><b>Yang saya lakukan:</b> buat halaman detail untuk tiap kursus yang bisa dibuka siapa saja. Isinya daftar pelajaran, profil pengajar, harga, dan satu pelajaran yang bisa ditonton gratis.</p>
+</li>
+<li>
+<h3>Belum ada kebijakan privasi, syarat dan ketentuan, maupun kebijakan refund.</h3>
+<p>Website ini menyimpan email dan nomor WhatsApp siswa. UU Pelindungan Data Pribadi mewajibkan pemberitahuan soal itu, dan payment gateway biasanya juga meminta halaman refund dan kontak yang jelas.</p>
+<p class="fix"><b>Yang saya lakukan:</b> buat keempat halaman itu (privasi, syarat, refund, kontak), lalu tautkan di footer dan di langkah pembayaran. Isinya bisa dari tim Nizhamiyyah, atau saya siapkan drafnya untuk ditinjau.</p>
+</li>
+<li>
+<h3>Beranda belum menunjukkan apa yang sebenarnya diajarkan.</h3>
+<p>Isinya banyak klaim seperti "silabus mu'tamad" dan "kitab muktabar", tapi tidak ada nama kitab, nama pengajar, atau contoh materi. Di HP, tombol masuk juga tersembunyi di dalam menu.</p>
+<p class="fix"><b>Yang saya lakukan:</b> tata ulang beranda supaya langsung menampilkan jenjang kitab, pengajar, dan katalog. Tombol masuk saya buat selalu terlihat di HP.</p>
+</li>
+<li>
+<h3>Status pembayaran yang ditampilkan tidak sesuai kenyataan.</h3>
+<p>Setelah membayar, siswa selalu melihat tulisan "sedang diproses", walaupun pembayarannya sudah lunas atau malah gagal. Tagihan lama juga tidak pernah kedaluwarsa, dan kalau tombol bayar diklik dua kali bisa muncul dua tagihan.</p>
+<p class="fix"><b>Yang saya lakukan:</b> tampilkan status sebenarnya (menunggu, lunas, atau kedaluwarsa) dengan tombol yang sesuai, beri batas waktu pada tagihan, dan cegah tagihan ganda.</p>
+</li>
+<li>
+<h3>Jalur notifikasi pembayaran dari Mayar belum dikunci.</h3>
+<p>Pengecekan pembayarannya sendiri sudah benar karena selalu dikonfirmasi ulang ke Mayar. Tapi siapa saja bisa mengirim permintaan ke alamat itu terus-menerus sampai kuota API habis.</p>
+<p class="fix"><b>Yang saya lakukan:</b> cek token dari Mayar di setiap permintaan, batasi jumlah permintaan, dan jangan tampilkan detail error ke luar.</p>
+</li>
+<li>
+<h3>Sebagian teks sulit dibaca.</h3>
+<p>Warna emas yang dipakai untuk judul kecil dan harga terlalu pucat di atas latar putih. Pengguna keyboard juga tidak bisa melihat tombol mana yang sedang dipilih.</p>
+<p class="fix"><b>Yang saya lakukan:</b> ganti warna teks supaya kontrasnya cukup, dan beri garis penanda pada tombol yang sedang aktif.</p>
+</li>
+</ol>
 
-  /* ---------- sebelum dan sesudah ---------- */
-  var data = {
-    cta:{
-      before:'<div style="font-weight:500">belajarditimurtengah.com</div><div class="mbtn" style="background:#b8860b">Jelajahi Katalog Kursus</div><div class="blank">Halaman dimuat ulang.<br>Pengunjung kembali ke atas beranda.</div>',
-      rb:'Tidak ada pesan apa pun. Calon siswa mengira situsnya rusak.',
-      after:'<div style="font-weight:500">/kursus</div><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="field" style="padding:4px 9px">Nahwu</span><span class="field" style="padding:4px 9px">Fiqih</span><span class="field" style="padding:4px 9px">Gratis</span></div><div class="field"><b>Matan al-Ajurrumiyyah</b><br><span style="color:#55534e">24 pelajaran · [Nama Ustadz] · Rp[harga]</span></div><div class="mbtn">Lihat silabus</div>',
-      ra:'Katalog terbuka tanpa login. Login baru diminta saat mendaftar, lalu siswa kembali ke kursus yang tadi dipilih.'
-    },
-    wa:{
-      before:'<div>Nomor WhatsApp</div><div class="field">0812 34</div><div class="mbtn">Bayar</div><div class="blank">Application error: a server-side exception has occurred</div>',
-      rb:'Pesan "Nomor WhatsApp tidak valid" sebenarnya sudah ditulis di kode, tapi tidak pernah tampil.',
-      after:'<div>Nomor WhatsApp</div><div class="field err">0812 34</div><div class="errtxt">Nomor terlalu pendek. Masukkan 10 sampai 13 digit, misalnya 0812 3456 7890.</div><div class="mbtn">Bayar Rp[harga] lewat Mayar</div>',
-      ra:'Pesan muncul di bawah kolomnya. Isian lain tidak hilang dan siswa tinggal membetulkan nomornya.'
-    },
-    hapus:{
-      before:'<div class="field"><b>Bahasa Arab Dasar</b><br><span style="color:#55534e">12 pelajaran · [n] terdaftar</span></div><div class="mbtn danger">Hapus</div><div class="blank">Kursus terhapus.<br>Semua siswanya kehilangan akses.</div>',
-      rb:'Tanpa konfirmasi. Siswa yang sudah membayar ikut kehilangan kursusnya.',
-      after:'<div class="field"><b>Arsipkan "Bahasa Arab Dasar"?</b><br><span style="color:#55534e">Siswa yang terdaftar tetap bisa belajar. Kursus disembunyikan dari katalog.</span></div><div class="field" style="color:#55534e">Ketik judul kursus untuk melanjutkan</div><div class="mbtn">Arsipkan</div>',
-      ra:'Kursus diarsipkan, bukan dihapus. Penghapusan permanen ditolak selama masih ada siswa yang membayar.'
-    }
-  };
-  var qbtns = [].slice.call(document.querySelectorAll('.q'));
-  function show(k){
-    var d = data[k];
-    document.getElementById('m-before').innerHTML = d.before;
-    document.getElementById('m-after').innerHTML = d.after;
-    document.getElementById('r-before').textContent = d.rb;
-    document.getElementById('r-after').textContent = d.ra;
-    qbtns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.k === k)); });
-  }
-  qbtns.forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.k); }); });
-  show('cta');
-})();
-</script>
+<h2>Yang mengganggu siswa dan pengajar yang sudah terdaftar</h2>
+<ol class="items">
+<li>
+<h3>Dashboard siswa belum membantu melanjutkan belajar.</h3>
+<p>Angka "Kursus Aktif" selalu mentok di 3 berapa pun jumlah kursusnya. Ada tiga menu "Segera Hadir" yang belum bisa dipakai, dan di Profil muncul karakter rusak "â€”" serta ID internal yang tidak berguna untuk siswa.</p>
+<p class="fix"><b>Yang saya lakukan:</b> tata ulang dashboard supaya siswa langsung bisa lanjut dari pelajaran terakhir dan melihat progres tiap kitab. Angka yang salah dan karakter rusak saya perbaiki, dan menu yang belum ada saya sembunyikan.</p>
+</li>
+<li>
+<h3>Materi pelajaran kehilangan format.</h3>
+<p>Baris baru, huruf tebal, dan daftar tidak tampil. Teks Arab juga tidak tampil dari kanan ke kiri, padahal matan kitab adalah inti tiap pelajaran.</p>
+<p class="fix"><b>Yang saya lakukan:</b> dukung format teks sederhana dan blok teks Arab yang rapi dari kanan ke kiri.</p>
+</li>
+<li>
+<h3>Alat untuk pengajar masih minim.</h3>
+<p>Urutan pelajaran tidak bisa diubah, harga kursus tidak bisa diedit setelah dibuat, kursus baru langsung tayang walau masih kosong, dan pengajar tidak bisa melihat siapa saja siswanya. Pengajar dan admin yang membuka pelajaran juga akan melihat error kalau mengklik "Tandai Selesai".</p>
+<p class="fix"><b>Yang saya lakukan:</b> tambahkan pengurutan pelajaran, edit harga, status draf, daftar siswa dan progresnya, dan mode pratinjau untuk pengajar.</p>
+</li>
+<li>
+<h3>Perubahan peran pengguna tidak tercatat.</h3>
+<p>Admin bisa menurunkan admin lain dengan sekali klik, dan tidak ada catatan siapa mengubah apa.</p>
+<p class="fix"><b>Yang saya lakukan:</b> minta konfirmasi untuk perubahan peran, cegah admin terakhir diturunkan, dan simpan catatan aktivitasnya.</p>
+</li>
+</ol>
+
+<h2>Yang perlu dirapikan di belakang layar</h2>
+<p class="lead">Tidak terlihat langsung oleh siswa, tapi berpengaruh ke kecepatan website dan seberapa mudah dirawat nanti.</p>
+<div class="plain">
+<p>Beranda saat ini mengambil data dari database setiap kali ada yang membuka, padahal isinya jarang berubah. Data pengguna juga dicari dua sampai tiga kali di setiap halaman. Saya akan membuat beranda bisa disimpan sementara (cache) dan merapikan pengambilan datanya supaya halaman lebih cepat terbuka.</p>
+<p>Selain itu ada beberapa perbaikan kecil yang akan saya kerjakan sekaligus:</p>
+<ul class="small">
+<li>Validasi semua isian form, termasuk batas panjang teks dan batas harga.</li>
+<li>Alamat video pelajaran hanya boleh dari YouTube atau file video langsung, supaya situs lain tidak bisa disisipkan.</li>
+<li>Pengecekan hak akses dikumpulkan di satu tempat supaya tidak ada halaman yang terlewat.</li>
+<li>Halaman 404 dan error yang berbahasa Indonesia, menggantikan layar hitam bawaan.</li>
+<li>Favicon, gambar pratinjau saat link dibagikan di WhatsApp, dan sitemap untuk Google.</li>
+<li>Font dimuat dari server sendiri, dan kode tampilan dirapikan.</li>
+<li>Alamat kursus yang berjudul Arab, alamat website yang tertanam saat build, halaman status server yang terbuka, dan tombol yang terlalu kecil di HP.</li>
+</ul>
+</div>
+
+<h2>Urutan kerjanya</h2>
+<ol class="steps">
+<li><b>Minggu 1:</b> lima masalah keamanan dan data di bagian pertama.</li>
+<li><b>Minggu 2 sampai 4:</b> semua yang membuat calon siswa batal daftar, plus salinan website untuk uji coba pembayaran sebelum dirilis.</li>
+<li><b>Minggu 5 sampai 7:</b> dashboard, halaman pelajaran, alat pengajar, dan perapian di belakang layar.</li>
+<li><b>Minggu 8:</b> uji bersama tim, panduan untuk admin dan pengajar, dan satu sesi pelatihan.</li>
+</ol>
+
+<div class="close">
+<p>Total biayanya <mark><b>Rp3,5 juta</b></mark> untuk semua yang tertulis di atas, dibayar bertahap setiap kali satu tahap selesai dan sudah Anda cek.</p>
+<p>Untuk mulai, saya butuh akses ke repository kode, panel hosting, akun Mayar (mode sandbox), dan Google Cloud Console. Semua perubahan akan masuk lewat pull request, jadi tim Nizhamiyyah bisa melihat dan menyetujui dulu sebelum ada yang berubah di website.</p>
+<p>Kalau ada yang ingin ditanyakan atau mau dibahas dulu, kabari saja.</p>
+<p class="sign">Wassalamu'alaikum,<br><b>Dar Dev</b></p>
+<p class="note">Detail teknis tiap masalah, lengkap dengan bukti di kodenya, ada di <a href="../audit/">laporan audit</a>.</p>
+</div>
+
+</article>
 
 </body>
 </html>
