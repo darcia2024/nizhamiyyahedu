@@ -1,17 +1,17 @@
-export function StarMark({ size = 30, stroke = "#1B4D3B", dot = true }: { size?: number; stroke?: string; dot?: boolean }) {
+import Image from "next/image";
+
+export function StarMark({ size = 30 }: { size?: number; stroke?: string; dot?: boolean }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke={stroke} strokeWidth="1.6">
-      <rect x="5" y="5" width="14" height="14" />
-      <rect x="5" y="5" width="14" height="14" transform="rotate(45 12 12)" />
-      {dot && <circle cx="12" cy="12" r="2.4" fill="#C8A24A" stroke="none" />}
-    </svg>
+    <span className="brand-symbol" style={{ width: Math.round(size * 0.68), height: size }} aria-hidden="true">
+      <Image src="/nizhamiyyah-icon.png" alt="" fill sizes={`${size}px`} priority />
+    </span>
   );
 }
 
 export function Logo() {
   return (
     <span className="brand">
-      <StarMark />
+      <StarMark size={34} />
       <b>Nizhamiyyah</b>
     </span>
   );
