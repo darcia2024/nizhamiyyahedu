@@ -14,7 +14,7 @@ export function LearningMockup({ courses }: { courses: CourseCard[] }) {
         <div className="mock-browserbar" aria-hidden="true"><span /><span /><span /><div>belajarditimurtengah.com/dashboard</div></div>
         <div className="mock-app">
           <aside className="mock-side">
-            <div className="mock-logo"><span><Image src="/nizhamiyyah-icon.png" alt="" width={14} height={21} /></span><b>Nizhamiyyah</b></div>
+            <div className="mock-logo"><span><Image src="/nizhamiyyah-icon.png" alt="" width={11} height={28} /></span><b>Nizhamiyyah</b></div>
             <nav aria-label="Contoh navigasi dashboard">
               <span className="active"><LayoutDashboard size={15} /> Ringkasan</span>
               <span><Library size={15} /> Kursus saya</span>
