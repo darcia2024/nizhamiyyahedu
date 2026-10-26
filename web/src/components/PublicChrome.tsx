@@ -11,9 +11,9 @@ const NAV = [
   { href: "/#faq", label: "Tanya jawab" },
 ];
 
-export function PublicHeader() {
+export function PublicHeader({ landing = false }: { landing?: boolean }) {
   return (
-    <header className="pub-header gutter">
+    <header className={`pub-header gutter${landing ? " landing-header" : ""}`}>
       <div className="wrap">
         <Link href="/" aria-label="Nizhamiyyah Edu, ke beranda"><Logo /></Link>
         <nav className="nav-inline" aria-label="Navigasi utama">
@@ -65,10 +65,10 @@ export async function PublicFooter() {
   );
 }
 
-export function PublicShell({ children }: { children: React.ReactNode }) {
+export function PublicShell({ children, landing = false }: { children: React.ReactNode; landing?: boolean }) {
   return (
     <>
-      <PublicHeader />
+      <PublicHeader landing={landing} />
       <main id="isi">{children}</main>
       <PublicFooter />
     </>

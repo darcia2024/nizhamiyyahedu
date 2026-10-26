@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { ArrowRight, BookOpenCheck, CirclePlay, Compass, GraduationCap, Layers3, ShieldCheck } from "lucide-react";
 import { PublicShell } from "@/components/PublicChrome";
 import { CourseCardView } from "@/components/CourseCard";
+import { LandingMotion } from "@/components/LandingMotion";
+import { LearningMockup } from "@/components/LearningMockup";
 import { getContent } from "@/lib/content";
 import { buildMarhalahMap, getPublishedCourses, getTeachersForHome } from "@/lib/queries";
 import { FIELD_LABEL, LEVEL_LABEL, LEVEL_NOTE } from "@/lib/constants";
@@ -10,151 +13,68 @@ export const revalidate = 300;
 
 export default async function HomePage() {
   const [home, faq, courses, teachers] = await Promise.all([
-    getContent("home.main"),
-    getContent("faq.items"),
-    getPublishedCourses(),
-    getTeachersForHome(),
+    getContent("home.main"), getContent("faq.items"), getPublishedCourses(), getTeachersForHome(),
   ]);
   const map = buildMarhalahMap(courses);
   const featured = courses.slice(0, 6);
-  const previewCourse=courses.find(c=>c.hasFreePreview);
+  const previewCourse = courses.find((course) => course.hasFreePreview);
 
   return (
-    <PublicShell>
-      <section className="hero gutter" aria-labelledby="hero-h">
-        <div className="wrap">
-          <div className="hero-copy">
-            <p className="eyebrow">{home.eyebrow}</p>
-            <h1 id="hero-h">{home.title}</h1>
-            <p className="lead">{home.sub}</p>
-            <div className="cta-row">
-              <Link className="btn btn-primary" href="/kursus" data-testid="cta-katalog">Lihat katalog kursus</Link>
-              <Link className="btn btn-ghost" href="/#jenjang" data-testid="cta-jenjang">Cari jenjang yang cocok</Link>
+    <PublicShell landing>
+      <LandingMotion />
+      <section className="landing-hero gutter" aria-labelledby="hero-h">
+        <div className="wrap landing-hero-inner">
+          <div className="landing-copy hero-enter">
+            <p className="landing-pill"><span>Baru</span> Belajar kitab dalam satu ruang <ArrowRight size={13} /></p>
+            <h1 id="hero-h">Belajar kitab.<br /><span>Dibuat lebih terarah.</span></h1>
+            <p className="landing-lead">Kurikulum berjenjang, matan yang mudah diikuti, dan progres yang selalu tersimpan. Belajar dari dasar sampai paham, sesuai ritme Anda.</p>
+            <div className="landing-actions">
+              <Link className="landing-btn primary" href="/kursus">Mulai belajar <ArrowRight size={17} /></Link>
+              {previewCourse ? <Link className="landing-btn secondary" href={`/kursus/${previewCourse.slug}/pratinjau`}><CirclePlay size={17} /> Coba pelajaran</Link> : <Link className="landing-btn secondary" href="/#jenjang"><Compass size={17} /> Lihat jenjang</Link>}
             </div>
-            <p className="small muted">{home.note}</p>
+            <div className="landing-proof"><span><ShieldCheck size={16} /> Silabus terbuka</span><span><BookOpenCheck size={16} /> Progres tersimpan</span><span><GraduationCap size={16} /> Belajar berjenjang</span></div>
           </div>
-
-          {map.fields.length > 0 && (
-            <aside id="jenjang" className="map-card" aria-label="Peta jenjang belajar" style={{ ["--cols" as string]: map.fields.length }}>
-              <h2>Peta marhalah</h2>
-              <div className="stage-grid" role="table" aria-label="Kursus per jenjang dan bidang ilmu">
-                <div role="row" className="stage-row"><span className="th" role="columnheader">Jenjang</span>
-                {map.fields.map((f) => <span key={f} className="th" role="columnheader">{FIELD_LABEL[f]}</span>)}</div>
-                {map.levels.map((l) => (
-                  <Row key={l} level={l} fields={map.fields} cell={map.cell} />
-                ))}
-              </div>
-            </aside>
-          )}
+          <div className="mockup-enter"><LearningMockup courses={featured} /></div>
         </div>
       </section>
 
-      <section className="band-white gutter" aria-labelledby="alur-h">
-        <div className="wrap" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          <h2 id="alur-h" className="serif" style={{ fontWeight: 600, fontSize: 26 }}>Dari daftar sampai belajar, tiga langkah</h2>
-          <ol className="steps">
-            {home.steps.map((s, i) => (
-              <li key={i}>
-                <span className="n" aria-hidden="true">{i + 1}</span>
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  <b style={{ fontSize: 17 }}>{s.title}</b>
-                  <span className="muted">{s.text}</span>
-                </div>
-              </li>
-            ))}
-          </ol>
+      <section className="landing-surface">
+        <div className="wrap trust-strip" data-reveal>
+          <p>Belajar lebih tenang dengan alur yang jelas</p>
+          <div><span>Matan &amp; terjemah</span><i /><span>Video penjelasan</span><i /><span>Progres belajar</span><i /><span>Akses fleksibel</span></div>
         </div>
-      </section>
 
-      <section id="katalog" className="sec gutter" aria-labelledby="katalog-h">
-        <div className="wrap">
-          <div className="sec-head">
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <h2 id="katalog-h" className="t serif">Katalog kursus</h2>
-              <p className="muted">Terbuka untuk semua pengunjung. Login baru dibutuhkan saat mendaftar.</p>
-            </div>
-            <Link className="btn btn-ghost sm" href="/kursus">Lihat semua kursus</Link>
-          </div>
-          {featured.length ? (
-            <div className="grid-cards">{featured.map((c) => <CourseCardView key={c.id} c={c} />)}</div>
-          ) : (
-            <div className="empty-state">
-              <h3 className="serif" style={{ fontSize: 22 }}>Kursus sedang disiapkan</h3>
-              <p className="muted">Jadwal kursus terbaru akan segera dipublikasikan. Anda tetap bisa membuat akun dan bersiap.</p>
-              <Link className="btn btn-primary" href="/masuk">Masuk ke dashboard</Link>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="gutter" aria-labelledby="contoh-h" style={{ paddingBottom: 72 }}>
-        <div className="wrap band-dark on-dark">
-          <div style={{ flex: "1 1 360px", minWidth: 0, display: "flex", flexDirection: "column", gap: 14 }}>
-            <p className="eyebrow">{home.bandEyebrow}</p>
-            <h2 id="contoh-h">{home.bandTitle}</h2>
-            <p style={{ lineHeight: 1.6 }}>{home.bandText}</p>
-            {previewCourse && <Link className="btn btn-cream" style={{ alignSelf: "flex-start" }} href={`/kursus/${previewCourse.slug}/pratinjau`}>Coba pelajaran pratinjau</Link>}
-          </div>
-          <figure className="matan-quote">
-            <p className="ar" lang="ar" dir="rtl">{home.bandAr}</p>
-            <figcaption style={{ color: "#C9D6CE", fontSize: 15, lineHeight: 1.6 }}>{home.bandCaption}</figcaption>
-          </figure>
-        </div>
-      </section>
-
-      {teachers.length > 0 && (
-        <section id="pengajar" className="gutter" aria-labelledby="pengajar-h" style={{ paddingBottom: 72 }}>
-          <div className="wrap" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            <h2 id="pengajar-h" className="t serif" style={{ fontWeight: 600, fontSize: 36, lineHeight: 1.15 }}>Pengajar</h2>
-            <div className="teachers">
-              {teachers.map((t) => (
-                <article key={t.id} className="teacher">
-                  <div className="av" aria-hidden="true">{initials(t.displayName)}</div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
-                    <h3>{t.displayName}</h3>
-                    {t.alumni && <p className="small muted">{t.alumni}</p>}
-                    {t.sanad && <p className="small">{t.sanad}</p>}
-                    <p className="small" style={{ lineHeight: 1.55 }}>{t.bio}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
+        <section className="journey-section gutter" aria-labelledby="alur-h">
+          <div className="wrap">
+            <div className="landing-section-head" data-reveal><p className="landing-kicker">Satu ruang belajar</p><h2 id="alur-h">Dari pilih kitab sampai<br />lanjut ke marhalah berikutnya.</h2><p>Tidak perlu menebak harus mulai dari mana. Setiap langkah dibuat sederhana dan saling terhubung.</p></div>
+            <ol className="journey-grid">{home.steps.map((step, index) => <li key={step.title} data-reveal style={{ ["--delay" as string]: `${index * 90}ms` }}><span className="journey-no">0{index + 1}</span><div className={`journey-icon ji-${index}`} aria-hidden="true">{index === 0 ? <Compass /> : index === 1 ? <BookOpenCheck /> : <Layers3 />}</div><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol>
           </div>
         </section>
-      )}
 
-      <section id="faq" className="band-white gutter" aria-labelledby="faq-h" style={{ paddingBlock: 64, borderBottom: 0 }}>
-        <div className="faq">
-          <h2 id="faq-h" className="serif" style={{ fontWeight: 600, fontSize: 32, marginBottom: 20 }}>Tanya jawab</h2>
-          <div style={{ borderTop: "1px solid var(--line)" }}>
-            {faq.map((f, i) => (
-              <details key={i} open={i === 0}>
-                <summary>{f.q}<span className="plus" aria-hidden="true">+</span></summary>
-                <p>{f.a}</p>
-              </details>
-            ))}
+        {map.fields.length > 0 && <section id="jenjang" className="path-section gutter" aria-labelledby="jenjang-h">
+          <div className="wrap path-panel" data-reveal>
+            <div className="path-copy"><p className="landing-kicker">Peta belajar</p><h2 id="jenjang-h">Naik jenjang tanpa kehilangan arah.</h2><p>Kursus disusun berdasarkan bidang ilmu dan tingkat kesulitan. Mulai dari fondasi, lalu lanjut saat sudah siap.</p><Link className="landing-text-link" href="/kursus">Jelajahi semua kursus <ArrowRight size={16} /></Link></div>
+            <div className="map-card landing-map" aria-label="Peta jenjang belajar" style={{ ["--cols" as string]: map.fields.length }}><div className="stage-grid" role="table" aria-label="Kursus per jenjang dan bidang ilmu"><div role="row" className="stage-row"><span className="th" role="columnheader">Jenjang</span>{map.fields.map((field) => <span key={field} className="th" role="columnheader">{FIELD_LABEL[field]}</span>)}</div>{map.levels.map((level) => <Row key={level} level={level} fields={map.fields} cell={map.cell} />)}</div></div>
           </div>
-        </div>
+        </section>}
+
+        <section id="katalog" className="catalog-showcase gutter" aria-labelledby="katalog-h">
+          <div className="wrap">
+            <div className="landing-section-head split" data-reveal><div><p className="landing-kicker">Katalog pilihan</p><h2 id="katalog-h">Mulai dari kitab yang<br />sesuai dengan level Anda.</h2></div><div><p>Katalog dan silabus dapat dilihat tanpa login. Pelajari isi kursus dulu sebelum memutuskan.</p><Link className="landing-text-link" href="/kursus">Lihat semua kursus <ArrowRight size={16} /></Link></div></div>
+            {featured.length ? <div className="grid-cards landing-courses">{featured.map((course, index) => <div key={course.id} data-reveal style={{ ["--delay" as string]: `${(index % 3) * 80}ms` }}><CourseCardView c={course} /></div>)}</div> : <div className="empty-state"><h3>Kursus sedang disiapkan</h3><p className="muted">Jadwal kursus terbaru akan segera dipublikasikan.</p></div>}
+          </div>
+        </section>
+
+        <section className="lesson-feature gutter" aria-labelledby="contoh-h"><div className="wrap lesson-panel" data-reveal><div className="lesson-copy"><p className="landing-kicker">{home.bandEyebrow}</p><h2 id="contoh-h">{home.bandTitle}</h2><p>{home.bandText}</p>{previewCourse && <Link className="landing-btn primary" href={`/kursus/${previewCourse.slug}/pratinjau`}>Buka pelajaran gratis <ArrowRight size={17} /></Link>}</div><figure className="new-matan-card"><span>Cuplikan matan</span><p className="ar" lang="ar" dir="rtl">{home.bandAr}</p><figcaption>{home.bandCaption}</figcaption><i aria-hidden="true"><CirclePlay size={22} fill="currentColor" /></i></figure></div></section>
+
+        {teachers.length > 0 && <section id="pengajar" className="teacher-section gutter" aria-labelledby="pengajar-h"><div className="wrap"><div className="landing-section-head" data-reveal><p className="landing-kicker">Pengajar</p><h2 id="pengajar-h">Dibimbing oleh orang<br />yang memahami kitabnya.</h2></div><div className="teachers new-teachers">{teachers.map((teacher) => <article key={teacher.id} className="teacher" data-reveal><div className="av" aria-hidden="true">{initials(teacher.displayName)}</div><div><h3>{teacher.displayName}</h3>{teacher.alumni && <p className="small muted">{teacher.alumni}</p>}{teacher.sanad && <p className="small">{teacher.sanad}</p>}<p className="small bio">{teacher.bio}</p></div></article>)}</div></div></section>}
+
+        <section id="faq" className="faq-section gutter" aria-labelledby="faq-h"><div className="wrap faq-layout"><div data-reveal><p className="landing-kicker">Masih ingin tahu?</p><h2 id="faq-h">Pertanyaan yang sering ditanyakan.</h2><p>Jawaban singkat sebelum Anda mulai belajar.</p></div><div className="faq" data-reveal>{faq.map((item, index) => <details key={item.q} open={index === 0}><summary>{item.q}<span className="plus" aria-hidden="true">+</span></summary><p>{item.a}</p></details>)}</div></div></section>
       </section>
     </PublicShell>
   );
 }
 
 function Row({ level, fields, cell }: { level: keyof typeof LEVEL_LABEL; fields: ReturnType<typeof buildMarhalahMap>["fields"]; cell: ReturnType<typeof buildMarhalahMap>["cell"] }) {
-  return (
-    <div role="row" className="stage-row">
-      <div role="rowheader"><b>{LEVEL_LABEL[level]}</b><small>{LEVEL_NOTE[level]}</small></div>
-      {fields.map((f) => {
-        const c = cell(f, level);
-        return c ? (
-          <div key={f} role="cell"><Link className="cell" href={`/kursus/${c.slug}`}>
-            <span className="ar" lang="ar" dir="rtl">{c.titleAr ?? c.title}</span>
-            <small>{c.title}</small>
-          </Link></div>
-        ) : (
-          <div key={f} role="cell"><span className="empty">Segera</span></div>
-        );
-      })}
-    </div>
-  );
+  return <div role="row" className="stage-row"><div role="rowheader"><b>{LEVEL_LABEL[level]}</b><small>{LEVEL_NOTE[level]}</small></div>{fields.map((field) => { const course = cell(field, level); return course ? <div key={field} role="cell"><Link className="cell" href={`/kursus/${course.slug}`}><span className="ar" lang="ar" dir="rtl">{course.titleAr ?? course.title}</span><small>{course.title}</small></Link></div> : <div key={field} role="cell"><span className="empty">Segera</span></div>; })}</div>;
 }
