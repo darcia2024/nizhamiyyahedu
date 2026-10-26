@@ -1,11 +1,13 @@
-# Nizhamiyyah Edu: audit, penawaran, dan desain ulang
+# Nizhamiyyah Edu
 
 Dokumen dan prototipe dari Dar Dev untuk belajarditimurtengah.com.
 
 | Folder | Isi |
 |---|---|
+| [`web/`](web/) | Aplikasi Next.js: website publik, ruang belajar, pembayaran, alat pengajar dan admin panel. Petunjuk menjalankan ada di web/README.md. |
+| [`docs/implementation-status.md`](docs/implementation-status.md) | Implementasi, hasil pengujian lokal dan kebutuhan sebelum rilis production |
 | [`desain-html/`](desain-html/) | Prototipe HTML yang bisa diklik: beranda publik, dashboard siswa, katalog + checkout, dan halaman pelajaran |
-| [`penawaran/`](penawaran/) | Halaman penawaran: temuan, rencana 4 fase, jadwal 8 minggu, dan usulan biaya |
+| [`penawaran/`](penawaran/) | Halaman penawaran: masalah dan perbaikan, desain ulang, admin panel, waktu 1-4 hari, Rp3,5 juta, pembayaran 50% DP dan 50% pelunasan |
 | [`audit/`](audit/) | Laporan audit lengkap: 37 temuan beserta bukti dan cara memperbaikinya |
 | [`PRD.md`](PRD.md) | PRD pengerjaan: task per hari, checkpoint, logika, dan spesifikasi UI/UX |
 

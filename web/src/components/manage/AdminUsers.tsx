@@ -1,0 +1,26 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { db } from "@/lib/db";
+import { ActionForm, Field, InlineAction } from "@/components/ActionForm";
+import { changeRole, grantAccess, revokeAccess } from "@/app/actions/manage";
+import { dateWib, rupiah } from "@/lib/format";
+import { Empty, ManageHeading, Pagination, SearchFilters } from "./ManageUI";
+import { ORDER_LABEL, type OrderStatus } from "@/lib/constants";
+const roles=[{value:"STUDENT",label:"User"},{value:"TEACHER",label:"Pengajar"},{value:"ADMIN",label:"Admin"}];
+export async function AdminUsers({id,query}: {id?:string;query:Record<string,string|undefined>}) {
+  if(id){
+    const [u,courses,logs]=await Promise.all([db.user.findUnique({where:{id},include:{enrollments:{include:{course:true}},orders:{include:{course:true},orderBy:{createdAt:"desc"},take:25},progress:{where:{completedAt:{not:null}}}}}),db.course.findMany({where:{archivedAt:null},orderBy:{title:"asc"}}),db.auditLog.findMany({where:{targetType:"User",targetId:id},orderBy:{createdAt:"desc"},take:20})]);
+    if(!u) notFound();
+    return <><ManageHeading title={u.name??u.email} text={u.email}><Link className="btn btn-ghost" href="/admin/pengguna">Semua user</Link></ManageHeading>
+      <div className="admin-two"><section className="card pad"><h2>Informasi akun</h2><dl className="detail-list"><dt>Bergabung</dt><dd>{dateWib(u.createdAt)}</dd><dt>WhatsApp</dt><dd>{u.whatsapp??"Belum diisi"}</dd><dt>Peran saat ini</dt><dd>{roles.find(r=>r.value===u.role)?.label}</dd><dt>Pelajaran selesai</dt><dd>{u.progress.length}</dd></dl></section>
+      <section className="card pad"><h2>Ubah peran</h2><p className="small muted">Perubahan berlaku pada permintaan berikutnya dan masuk ke catatan aktivitas.</p><ActionForm action={changeRole} submit="Simpan peran"><input type="hidden" name="userId" value={u.id}/><Field name="role" label="Peran baru" type="select" defaultValue={u.role} options={roles}/><Field name="reason" label="Alasan perubahan"/><Field name="confirm" label={`Saya memahami perubahan hak akses ${u.name??u.email}.`} type="checkbox" full/></ActionForm></section></div>
+      <section className="card pad"><h2>Akses kursus</h2>{u.enrollments.map(e=><div key={e.id} className="access-row"><div><Link href={`/admin/kursus/${e.courseId}`}>{e.course.title}</Link><p className="small muted">{e.status==="ACTIVE"?"Aktif":"Dinonaktifkan"} / {e.source==="PAID"?"Pembelian":e.source==="FREE"?"Gratis":"Manual"}</p></div>{e.status==="ACTIVE"&&<details><summary>Nonaktifkan akses</summary><ActionForm action={revokeAccess} submit="Nonaktifkan akses" submitClass="btn btn-danger"><input type="hidden" name="enrollmentId" value={e.id}/><Field name="reason" label="Alasan pencabutan" full/></ActionForm></details>}</div>)}
+      <details className="admin-disclosure"><summary>Buka akses ke kursus lain</summary><ActionForm action={grantAccess} submit="Buka akses"><input type="hidden" name="userId" value={u.id}/><Field name="courseId" label="Kursus" type="select" options={[{value:"",label:"Pilih kursus"},...courses.map(c=>({value:c.id,label:c.title}))]}/><Field name="reason" label="Alasan pembukaan akses"/></ActionForm></details></section>
+      <section className="card pad"><h2>Riwayat pembayaran</h2>{u.orders.length?u.orders.map(o=><div className="metric-line" key={o.id}><Link href={`/admin/pembayaran/${o.id}`}>{o.course.title}</Link><span>{rupiah(o.amount)} / {ORDER_LABEL[o.status as OrderStatus]}</span></div>):<p className="muted">Belum ada pembayaran.</p>}</section>
+      <section className="card pad"><h2>Riwayat perubahan</h2>{logs.length?logs.map(l=><div className="metric-line" key={l.id}><span>{l.action} / {l.actorName}</span><span className="small muted">{l.reason??dateWib(l.createdAt)}</span></div>):<p className="muted">Belum ada perubahan oleh admin.</p>}</section></>;
+  }
+  const page=Math.max(1,Number(query.page)||1),q=(query.q??"").slice(0,80);
+  const where={...(q?{OR:[{name:{contains:q}},{email:{contains:q}}]}:{}),...(roles.some(r=>r.value===query.status)?{role:query.status}:{})};
+  const [rows,count]=await Promise.all([db.user.findMany({where,include:{_count:{select:{enrollments:true}}},orderBy:{createdAt:"desc"},take:25,skip:(page-1)*25}),db.user.count({where})]);
+  return <><ManageHeading title="User" text="Kelola hak akses, keikutsertaan kelas, dan informasi akun."/><SearchFilters q={q} status={query.status} statuses={roles} placeholder="Cari nama atau email..."/>{rows.length?<div className="card table-box"><table className="t responsive-table"><thead><tr><th>Nama dan email</th><th>Peran</th><th>Kursus</th><th>Bergabung</th><th>Aksi</th></tr></thead><tbody>{rows.map(u=><tr key={u.id}><td data-label="User"><Link className="table-title" href={`/admin/pengguna/${u.id}`}>{u.name??"Belum diisi"}</Link><small className="muted">{u.email}</small></td><td data-label="Peran"><span className="badge">{roles.find(r=>r.value===u.role)?.label}</span></td><td data-label="Kursus">{u._count.enrollments}</td><td data-label="Bergabung">{dateWib(u.createdAt)}</td><td data-label="Aksi"><Link className="btn btn-ghost sm" href={`/admin/pengguna/${u.id}`}>Detail</Link></td></tr>)}</tbody></table></div>:<Empty/>}<Pagination page={page} count={count} base="/admin/pengguna" query={query}/></>;
+}

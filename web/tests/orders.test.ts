@@ -1,0 +1,33 @@
+import { beforeAll, afterAll, describe, expect, it, vi } from "vitest";
+import { execFileSync } from "node:child_process";
+import { resolve } from "node:path";
+import { rmSync, writeFileSync } from "node:fs";
+const testPath=resolve("prisma/integration-test.db");
+const testUrl=`file:${testPath.replace(/\\/g,"/")}`;
+vi.mock("@/lib/db",async()=>{
+  const {PrismaClient}=await import("@prisma/client");
+  return {db:new PrismaClient({datasourceUrl:`file:${resolve("prisma/integration-test.db").replace(/\\/g,"/")}`})};
+});
+vi.mock("@/lib/mayar",()=>({createInvoice:vi.fn(async(p:{orderId:string})=>({id:`test_${p.orderId}`,link:`http://localhost:3200/dev/mayar/${p.orderId}`}))}));
+import { db } from "@/lib/db";
+import { createOrder, effectiveStatus, settleOrder } from "@/lib/orders";
+import type { CurrentUser } from "@/lib/auth-guard";
+import { getUserProgress } from "@/lib/progress";
+let user:CurrentUser, courseId:string;
+beforeAll(async()=>{
+  writeFileSync(testPath, "");
+  execFileSync(process.execPath,[resolve("node_modules/prisma/build/index.js"),"db","push","--skip-generate"],{env:{...process.env,DATABASE_URL:testUrl},stdio:"pipe"});
+  await db.$executeRawUnsafe('CREATE UNIQUE INDEX IF NOT EXISTS "Order_one_pending" ON "Order" ("userId", "courseId") WHERE "status" = \'PENDING\'');
+  user=await db.user.create({data:{email:`orders-${Date.now()}@test.local`,role:"STUDENT",name:"User uji"}}) as CurrentUser;
+  const c=await db.course.create({data:{title:"Kursus bayar",slug:`test-${Date.now()}`,field:"NAHWU",level:"ULA",status:"PUBLISHED",priceRupiah:150000}});courseId=c.id;
+},30000);
+afterAll(async()=>{await db.$disconnect();for(const ext of ["","-journal","-wal","-shm"])try{rmSync(testPath+ext);}catch{}});
+describe("order lifecycle with real SQLite transactions",()=>{
+  let id:string;
+  it("reuses the pending invoice",async()=>{const a=await createOrder(user,courseId,"081234567890");expect(a.ok).toBe(true);if(!a.ok)throw new Error(a.error);id=a.orderId;const b=await createOrder(user,courseId,"081234567890");expect(b.ok&&b.orderId).toBe(id);expect(await db.order.count({where:{userId:user.id,courseId,status:"PENDING"}})).toBe(1);});
+  it("database rejects duplicate pending orders",async()=>{await expect(db.order.create({data:{userId:user.id,courseId,amount:150000,whatsapp:"6281234567890",expiresAt:new Date(Date.now()+10000)}})).rejects.toMatchObject({code:"P2002"});});
+  it("rejects amount mismatch without granting access",async()=>{expect(await settleOrder(id,1)).toBe("amount_mismatch");expect(await db.enrollment.count({where:{userId:user.id,courseId}})).toBe(0);});
+  it("settles once and grants one enrollment",async()=>{expect(await settleOrder(id,150000)).toBe("paid");expect(await settleOrder(id,150000)).toBe("already");expect(await db.enrollment.count({where:{userId:user.id,courseId,status:"ACTIVE"}})).toBe(1);expect(await db.event.count({where:{userId:user.id,name:"order_paid"}})).toBe(1);});
+  it("reflects real expiry immediately",()=>{expect(effectiveStatus({status:"PENDING",expiresAt:new Date(0)})).toBe("EXPIRED");});
+  it("keeps an enrolled archived course in the user library",async()=>{await db.course.update({where:{id:courseId},data:{archivedAt:new Date()}});expect((await getUserProgress(user.id)).some(c=>c.courseId===courseId)).toBe(true);});
+});

@@ -1,0 +1,182 @@
+// Skema ini dibangun ulang dari PRD (bagian 6.4), karena skema production asli tidak tersedia.
+// Provider sqlite dipakai untuk pengembangan lokal. Untuk production ganti provider ke
+// "mysql" atau "postgresql" dan ubah kolom String JSON ke tipe Json bila diinginkan.
+// Enum disimpan sebagai String; nilai sah didefinisikan di src/lib/constants.ts.
+
+generator client {
+  provider      = "prisma-client-js"
+  // Tambahkan target server (mis. "debian-openssl-1.1.x") sesuai OpenSSL hosting.
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  name       String?
+  image      String?
+  role       String   @default("STUDENT") // STUDENT | TEACHER | ADMIN
+  whatsapp   String?
+  createdAt  DateTime @default(now())
+
+  teacherProfile TeacherProfile?
+  enrollments    Enrollment[]
+  orders         Order[]
+  progress       LessonProgress[]
+}
+
+model TeacherProfile {
+  id          String  @id @default(cuid())
+  userId      String? @unique
+  user        User?   @relation(fields: [userId], references: [id])
+  displayName String
+  bio         String  @default("")
+  alumni      String?
+  sanad       String?
+  photoUrl    String?
+  showOnHome  Boolean @default(true)
+
+  courses Course[]
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  titleAr     String?
+  description String   @default("")
+  field       String   // NAHWU | SHARAF | FIQIH | AQIDAH | HADITS | TAFSIR | LAINNYA
+  level       String   // ULA | WUSTHA | ULYA
+  status      String   @default("DRAFT") // DRAFT | PUBLISHED
+  priceRupiah Int      @default(0)
+  sortOrder   Int      @default(0)
+  archivedAt  DateTime?
+  teacherId   String?
+  teacher     TeacherProfile? @relation(fields: [teacherId], references: [id])
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  orders      Order[]
+
+  @@index([status, archivedAt])
+}
+
+model Lesson {
+  id            String  @id @default(cuid())
+  courseId      String
+  course        Course  @relation(fields: [courseId], references: [id])
+  title         String
+  position      Int
+  status        String  @default("DRAFT") // DRAFT | PUBLISHED
+  isFreePreview Boolean @default(false)
+  durationMin   Int?
+  videoUrl      String?
+  matan         String? // JSON: [{ ar: string, id: string }]
+  notesMd       String?
+  createdAt     DateTime @default(now())
+
+  progress LessonProgress[]
+
+  @@unique([courseId, position])
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  status    String   @default("ACTIVE") // ACTIVE | REVOKED
+  source    String   @default("FREE")   // FREE | PAID | MANUAL
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model LessonProgress {
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  lessonId     String
+  lesson       Lesson   @relation(fields: [lessonId], references: [id])
+  completedAt  DateTime?
+  lastOpenedAt DateTime @default(now())
+
+  @@id([userId, lessonId])
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id])
+  amount        Int
+  status        String   @default("PENDING") // PENDING | PAID | FAILED | EXPIRED | CANCELLED
+  whatsapp      String
+  mayarId       String?
+  payUrl        String?
+  expiresAt     DateTime
+  paidAt        DateTime?
+  note          String?
+  createdAt     DateTime @default(now())
+
+  @@index([userId, courseId, status])
+  @@index([status, expiresAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  actorName  String?
+  action     String
+  targetType String
+  targetId   String
+  before     String?
+  after      String?
+  reason     String?
+  createdAt  DateTime @default(now())
+
+  @@index([targetType, targetId])
+  @@index([createdAt])
+}
+
+model SiteContent {
+  key       String   @id
+  value     String   // JSON
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+model LegalDocument {
+  slug        String
+  version     Int
+  title       String
+  bodyMd      String
+  publishedAt DateTime?
+  updatedBy   String?
+
+  @@id([slug, version])
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  name      String   // course_view | checkout_start | order_paid
+  courseId  String?
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@index([name, createdAt])
+}
+
+model RateLimit {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+}

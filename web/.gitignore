@@ -1,0 +1,17 @@
+﻿node_modules
+.next
+.env
+.env.local
+.env*
+!.env.example
+/admin-desktop.png
+/admin-mobile.png
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+audit-dependencies.json
+test-results/
+.playwright-mcp/
+uploads/
+tsconfig.tsbuildinfo

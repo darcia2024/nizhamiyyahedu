@@ -1,0 +1,37 @@
+/* Token desain bersama (PRD bagian 7.3). Teks selalu >= 4,5:1; --muted-ui hanya untuk ikon/garis. */
+:root {
+  --brand: #1B4D3B;
+  --brand-dark: #143B2D;
+  --brand-soft: #E3EAE7;
+  --ink: #10231C;
+  --ink-2: #4F5C55;
+  --muted-text: #5B6660;
+  --muted-ui: #8A948F;
+  --ground: #F3F5F1;
+  --shell: #F7F8F6;
+  --surface: #FFFFFF;
+  --line: #D6DDD7;
+  --line-2: #E3E8E4;
+  --gold-text: #8A5C0A;
+  --gold: #C8A24A;
+  --cream: #F2E6C4;
+  --danger: #B3261E;
+  --danger-soft: #FBE9E7;
+  --success: #1D6B40;
+  --success-soft: #E2F0E6;
+  --warning: #8A5C0A;
+  --warning-soft: #F6EBD3;
+
+  --nahwu: #1B4D3B; --nahwu-soft: #E3EEE8; --nahwu-cover: #173F31;
+  --fiqih: #8A5C0A; --fiqih-soft: #F6EBD3; --fiqih-cover: #4A3410;
+  --aqidah: #3D5A9E; --aqidah-soft: #E4EAF7; --aqidah-cover: #22345E;
+
+  --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-pill: 999px;
+
+  --font-serif: var(--f-newsreader), Georgia, serif;
+  --font-body: var(--f-hanken), system-ui, sans-serif;
+  --font-app: var(--f-satoshi), system-ui, sans-serif;
+  --font-ar: var(--f-amiri), "Traditional Arabic", serif;
+
+  color-scheme: light;
+}

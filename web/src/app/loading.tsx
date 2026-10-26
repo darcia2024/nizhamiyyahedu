@@ -1,0 +1,1 @@
+export default function Loading(){return <main id="isi" className="gutter" style={{paddingBlock:64,maxWidth:1180,margin:"auto"}} role="status" aria-live="polite"><p className="eyebrow">Nizhamiyyah Edu</p><h1 className="serif">Menyiapkan halaman...</h1><p className="muted">Sebentar, materi sedang dimuat.</p></main>;}

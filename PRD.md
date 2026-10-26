@@ -9,6 +9,8 @@
 | **Sumber** | [`penawaran/index.html`](penawaran/index.html) (ruang lingkup, jadwal, biaya), [`audit/index.html`](audit/index.html) (37 temuan + bukti), [`desain-html/`](desain-html/) (prototipe visual) |
 | **Status** | Draf untuk disetujui klien sebelum DP |
 
+> Implementasi lokal dimulai pada 27 Oktober 2026 di folder `web/`. Status dan bukti pemeriksaan dicatat terpisah di [`docs/implementation-status.md`](docs/implementation-status.md). Checklist rilis production di dokumen ini belum dinyatakan selesai.
+
 > Dokumen ini adalah acuan tunggal pengerjaan. Kalau ada beda antara PRD ini dan penawaran, **penawaran menang untuk ruang lingkup/jadwal/biaya**, PRD menang untuk detail teknis dan perilaku.
 
 ---
