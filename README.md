@@ -7,6 +7,7 @@ Dokumen dan prototipe dari Dar Dev untuk belajarditimurtengah.com.
 | [`desain-html/`](desain-html/) | Prototipe HTML yang bisa diklik: beranda publik, dashboard siswa, katalog + checkout, dan halaman pelajaran |
 | [`penawaran/`](penawaran/) | Halaman penawaran: temuan, rencana 4 fase, jadwal 8 minggu, dan usulan biaya |
 | [`audit/`](audit/) | Laporan audit lengkap: 37 temuan beserta bukti dan cara memperbaikinya |
+| [`PRD.md`](PRD.md) | PRD pengerjaan: task per hari, checkpoint, logika, dan spesifikasi UI/UX |
 
 ## Membuka
 
