@@ -143,7 +143,7 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
     <h1>Hasil cek website <span class="dom">belajarditimurtengah.com,</span> dan <em>gimana saya benerinnya</em></h1>
     <div class="facts">
       <span class="fact"><b class="num">37</b> masalah ketemu</span>
-      <span class="fact"><b class="num">1–4</b> hari kerja</span>
+      <span class="fact"><b class="num">1-4</b> hari kerja</span>
       <span class="fact"><b class="num">Rp3,5 jt</b> semuanya</span>
     </div>
   </div>
@@ -153,59 +153,59 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
 <article class="letter">
 
   <nav class="mnav" aria-label="Lompat ke bagian">
-    <a href="#g1">Mendesak</a><a href="#g2">Calon siswa</a><a href="#g3">Siswa &amp; pengajar</a><a href="#g4">Belakang layar</a><a href="#jadwal">Jadwal</a><a href="#biaya">Biaya</a>
+    <a href="#g1">Mendesak</a><a href="#g2">Calon user</a><a href="#g3">User &amp; pengajar</a><a href="#g4">Belakang layar</a><a href="#g5">Tampilan baru</a><a href="#jadwal">Jadwal</a><a href="#biaya">Biaya</a>
   </nav>
 
   <div class="intro" style="margin-top:8px">
     <p>Assalamu'alaikum,</p>
     <p>Setelah saya audit dan pelajari website Nizhamiyyah Edu, mulai dari baca kode yang lagi jalan di server, coba semua halaman di laptop dan HP, sampai tes alur daftar sampai bayar, hasilnya ada 37 masalah. Kebanyakan kecil, tapi ada beberapa yang menurut saya harus diberesin secepatnya.</p>
-    <p>Saya tulis apa adanya di bawah. Tiap masalah ada penjelasan singkat kenapa itu jadi masalah, terus apa yang bakal saya kerjain. Semuanya bisa selesai paling cepat 1 hari, paling lama 4 hari kerja.</p>
+    <p>Saya tulis apa adanya di bawah. Tiap masalah ada penjelasan singkat kenapa itu jadi masalah, terus apa yang bakal saya kerjain. Di bagian akhir ada juga rencana desain ulang tampilannya. Semuanya, termasuk desain ulang itu, bisa selesai paling cepat 1 hari, paling lama 4 hari kerja.</p>
   </div>
 
   <section class="grp" id="g1" aria-labelledby="g1h">
     <div class="grp-head"><span class="n">01</span><h2 id="g1h">Yang harus diberesin duluan</h2><span class="tag">Mendesak</span></div>
-    <p class="grp-lead">Ini soal keamanan server sama uang siswa, jadi saya kerjain di hari pertama.</p>
+    <p class="grp-lead">Ini soal keamanan server sama uang user, jadi saya kerjain di hari pertama.</p>
     <ol class="items">
       <li class="item hot"><span class="k">1</span><h3>Server bisa dibobol tanpa login.</h3>
-        <p>Website ini jalan di Next.js 15.1.3 dan React 19.0.0. Desember 2025 kemarin ketemu celah di versi ini yang bikin orang luar bisa jalanin perintah di server tanpa login. Kalau sampai kejadian, isi database, kunci pembayaran Mayar, dan data siswa bisa diambil.</p>
+        <p>Website ini jalan di Next.js 15.1.3 dan React 19.0.0. Desember 2025 kemarin ketemu celah di versi ini yang bikin orang luar bisa jalanin perintah di server tanpa login. Kalau sampai kejadian, isi database, kunci pembayaran Mayar, dan data user bisa diambil.</p>
         <p class="fix"><b>Yang saya lakuin:</b> upgrade Next.js dan React ke versi yang udah diperbaiki, terus tes ulang semua halaman dan alur bayar biar gak ada yang rusak.</p></li>
-      <li class="item hot"><span class="k">2</span><h3>Kunci rahasia server ikut kesimpan di file build.</h3>
-        <p>File hasil build di hosting nyimpen kunci enkripsi. Siapa aja yang pernah pegang salinan file itu bisa malsuin permintaan ke server.</p>
-        <p class="fix"><b>Yang saya lakuin:</b> ganti semua kunci (login Google, Mayar, password database), terus build ulang pakai kunci enkripsi baru yang disimpan di pengaturan server.</p></li>
+      <li class="item hot"><span class="k">2</span><h3>Kunci rahasia server ikut kesimpan di file hasil kompilasi.</h3>
+        <p>File hasil kompilasi di hosting nyimpen kunci enkripsi. Siapa aja yang pernah pegang salinan file itu bisa malsuin permintaan ke server.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> ganti semua kunci (login Google, Mayar, password database), terus kompilasi ulang pakai kunci enkripsi baru yang disimpan di pengaturan server.</p></li>
       <li class="item hot"><span class="k">3</span><h3>Pengaman dasar dari browser belum dipasang.</h3>
-        <p>Website belum ngirim header kemanan sama sekali. Akibatnya halaman dashboard bisa ditampilin di dalam situs lain buat ngejebak orang ngeklik tombol tertentu.</p>
-        <p class="fix"><b>Yang saya lakuin:</b> pasang header keamanan standar dan sembunyiin info versi framework.</p></li>
+        <p>Website belum ngirim pengaturan kemanan sama sekali. Akibatnya halaman dashboard bisa ditampilin di dalam situs lain buat ngejebak orang ngeklik tombol tertentu.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> pasang pengaturan keamanan standar dan sembunyiin info versi Next.js yang kepake.</p></li>
       <li class="item hot"><span class="k">4</span><h3>Kursus bisa kehapus sekali klik.</h3>
-        <p>Tombol "Hapus" di Kelola Kursus langsung ngehapus tanpa nanya. Data pendaftaran siswa ikut kehapus, termasuk yang udah bayar. Satu salah klik bisa jadi komplain dan minta refund.</p>
-        <p class="fix"><b>Yang saya lakuin:</b> ganti jadi "arsipkan" pakai konfirmasi. Kursus yang masih punya siswa berbayar gak bisa dihapus permanen.</p></li>
+        <p>Tombol "Hapus" di Kelola Kursus langsung ngehapus tanpa nanya. Data pendaftaran user ikut kehapus, termasuk yang udah bayar. Satu salah klik bisa jadi komplain dan minta refund.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> ganti jadi "arsipkan" pakai konfirmasi. Kursus yang masih punya user berbayar gak bisa dihapus permanen.</p></li>
       <li class="item hot"><span class="k">5</span><h3>Pesan error gak pernah nyampe ke pengguna.</h3>
-        <p>Contohnya pas siswa salah ketik nomor WhatsApp waktu checkout. Pesan "nomor tidak valid" sebenernya udah ada di kode, tapi yang muncul malah layar error kosong. Dan ini kejadiannya pas di langkah pembayran.</p>
+        <p>Contohnya pas user salah ketik nomor WhatsApp waktu checkout. Pesan "nomor tidak valid" sebenernya udah ada di kode, tapi yang muncul malah layar error kosong. Dan ini kejadiannya pas di langkah pembayran.</p>
         <p class="fix"><b>Yang saya lakuin:</b> tampilin pesan error di bawah kolom yang salah di semua form, dan siapin halaman error bahasa Indonesia buat kejadian yang gak terduga.</p></li>
     </ol>
   </section>
 
   <section class="grp" id="g2" aria-labelledby="g2h">
-    <div class="grp-head"><span class="n">02</span><h2 id="g2h">Yang bikin calon siswa batal daftar</h2></div>
+    <div class="grp-head"><span class="n">02</span><h2 id="g2h">Yang bikin calon user batal daftar</h2></div>
     <p class="grp-lead">Ini yang paling ngaruh ke jumlah pendaftar.</p>
     <ol class="items">
       <li class="item"><span class="k">6</span><h3>Enam tombol utama di beranda gak jalan buat pengunjung baru.</h3>
         <p>"Jelajahi Katalog Kursus", "Masuk ke Portal", dan empat tombol lain ngarah ke halaman yang butuh login. Pengunjung yang belum login cuma dibalikin ke beranda tanpa penjelasan. Saya udah coba sendiri, rasanya kayak websitenya rusak.</p>
-        <p class="fix"><b>Yang saya lakuin:</b> buka katalog buat umum, lengkap sama pencarian dan filter bidang ilmu. Login baru diminta pas daftar, dan habis login siswa balik lagi ke kursus yang tadi dia pilih.</p></li>
-      <li class="item"><span class="k">7</span><h3>Calon siswa gak bisa liat isi kursus sebelum bayar.</h3>
+        <p class="fix"><b>Yang saya lakuin:</b> buka katalog buat umum, lengkap sama pencarian dan filter bidang ilmu. Login baru diminta pas daftar, dan habis login user balik lagi ke kursus yang tadi dia pilih.</p></li>
+      <li class="item"><span class="k">7</span><h3>Calon user gak bisa liat isi kursus sebelum bayar.</h3>
         <p>Di katalog cuma ada judul, deskripsi singkat, dan harga. Silabus sama pengajarnya baru keliatan setelah terdaftar.</p>
         <p class="fix"><b>Yang saya lakuin:</b> bikin halaman detail tiap kursus yang bisa dibuka siapa aja. Isinya daftar pelajaran, profil pengajar, harga, dan satu pelajaran yang bisa ditonton gratis.</p></li>
       <li class="item"><span class="k">8</span><h3>Belum ada kebijakan privasi, syarat dan ketentuan, sama kebijakan refund.</h3>
-        <p>Website ini nyimpen email dan nomor WhatsApp siswa. UU Pelindungan Data Pribadi wajibin pemberitahuan soal itu, dan payment gateway biasanya juga minta halaman refund dan kontak yang jelas.</p>
+        <p>Website ini nyimpen email dan nomor WhatsApp user. UU Pelindungan Data Pribadi wajibin pemberitahuan soal itu, dan penyedia pembayaran biasanya juga minta halaman refund dan kontak yang jelas.</p>
         <p class="fix"><b>Yang saya lakuin:</b> bikin keempat halaman itu (privasi, syarat, refund, kontak), terus saya taruh linknya di footer dan di langkah pembayaran. Isinya bisa dari tim Nizhamiyyah, atau saya siapin drafnya buat dicek.</p></li>
       <li class="item"><span class="k">9</span><h3>Beranda belum nunjukin apa yang sebenernya diajarin.</h3>
         <p>Isinya banyak klaim kayak "silabus mu'tamad" dan "kitab muktabar", tapi gak ada nama kitab, nama pengajar, atau contoh materi. Di HP, tombol masuk juga ketutup di dalam menu.</p>
         <p class="fix"><b>Yang saya lakuin:</b> tata ulang beranda biar langsung nampilin jenjang kitab, pengajar, dan katalog. Tombol masuk saya bikin selalu keliatan di HP.</p></li>
       <li class="item"><span class="k">10</span><h3>Status pembayaran yang ditampilin gak sesuai kenyataan.</h3>
-        <p>Habis bayar, siswa selalu liat tulisan "sedang diproses", padahal bisa aja udah lunas atau malah gagal. Tagihan lama juga gak pernah kedaluwarsa, dan kalau tombol bayar diklik dua kali bisa muncul dua tagihan.</p>
+        <p>Habis bayar, user selalu liat tulisan "sedang diproses", padahal bisa aja udah lunas atau malah gagal. Tagihan lama juga gak pernah kedaluwarsa, dan kalau tombol bayar diklik dua kali bisa muncul dua tagihan.</p>
         <p class="fix"><b>Yang saya lakuin:</b> tampilin status yang asli (menunggu, lunas, atau kedaluwarsa) dengan tombol yang pas, kasih batas waktu di tagihan, dan cegah tagihan dobel.</p></li>
       <li class="item"><span class="k">11</span><h3>Jalur notifikasi pembayaran dari Mayar belum dikunci.</h3>
-        <p>Pengecekan pembayarannya sendiri udah bener karena selalu dikonfirmasi ulang ke Mayar. Masalahnya, siapa aja bisa ngirim permintaan ke alamat itu terus-terusan sampai kuota API abis.</p>
-        <p class="fix"><b>Yang saya lakuin:</b> cek token dari Mayar di tiap permintaan, batasi jumlah permintaan, dan gak nampilin detail error ke luar.</p></li>
+        <p>Pengecekan pembayarannya sendiri udah bener karena selalu dikonfirmasi ulang ke Mayar. Masalahnya, siapa aja bisa ngirim permintaan ke alamat itu terus-terusan sampai kuota layanan Mayar abis.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> cek kode verifikasi dari Mayar di tiap permintaan, batasi jumlah permintaan, dan gak nampilin detail error ke luar.</p></li>
       <li class="item"><span class="k">12</span><h3>Sebagian teks susah dibaca.</h3>
         <p>Warna emas buat judul kecil dan harga terlalu pucat di atas latar putih. Yang pakai keyboard juga gak bisa liat tombol mana yang lagi dipilih.</p>
         <p class="fix"><b>Yang saya lakuin:</b> ganti warna teksnya biar kontrasnya cukup, dan kasih garis penanda di tombol yang lagi aktif.</p></li>
@@ -213,17 +213,17 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
   </section>
 
   <section class="grp" id="g3" aria-labelledby="g3h">
-    <div class="grp-head"><span class="n">03</span><h2 id="g3h">Yang ganggu siswa dan pengajar yang udah terdaftar</h2></div>
+    <div class="grp-head"><span class="n">03</span><h2 id="g3h">Yang ganggu user dan pengajar yang udah terdaftar</h2></div>
     <ol class="items">
-      <li class="item"><span class="k">13</span><h3>Dashboard siswa belum bantu buat lanjut belajar.</h3>
-        <p>Angka "Kursus Aktif" selalu mentok di 3 berapapun jumlah kursusnya. Ada tiga menu "Segera Hadir" yang belum bisa dipakai, dan di Profil muncul karakter rusak "â€”" sama ID internal yang gak ada gunanya buat siswa.</p>
-        <p class="fix"><b>Yang saya lakuin:</b> tata ulang dashboard biar siswa bisa langsung lanjut dari pelajaran terakhir dan liat progres tiap kitab. Angka yang salah dan karakter rusak saya benerin, menu yang belum ada saya sembunyiin.</p></li>
+      <li class="item"><span class="k">13</span><h3>Dashboard user belum bantu buat lanjut belajar.</h3>
+        <p>Angka "Kursus Aktif" selalu mentok di 3 berapapun jumlah kursusnya. Ada tiga menu "Segera Hadir" yang belum bisa dipakai, dan di Profil muncul karakter rusak sama ID internal yang gak ada gunanya buat user.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> tata ulang dashboard biar user bisa langsung lanjut dari pelajaran terakhir dan liat progres tiap kitab. Angka yang salah dan karakter rusak saya benerin, menu yang belum ada saya sembunyiin.</p></li>
       <li class="item"><span class="k">14</span><h3>Materi pelajaran kehilangan format.</h3>
         <p>Baris baru, huruf tebal, dan daftar gak tampil. Teks Arab juga gak tampil dari kanan ke kiri, padahal matan kitab itu inti tiap pelajaran.</p>
         <p class="fix"><b>Yang saya lakuin:</b> dukung format teks sederhana, plus blok teks Arab yang rapi dari kanan ke kiri.</p></li>
       <li class="item"><span class="k">15</span><h3>Alat buat pengajar masih minim.</h3>
-        <p>Urutan pelajaran gak bisa diubah, harga kursus gak bisa diedit setelah dibuat, kursus baru langsung tayang padahal masih kosong, dan pengajar gak bisa liat siapa aja siswanya. Pengajar dan admin yang buka pelajaran juga bakal ketemu error kalau klik "Tandai Selesai".</p>
-        <p class="fix"><b>Yang saya lakuin:</b> tambahin pengurutan pelajaran, edit harga, status draf, daftar siswa sama progresnya, dan mode pratinjau buat pengajar.</p></li>
+        <p>Urutan pelajaran gak bisa diubah, harga kursus gak bisa diedit setelah dibuat, kursus baru langsung tayang padahal masih kosong, dan pengajar gak bisa liat siapa aja usernya. Pengajar dan admin yang buka pelajaran juga bakal ketemu error kalau klik "Tandai Selesai".</p>
+        <p class="fix"><b>Yang saya lakuin:</b> tambahin pengurutan pelajaran, edit harga, status draf, daftar user sama progresnya, dan mode pratinjau buat pengajar.</p></li>
       <li class="item"><span class="k">16</span><h3>Perubahan peran pengguna gak tercatat.</h3>
         <p>Admin bisa nurunin admin lain sekali klik, dan gak ada catatan siapa ngubah apa.</p>
         <p class="fix"><b>Yang saya lakuin:</b> minta konfirmasi tiap ganti peran, cegah admin terakhir diturunin, dan simpan catatan aktivitasnya.</p></li>
@@ -232,29 +232,46 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
 
   <section class="grp" id="g4" aria-labelledby="g4h">
     <div class="grp-head"><span class="n">04</span><h2 id="g4h">Yang perlu dirapiin di belakang layar</h2></div>
-    <p class="grp-lead">Gak keliatan langsung sama siswa, tapi ngaruh ke kecepatan website dan seberapa gampang dirawat nanti.</p>
+    <p class="grp-lead">Gak keliatan langsung sama user, tapi ngaruh ke kecepatan website dan seberapa gampang dirawat nanti.</p>
     <div class="minor">
-      <p>Beranda sekarang ngambil data dari database tiap kali ada yang buka, padahal isinya jarang berubah. Data pengguna juga dicari dua sampai tiga kali di tiap halaman. Beranda bakal saya bikin bisa disimpan sementara (cache), dan pengambilan datanya saya rapiin biar halaman lebih cepet kebuka.</p>
+      <p>Beranda sekarang ngambil data dari database tiap kali ada yang buka, padahal isinya jarang berubah. Data pengguna juga dicari dua sampai tiga kali di tiap halaman. Beranda bakal saya bikin bisa disimpan sementara, dan pengambilan datanya saya rapiin biar halaman lebih cepet kebuka.</p>
       <p style="margin-top:12px">Terus ada beberapa perbaikan kecil yang saya kerjain sekalian:</p>
       <ul>
         <li>Validasi semua isian form, termasuk batas panjang teks dan batas harga.</li>
         <li>Alamat video pelajaran cuma boleh dari YouTube atau file video langsung, biar situs lain gak bisa diselipin.</li>
         <li>Pengecekan hak akses dikumpulin di satu tempat biar gak ada halaman yang kelewat.</li>
         <li>Halaman 404 dan error bahasa Indonesia, gantiin layar hitam bawaan.</li>
-        <li>Favicon, gambar pratinjau pas link dibagiin di WhatsApp, dan sitemap buat Google.</li>
+        <li>Ikon di tab browser, gambar pratinjau pas link dibagiin di WhatsApp, dan peta situs buat Google.</li>
         <li>Font dimuat dari server sendiri, dan kode tampilannya dirapiin.</li>
-        <li>Alamat kursus yang judulnya huruf Arab, alamat website yang ketanam pas build, halaman status server yang kebuka, dan tombol yang kekecilan di HP.</li>
+        <li>Alamat kursus yang judulnya huruf Arab, alamat website yang ketanam pas kompilasi, halaman status server yang kebuka, dan tombol yang kekecilan di HP.</li>
       </ul>
     </div>
   </section>
 
+  <section class="grp" id="g5" aria-labelledby="g5h">
+    <div class="grp-head"><span class="n">05</span><h2 id="g5h">Desain ulang tampilan dan alur pakainya</h2></div>
+    <p class="grp-lead">Selain benerin masalah di atas, tampilannya juga saya rombak biar enak dipakai di laptop maupun HP. Rancangannya udah saya siapin, jadi tinggal dipasang. Contohnya bisa dibuka <a href="../desain-html/index.html">di sini</a>.</p>
+    <ol class="items">
+      <li class="item"><span class="k">17</span><h3>Beranda yang langsung nunjukin isinya.</h3>
+        <p>Pengunjung langsung liat jenjang kitab dari tingkat dasar sampai lanjutan, katalog kursus, profil pengajar, dan tanya jawab singkat. Tombol masuk selalu keliatan, dan bagian bawah halaman ada link ke kebijakan privasi, syarat, refund, dan kontak.</p></li>
+      <li class="item"><span class="k">18</span><h3>Katalog dan pendaftaran dalam satu layar.</h3>
+        <p>Tiap kursus punya kartu dengan sampul judul kitab, bidang ilmu, jenjang, pengajar, dan harga. Begitu kartunya diklik, ringkasan dan total biayanya muncul di samping, lengkap sama kolom nomor WhatsApp. Kalau ada isian yang salah, pesannya langsung muncul di bawah kolom itu.</p></li>
+      <li class="item"><span class="k">19</span><h3>Dashboard yang ngebantu user lanjut belajar.</h3>
+        <p>Begitu masuk, user langsung liat pelajaran terakhir yang dia buka, progres tiap kitab, pelajaran berikutnya, dan pengajarnya. Menu yang belum ada fungsinya gak ditampilin lagi.</p></li>
+      <li class="item"><span class="k">20</span><h3>Halaman pelajaran yang fokus ke kitab.</h3>
+        <p>Video di atas, terus teks Arab kitab per kalimat lengkap sama terjemahnya, lalu catatan dari pengajar. Di sampingnya ada daftar pelajaran dan progres, jadi user tau udah sampai mana.</p></li>
+      <li class="item"><span class="k">21</span><h3>Huruf, warna, dan ukuran yang lebih nyaman.</h3>
+        <p>Huruf baru yang lebih bersih buat tampilan, huruf khusus buat teks Arab, warna yang gampang dibaca, dan tombol yang cukup gede buat dipencet di HP. Layout laptop dan HP saya atur masing-masing biar dua-duanya rapi.</p></li>
+    </ol>
+  </section>
+
   <section class="grp" id="jadwal" aria-labelledby="jh">
-    <div class="grp-head"><span class="n">05</span><h2 id="jh">Jadwalnya, 1 sampai 4 hari</h2></div>
-    <p class="grp-lead">Paling cepat 1 hari kalau semua akses udah siap dari awal, paling lama 4 hari kerja. Tiap hari saya kabarin progresnya, dan semua perubahan masuk lewat pull request dulu sebelum naik ke website.</p>
+    <div class="grp-head"><span class="n">06</span><h2 id="jh">Jadwalnya, 1 sampai 4 hari</h2></div>
+    <p class="grp-lead">Paling cepat 1 hari kalau semua akses udah siap dari awal, paling lama 4 hari kerja. Tiap hari saya kabarin progresnya, dan semua perubahan saya ajuin dulu buat dicek sebelum naik ke website.</p>
     <div class="days">
-      <div class="day first"><b>Hari 1</b><span>Upgrade framework, ganti semua kunci, pasang header keamanan, arsip kursus, dan pesan error di semua form.</span></div>
-      <div class="day"><b>Hari 2</b><span>Katalog publik, halaman detail kursus, halaman legal, dan beranda baru.</span></div>
-      <div class="day"><b>Hari 3</b><span>Status pembayaran, jalur notifikasi Mayar, dashboard siswa, halaman pelajaran, dan teks Arab.</span></div>
+      <div class="day first"><b>Hari 1</b><span>Upgrade Next.js dan React, ganti semua kunci, pasang pengaturan keamanan, arsip kursus, dan pesan error di semua form.</span></div>
+      <div class="day"><b>Hari 2</b><span>Katalog publik, halaman detail kursus, halaman legal, dan tampilan baru beranda serta katalog.</span></div>
+      <div class="day"><b>Hari 3</b><span>Status pembayaran, jalur notifikasi Mayar, dan tampilan baru dashboard serta halaman pelajaran.</span></div>
       <div class="day"><b>Hari 4</b><span>Alat pengajar, catatan admin, perapian belakang layar, tes bareng tim, panduan, dan rilis.</span></div>
     </div>
   </section>
@@ -262,7 +279,7 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
   <div class="close" id="biaya">
     <div class="price"><b class="num">Rp3,5 juta</b><span>buat semua yang ditulis di atas</span></div>
     <p>Dibayar setelah semuanya selesai dan udah dicek sama tim Nizhamiyyah.</p>
-    <p>Buat mulai, saya butuh akses ke repository kode, panel hosting, akun Mayar (mode sandbox), dan Google Cloud Console. Semua perubahan masuk lewat pull request, jadi tim Nizhamiyyah bisa liat dan setujuin dulu sebelum ada yang berubah di website.</p>
+    <p>Buat mulai, saya butuh akses ke kode website, panel hosting, akun Mayar (mode uji coba), dan Google Cloud Console. Semua perubahan saya ajuin dulu, jadi tim Nizhamiyyah bisa liat dan setujuin dulu sebelum ada yang berubah di website.</p>
     <p>Kalo ada yang mau ditanyain atau mau dibahas dulu, kabarin aja ya.</p>
     <p class="sign">Wassalamu'alaikum,<br><b>Dar Dev</b></p>
     <p class="note">Detail teknis tiap masalah, lengkap sama buktinya di kode, ada di <a href="../audit/">laporan audit</a>.</p>
@@ -274,7 +291,7 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
     <dl>
       <dt>Masalah</dt><dd class="num">37</dd>
       <dt>Mendesak</dt><dd class="num">5</dd>
-      <dt>Waktu kerja</dt><dd class="num">1–4 hari</dd>
+      <dt>Waktu kerja</dt><dd class="num">1-4 hari</dd>
     </dl>
     <div class="big"><span>Biaya</span><b class="num">Rp3,5 jt</b></div>
   </div>
@@ -282,10 +299,11 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
     <h4>Isi surat</h4>
     <ul class="toc">
       <li><a href="#g1"><span>Yang harus diberesin duluan</span><small>5</small></a></li>
-      <li><a href="#g2"><span>Bikin calon siswa batal daftar</span><small>7</small></a></li>
-      <li><a href="#g3"><span>Ganggu siswa dan pengajar</span><small>4</small></a></li>
+      <li><a href="#g2"><span>Bikin calon user batal daftar</span><small>7</small></a></li>
+      <li><a href="#g3"><span>Ganggu user dan pengajar</span><small>4</small></a></li>
       <li><a href="#g4"><span>Rapiin di belakang layar</span><small>8</small></a></li>
-      <li><a href="#jadwal"><span>Jadwal pengerjaan</span><small>1–4 hari</small></a></li>
+      <li><a href="#g5"><span>Desain ulang tampilan</span><small>5</small></a></li>
+      <li><a href="#jadwal"><span>Jadwal pengerjaan</span><small>1-4 hari</small></a></li>
       <li><a href="#biaya"><span>Biaya dan cara mulai</span><small></small></a></li>
     </ul>
   </div>
@@ -293,13 +311,13 @@ section.grp{margin-top:52px;scroll-margin-top:24px}
 </div>
 
 <div class="mbar" role="region" aria-label="Ringkasan biaya">
-  <span><b>Rp3,5 juta · 1–4 hari</b>37 masalah diberesin</span>
+  <span><b>Rp3,5 juta, 1-4 hari</b>37 masalah plus desain ulang</span>
   <a href="#biaya">Lihat biaya</a>
 </div>
 
 <script>
 (function(){
-  var ids=['g1','g2','g3','g4','jadwal','biaya'];
+  var ids=['g1','g2','g3','g4','g5','jadwal','biaya'];
   var links=[].slice.call(document.querySelectorAll('.toc a, .mnav a'));
   function mark(id){
     links.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href')==='#'+id); });
