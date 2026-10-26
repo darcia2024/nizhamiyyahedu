@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit Nizhamiyyah Edu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: satu kolom baca ~72ch, ringkasan di atas, temuan sebagai daftar berkode dengan strip keparahan */
+:root{
+  --bg:#f4f6f3; --surface:#ffffff; --ink:#12241d; --ink-2:#3d5249; --line:#d9e0db;
+  --brand:#1d5a44; --brand-soft:#e3eee8;
+  --crit:#a3271c; --crit-bg:#fbe9e6; --high:#a8520b; --high-bg:#fcefe1;
+  --med:#7a6100; --med-bg:#f8f1d4; --low:#36606f; --low-bg:#e5eff2; --good:#1d6b40; --good-bg:#e2f2e8;
+  --code-bg:#eef2ef;
+  --f-display:"Newsreader",Georgia,"Times New Roman",serif;
+  --f-body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1714; --surface:#16211c; --ink:#e6eee9; --ink-2:#a9bab1; --line:#2a3a33;
+  --brand:#7cc4a5; --brand-soft:#1d2e27;
+  --crit:#ff8f80; --crit-bg:#3a1a16; --high:#f4ac6a; --high-bg:#3a2513; --med:#e3c757; --med-bg:#332c10;
+  --low:#8cc3d6; --low-bg:#16303a; --good:#7fd6a2; --good-bg:#15301f; --code-bg:#1c2a24; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1714; --surface:#16211c; --ink:#e6eee9; --ink-2:#a9bab1; --line:#2a3a33;
+  --brand:#7cc4a5; --brand-soft:#1d2e27;
+  --crit:#ff8f80; --crit-bg:#3a1a16; --high:#f4ac6a; --high-bg:#3a2513; --med:#e3c757; --med-bg:#332c10;
+  --low:#8cc3d6; --low-bg:#16303a; --good:#7fd6a2; --good-bg:#15301f; --code-bg:#1c2a24; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:860px;margin:0 auto;padding-block:56px 96px}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.1rem,5vw,3.2rem);line-height:1.1;letter-spacing:-.01em}
+h2{font-size:1.75rem;line-height:1.2;margin-top:64px;padding-top:24px;border-top:1px solid var(--line)}
+h3{font-size:1.2rem;line-height:1.3}
+p{margin:0}
+.eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+.lede{font-size:1.125rem;color:var(--ink-2);max-width:65ch}
+.stack{display:flex;flex-direction:column;gap:16px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:.875rem;color:var(--ink-2)}
+code,.mono{font-family:var(--f-mono);font-size:.85em;background:var(--code-bg);padding:.1em .35em;border-radius:4px;overflow-wrap:anywhere}
+pre{font-family:var(--f-mono);font-size:.8rem;line-height:1.55;background:var(--code-bg);padding:14px 16px;border-radius:8px;overflow-x:auto;margin:0}
+pre code{background:none;padding:0}
+a{color:var(--brand)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+.tally{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:8px}
+.tally div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.tally b{display:block;font:600 2rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.tally span{font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.t-crit b,.t-crit span{color:var(--crit)} .t-high b,.t-high span{color:var(--high)}
+.t-med b,.t-med span{color:var(--med)} .t-low b,.t-low span{color:var(--low)}
+@media (max-width:560px){.tally{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.callout{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+.callout ol{margin:8px 0 0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:5}
+.filters button{font:600 .85rem var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;min-height:40px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.finding{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px 18px 22px;display:grid;gap:10px;position:relative;overflow:hidden}
+.finding::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--sev)}
+.finding[data-sev="kritis"]{--sev:var(--crit);--sev-bg:var(--crit-bg)}
+.finding[data-sev="tinggi"]{--sev:var(--high);--sev-bg:var(--high-bg)}
+.finding[data-sev="sedang"]{--sev:var(--med);--sev-bg:var(--med-bg)}
+.finding[data-sev="rendah"]{--sev:var(--low);--sev-bg:var(--low-bg)}
+.f-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.f-id{font:500 .8rem var(--f-mono);color:var(--ink-2)}
+.chip{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sev);background:var(--sev-bg);border-radius:4px;padding:2px 8px}
+.f-head h3{flex:1 1 100%;font-size:1.15rem}
+.finding dl{margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:6px 14px;font-size:.95rem}
+.finding dt{font-weight:600;color:var(--ink-2)}
+.finding dd{margin:0;min-width:0}
+@media (max-width:560px){.finding dl{grid-template-columns:minmax(0,1fr)}.finding dt{margin-top:6px}}
+.list{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+
+.good{background:var(--good-bg);border-radius:12px;padding:18px 22px}
+.good ul{margin:8px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+.good h3{color:var(--good)}
+
+.road{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.road section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.road h3{font-size:1.05rem}
+.road ul{margin:8px 0 0;padding-left:1.1em;font-size:.92rem;display:flex;flex-direction:column;gap:4px}
+@media (max-width:720px){.road{grid-template-columns:minmax(0,1fr)}}
+.small{font-size:.875rem;color:var(--ink-2)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header class="stack">
+  <p class="eyebrow">Laporan audit · belajarditimurtengah.com</p>
+  <h1>Audit Nizhamiyyah Edu</h1>
+  <p class="lede">Audit keamanan, pembayaran, bug, UX, aksesibilitas, performa, dan kualitas kode dari build production yang diunduh dari hosting. Source <code>.tsx</code> tidak ikut di folder ini, jadi semua temuan dibaca dari kode hasil kompilasi di <code>.next/</code> dan dari pengujian langsung di localhost.</p>
+  <div class="meta"><span>26 Oktober 2026</span><span>Next.js 15.1.3 · React 19.0.0 · Prisma 6.1.0 · NextAuth 5 beta</span><span>15 rute, 13 server action</span></div>
+</header>
+
+<h2>Ringkasan</h2>
+<div class="tally" aria-label="Jumlah temuan per tingkat keparahan">
+  <div class="t-crit"><b id="n-kritis">1</b><span>Kritis</span></div>
+  <div class="t-high"><b id="n-tinggi">0</b><span>Tinggi</span></div>
+  <div class="t-med"><b id="n-sedang">0</b><span>Sedang</span></div>
+  <div class="t-low"><b id="n-rendah">0</b><span>Rendah</span></div>
+</div>
+<div class="callout" style="margin-top:16px">
+  <h3>Kerjakan minggu ini</h3>
+  <ol>
+    <li><b>Upgrade Next.js dan React</b> ke rilis yang sudah ditambal (K1). Versi yang dipakai sekarang punya celah eksekusi kode jarak jauh tanpa login.</li>
+    <li><b>Ganti semua secret</b> (AUTH_SECRET, MAYAR_API_KEY, password database) dan build ulang supaya kunci enkripsi server action juga baru (K2).</li>
+    <li><b>Tambah konfirmasi dan arsip</b> untuk hapus kursus, supaya siswa yang sudah bayar tidak kehilangan akses (P1).</li>
+    <li><b>Buka katalog untuk publik</b> dan perbaiki CTA landing yang sekarang mental balik ke beranda (U1, U2).</li>
+    <li><b>Tampilkan pesan error</b> dari server action ke pengguna, jangan biarkan jadi halaman error generik (B1).</li>
+  </ol>
+</div>
+
+<div class="good" style="margin-top:16px">
+  <h3>Yang sudah bagus</h3>
+  <ul>
+    <li>Webhook Mayar tidak percaya payload mentah. Transaksi dicek ulang ke API Mayar (server-to-server), lalu nominal, mata uang, dan <code>extraData</code> dicocokkan, dan semuanya ditulis dalam satu transaksi database. Prosesnya juga idempoten.</li>
+    <li>Setiap server action mengecek peran dan kepemilikan kursus (<code>createdById</code>). Admin tidak bisa mengubah perannya sendiri.</li>
+    <li>Siswa kursus berbayar tidak bisa membatalkan pendaftaran sendiri. Kursus gratis dan berbayar dipisah dengan jelas.</li>
+    <li>Video YouTube memakai <code>youtube-nocookie.com</code>. Ada <code>lang="id"</code>, <code>aria-label</code> di tombol ikon, dan dukungan <code>prefers-reduced-motion</code>.</li>
+    <li>Atribut <code>data-testid</code> sudah konsisten, jadi siap untuk tes end-to-end.</li>
+  </ul>
+</div>
+
+<h2 id="temuan">Semua temuan</h2>
+<div class="filters" role="group" aria-label="Saring temuan">
+  <button type="button" data-f="all" aria-pressed="true">Semua</button>
+  <button type="button" data-f="kritis" aria-pressed="false">Kritis</button>
+  <button type="button" data-f="tinggi" aria-pressed="false">Tinggi</button>
+  <button type="button" data-f="sedang" aria-pressed="false">Sedang</button>
+  <button type="button" data-f="rendah" aria-pressed="false">Rendah</button>
+</div>
+
+<!-- KEAMANAN -->
+<h2 style="margin-top:32px">Keamanan</h2>
+<div class="list">
+
+<article class="finding" data-sev="kritis">
+  <div class="f-head"><span class="f-id">K1</span><span class="chip">Kritis</span><h3>Next.js 15.1.3 dan React 19.0.0 kena celah RCE di React Server Components</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>node_modules/next</code> 15.1.3 dan <code>react</code> 19.0.0. App ini memakai App Router dan Server Actions, jadi termasuk yang terdampak advisori Desember 2025 (CVE-2025-55182 / CVE-2025-66478, "React2Shell"). Rilis 15.1.x berikutnya juga menambal celah DoS dan kebocoran source di protokol yang sama.</dd>
+    <dt>Dampak</dt><dd>Request yang dirancang khusus bisa menjalankan kode di server tanpa login. Dari situ penyerang bisa membaca <code>DATABASE_URL</code>, <code>MAYAR_API_KEY</code>, dan <code>AUTH_SECRET</code>.</dd>
+    <dt>Perbaikan</dt><dd>Upgrade ke patch terbaru di jalur 15.x (minimal versi yang disebut di advisori Next.js untuk 15.1, atau langsung ke 15.5.x terbaru) dan React 19 yang sudah ditambal. Setelah itu ganti semua secret dan periksa log server sejak Desember 2025, karena server mungkin sudah sempat terekspos.
+<pre><code>npm i next@15 react@19 react-dom@19   # lalu cek versi patch di advisori resmi
+npx fix-react2shell-next              # alat cek dari Vercel, kalau tersedia</code></pre></dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="tinggi">
+  <div class="f-head"><span class="f-id">K2</span><span class="chip">Tinggi</span><h3>Kunci enkripsi build ikut terbawa di folder yang diunduh</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>.next/server/server-reference-manifest.json</code> berisi <code>encryptionKey</code>. <code>.next/prerender-manifest.json</code> berisi <code>previewModeSigningKey</code> dan <code>previewModeEncryptionKey</code>.</dd>
+    <dt>Dampak</dt><dd>Siapa pun yang memegang salinan folder ini bisa membuka atau memalsukan data closure server action selama build yang sama masih jalan di production.</dd>
+    <dt>Perbaikan</dt><dd>Build ulang (kunci baru dibuat otomatis), atau tetapkan <code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code> lewat env di hosting. Jangan bagikan folder <code>.next</code>. Kalau butuh bantuan, bagikan repo source-nya saja.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="tinggi">
+  <div class="f-head"><span class="f-id">K3</span><span class="chip">Tinggi</span><h3>Tidak ada security header sama sekali</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Response <code>GET /</code> hanya membawa <code>X-Powered-By: Next.js</code>. Tidak ada CSP, HSTS, <code>X-Frame-Options</code>/<code>frame-ancestors</code>, <code>Referrer-Policy</code>, <code>X-Content-Type-Options</code>, maupun <code>Permissions-Policy</code>.</dd>
+    <dt>Dampak</dt><dd>Halaman dashboard bisa dibingkai di situs lain (clickjacking) untuk menjebak klik di tombol seperti "Simpan" peran atau "Hapus". Versi framework juga terlihat oleh pemindai otomatis.</dd>
+    <dt>Perbaikan</dt><dd>
+<pre><code>// next.config.js
+poweredByHeader: false,
+async headers() {
+  return [{ source: "/(.*)", headers: [
+    { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+    { key: "X-Frame-Options", value: "DENY" },
+    { key: "X-Content-Type-Options", value: "nosniff" },
+    { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+    { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+    { key: "Content-Security-Policy", value: "frame-ancestors 'none'; frame-src https://www.youtube-nocookie.com" },
+  ]}];
+}</code></pre></dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">K4</span><span class="chip">Sedang</span><h3>Webhook Mayar tanpa autentikasi pengirim dan tanpa rate limit</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>src/app/api/webhooks/mayar/route.ts</code> menerima POST dari siapa saja. Setiap payload dengan <code>orderId</code> valid memicu panggilan ke API Mayar. Response juga membocorkan detail, misalnya "Payment amount mismatch" atau "Order is cancelled".</dd>
+    <dt>Dampak</dt><dd>Tidak bisa dipakai untuk membuka kursus gratis, karena verifikasi ke Mayar menahannya. Tapi endpoint ini bisa dibanjiri request sampai kuota API Mayar habis dan log penuh, dan status order bisa ditebak dari pesan errornya.</dd>
+    <dt>Perbaikan</dt><dd>Verifikasi token webhook dari dashboard Mayar (header atau secret di URL webhook), tolak lebih awal kalau tidak cocok, pasang rate limit per IP, dan balas dengan pesan generik (<code>200 {received:true}</code>). Detailnya cukup ditulis di log.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">K5</span><span class="chip">Sedang</span><h3>Validasi URL video longgar, iframe bisa memuat domain lain</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Halaman pelajaran memakai <code>hostname.includes("youtube.com")</code>. Untuk path <code>/embed/</code>, URL aslinya dipakai mentah-mentah sebagai <code>src</code> iframe tanpa <code>sandbox</code>. Contoh: <code>https://youtube.com.situs-palsu.id/embed/x</code> lolos.</dd>
+    <dt>Dampak</dt><dd>Akun pengajar (atau akun pengajar yang dibobol) bisa menyisipkan halaman phishing seperti "login ulang Google" di dalam pelajaran.</dd>
+    <dt>Perbaikan</dt><dd>Cocokkan hostname secara persis (<code>youtube.com</code>, <code>www.youtube.com</code>, <code>m.youtube.com</code>, <code>youtu.be</code>), ambil ID video saja, lalu bangun ulang URL <code>youtube-nocookie.com/embed/{id}</code>. Tambahkan <code>sandbox="allow-scripts allow-same-origin allow-presentation"</code> dan <code>referrerPolicy</code>.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">K6</span><span class="chip">Rendah</span><h3>Input server action tanpa skema dan batas panjang</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Judul, deskripsi, dan materi pelajaran tidak punya batas panjang. Harga hanya <code>Math.max(0, floor)</code> tanpa batas atas, jadi angka di atas 2.147.483.647 membuat Prisma error (tipe Int).</dd>
+    <dt>Perbaikan</dt><dd>Validasi dengan <code>zod</code> di setiap action: judul maksimal 120 karakter, deskripsi 1.000, materi 50.000, dan harga antara 0 sampai 50.000.000.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">K7</span><span class="chip">Rendah</span><h3>Perubahan peran tanpa jejak audit</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>/dashboard/admin</code>: admin bisa menurunkan semua admin lain dengan satu klik "Simpan", tanpa konfirmasi dan tanpa log.</dd>
+    <dt>Perbaikan</dt><dd>Tambah tabel <code>AuditLog</code> (siapa, kapan, dari peran apa ke peran apa), minta konfirmasi untuk perubahan ke atau dari ADMIN, dan cegah admin terakhir diturunkan.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">K8</span><span class="chip">Rendah</span><h3>/api/health terbuka untuk publik</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Endpoint ini mengembalikan status koneksi database (<code>connected</code>/<code>disconnected</code>/<code>not_configured</code>) ke siapa saja.</dd>
+    <dt>Perbaikan</dt><dd>Kembalikan <code>{status:"ok"}</code> saja ke publik. Detail database cukup untuk request yang membawa token monitoring.</dd>
+  </dl>
+</article>
+</div>
+
+<!-- PEMBAYARAN & DATA -->
+<h2>Pembayaran dan data</h2>
+<div class="list">
+
+<article class="finding" data-sev="tinggi">
+  <div class="f-head"><span class="f-id">P1</span><span class="chip">Tinggi</span><h3>Hapus kursus sekali klik, tanpa konfirmasi, ikut menghapus akses siswa berbayar</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Di <code>/dashboard/kelola</code>, tombol "Hapus" langsung menjalankan <code>course.delete</code>. Hapus pelajaran punya konfirmasi, tapi hapus kursus tidak.</dd>
+    <dt>Dampak</dt><dd>Satu salah klik menghapus kursus beserta enrollment (lewat cascade) siswa yang sudah membayar. Ini memicu komplain dan refund.</dd>
+    <dt>Perbaikan</dt><dd>Ganti jadi <b>arsip</b> (<code>archivedAt</code>), bukan hapus. Tolak penghapusan permanen kalau ada order <code>PAID</code>. Tambahkan dialog konfirmasi yang meminta pengguna mengetik judul kursus.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">P2</span><span class="chip">Sedang</span><h3>Order PENDING menumpuk dan bisa dobel</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>expiredAt</code> tidak dikirim ke Mayar dan tidak ada job yang membatalkan order kedaluwarsa. Setelah 2 jam, klik "Beli" lagi membuat order dan invoice baru. Klik dobel juga bisa membuat dua order sekaligus.</dd>
+    <dt>Perbaikan</dt><dd>Kirim <code>expiredAt</code> (misalnya 24 jam), tandai order lama <code>EXPIRED</code> lewat cron, kunci tombol saat request berjalan (<code>useFormStatus</code>), dan pakai unique index parsial untuk satu PENDING per user per kursus.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">P3</span><span class="chip">Sedang</span><h3>Banner status pembayaran tidak mencerminkan status sebenarnya</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>/dashboard/kursus?orderId=APA_SAJA</code> selalu menampilkan "sedang diproses" beserta ID mentah, tanpa mengecek order itu milik siapa dan apa statusnya.</dd>
+    <dt>Dampak</dt><dd>Siswa yang pembayarannya gagal tetap diberi tahu "sedang diproses", sementara yang sudah lunas melihat pesan yang membingungkan.</dd>
+    <dt>Perbaikan</dt><dd>Ambil order milik user tersebut, lalu tampilkan status nyata: lunas (dengan tombol "Mulai belajar"), menunggu (dengan auto-refresh tiap 5 detik), atau gagal/kedaluwarsa (dengan tombol "Bayar ulang").</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">P4</span><span class="chip">Sedang</span><h3>Harga tidak bisa diubah, dan kursus baru langsung tayang walau masih kosong</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Form "Sunting Kursus" tidak punya field harga. <code>createCourse</code> menyimpan <code>published: true</code> walaupun belum ada pelajaran.</dd>
+    <dt>Perbaikan</dt><dd>Tambahkan field harga di form edit (kunci kalau sudah ada pembelian, atau catat riwayat harga). Kursus baru dibuat sebagai draft, dan baru bisa dipublikasikan kalau sudah ada minimal 1 pelajaran.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">P5</span><span class="chip">Rendah</span><h3>Domain produksi tertanam saat build</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>"https://belajarditimurtengah.com"</code> tertulis langsung di bundle untuk <code>redirectUrl</code> Mayar.</dd>
+    <dt>Perbaikan</dt><dd>Baca dari env runtime (<code>APP_URL</code>) di server, jangan dari <code>NEXT_PUBLIC_*</code> yang di-inline saat build, supaya staging tidak mengarahkan pembeli ke production.</dd>
+  </dl>
+</article>
+</div>
+
+<!-- BUG -->
+<h2>Bug fungsional</h2>
+<div class="list">
+
+<article class="finding" data-sev="tinggi">
+  <div class="f-head"><span class="f-id">B1</span><span class="chip">Tinggi</span><h3>Pesan error tidak pernah sampai ke pengguna</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Semua action memakai <code>throw Error("Nomor WhatsApp tidak valid…")</code>. Di production Next.js menyamarkan pesan ini, dan tidak ada <code>error.tsx</code> di build.</dd>
+    <dt>Dampak</dt><dd>Siswa yang salah ketik nomor WA saat checkout langsung melihat layar error generik, padahal ini momen paling mahal di funnel.</dd>
+    <dt>Perbaikan</dt><dd>Action mengembalikan <code>{ ok:false, error:"…" }</code>, lalu form memakai <code>useActionState</code> untuk menampilkan pesan di bawah field. Tambahkan juga <code>app/dashboard/error.tsx</code> berbahasa Indonesia sebagai jaring pengaman.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">B2</span><span class="chip">Sedang</span><h3>Angka "Kursus Aktif" di Ringkasan mentok di 3</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>/dashboard</code>: query enrollment memakai <code>take: 3</code>, lalu <code>.length</code>-nya dipakai sebagai statistik dan label "Buka Kursus Saya (3)".</dd>
+    <dt>Perbaikan</dt><dd>Hitung pakai <code>enrollment.count()</code> yang terpisah dari daftar 3 kursus terakhir.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">B3</span><span class="chip">Sedang</span><h3>Pengajar dan admin melihat tombol "Tandai Selesai" yang selalu gagal</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Halaman pelajaran mengizinkan pemilik kursus dan admin masuk tanpa enrollment, tapi action <code>markComplete</code> mewajibkan enrollment ACTIVE. Akibatnya klik berujung error.</dd>
+    <dt>Perbaikan</dt><dd>Sembunyikan kartu progres untuk mode pratinjau dan tampilkan label "Mode pratinjau pengajar".</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">B4</span><span class="chip">Rendah</span><h3>Karakter rusak "â€”" di halaman Profil</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Fallback untuk nama atau metode login kosong tersimpan sebagai <code>"â€”"</code>, yaitu em dash yang ter-encode dua kali (file source disimpan bukan UTF-8).</dd>
+    <dt>Perbaikan</dt><dd>Simpan ulang file sebagai UTF-8 dan pakai <code>"—"</code> atau teks "Belum diisi".</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">B5</span><span class="chip">Rendah</span><h3>Slug tidak berguna untuk judul Arab dan tidak dipakai di URL</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Regex <code>[^a-z0-9]</code> mengubah judul seperti <span lang="ar">"متن الآجرومية"</span> menjadi <code>kursus</code>, <code>kursus-2</code>, dan seterusnya. Semua rute juga memakai <code>id</code>, bukan slug.</dd>
+    <dt>Perbaikan</dt><dd>Transliterasi atau minta slug manual, lalu pakai slug di URL publik <code>/kursus/[slug]</code> (lihat U2).</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">B6</span><span class="chip">Rendah</span><h3>Materi pelajaran kehilangan format</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Konten hanya dipecah dengan <code>split("\n\n")</code>. Enter tunggal hilang dan tidak ada tebal, daftar, kutipan, atau teks Arab kanan-ke-kiri.</dd>
+    <dt>Perbaikan</dt><dd>Pakai Markdown yang disanitasi (misalnya <code>react-markdown</code> + <code>rehype-sanitize</code>), dan tambahkan blok <code>&lt;p dir="rtl" lang="ar"&gt;</code> dengan font Amiri untuk matan kitab.</dd>
+  </dl>
+</article>
+</div>
+
+<!-- UX -->
+<h2>UX dan konversi</h2>
+<div class="list">
+
+<article class="finding" data-sev="tinggi">
+  <div class="f-head"><span class="f-id">U1</span><span class="chip">Tinggi</span><h3>Enam CTA di landing tidak berfungsi untuk pengunjung baru</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>"Jelajahi Katalog Kursus", "Masuk ke Portal", "Pilih Kursus Sekarang", dan tiga tombol lain mengarah ke <code>/dashboard…</code>. Tamu yang belum login dialihkan diam-diam ke <code>/</code>. Sudah dicoba di localhost: klik, lalu kembali ke beranda tanpa pesan apa pun.</dd>
+    <dt>Dampak</dt><dd>Pengunjung mengira situsnya rusak. Ini kebocoran konversi terbesar di funnel.</dd>
+    <dt>Perbaikan</dt><dd>Katalog dibuat publik di <code>/kursus</code>. Tombol yang memang butuh login memanggil <code>signIn("google", { callbackUrl })</code>, supaya setelah login pengguna kembali ke halaman yang dituju.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="tinggi">
+  <div class="f-head"><span class="f-id">U2</span><span class="chip">Tinggi</span><h3>Tidak ada halaman detail kursus sebelum membeli</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Katalog hanya menampilkan kartu dengan judul, deskripsi, jumlah pelajaran, dan harga, lalu tombol bayar. Silabus baru terlihat setelah terdaftar.</dd>
+    <dt>Perbaikan</dt><dd>Buat <code>/kursus/[slug]</code> publik yang berisi kitab rujukan, pengajar dan sanadnya, daftar pelajaran, durasi total, 1 pelajaran pratinjau gratis, FAQ kursus, dan harga yang jelas. Halaman ini juga jadi bahan utama SEO.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">U3</span><span class="chip">Sedang</span><h3>Tombol masuk tersembunyi di layar kecil</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Di lebar 375px, "Masuk dengan Google" hanya ada di dalam menu hamburger. Di lebar 800px, navigasi desktop juga sudah berubah jadi hamburger. Hamburger baru bekerja setelah JS selesai hidrasi.</dd>
+    <dt>Perbaikan</dt><dd>Tampilkan tombol "Masuk" ringkas di header pada semua ukuran layar. Navigasi desktop baru dilipat di bawah sekitar 720px. Pakai <code>&lt;details&gt;</code> atau link anchor supaya menu tetap bisa dibuka tanpa JS.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">U4</span><span class="chip">Sedang</span><h3>Landing penuh klaim, minim bukti</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Tinggi halaman 6.568px di ponsel. Ada klaim "silabus mu'tamad", "kitab muktabar", dan "Database Terproteksi", tapi tidak ada nama kitab, nama pengajar, foto, testimoni, atau contoh materi. Bagian katalog di landing kosong.</dd>
+    <dt>Perbaikan</dt><dd>Ganti 4 kartu "keunggulan" generik dengan peta jenjang yang konkret (kitab per marhalah), profil pengajar, dan contoh 1 pelajaran. Buang klaim teknis seperti "Database Terproteksi" karena tidak berarti apa-apa bagi siswa.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">U5</span><span class="chip">Sedang</span><h3>Dashboard penuh elemen mati</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Sidebar memuat 3 menu "Segera Hadir" (Progres, Sertifikat, Pengaturan). Ada 2 kartu <code>display:none</code> di Ringkasan. Halaman Profil menampilkan ID internal pengguna (cuid), dan Ringkasan mengulang info akun yang sama dengan Profil.</dd>
+    <dt>Perbaikan</dt><dd>Hapus menu yang belum ada. Jadikan Ringkasan berfokus pada "Lanjutkan belajar": pelajaran terakhir, progres per kursus, dan langkah berikutnya.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">U6</span><span class="chip">Sedang</span><h3>Alat pengajar masih minim</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Urutan pelajaran tidak bisa diubah, materi hanya textarea polos, tidak ada pratinjau sebelum tayang, dan tidak ada data siswa per kursus.</dd>
+    <dt>Perbaikan</dt><dd>Tambahkan drag-to-reorder, editor Markdown dengan pratinjau, status draft per pelajaran, dan tab "Siswa" yang menampilkan progres.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">U7</span><span class="chip">Rendah</span><h3>Halaman 404 dan error bawaan, berbahasa Inggris</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>URL yang tidak ada menampilkan layar hitam "404 This page could not be found."</dd>
+    <dt>Perbaikan</dt><dd>Buat <code>app/not-found.tsx</code> dan <code>app/error.tsx</code> bermerek dengan tautan ke katalog.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">U8</span><span class="chip">Rendah</span><h3>SEO dan share minim</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Tidak ada favicon, OG image, sitemap, robots, atau metadata per halaman. Semua halaman berjudul sama.</dd>
+    <dt>Perbaikan</dt><dd>Gunakan <code>app/icon.png</code>, <code>opengraph-image.tsx</code>, <code>sitemap.ts</code>, <code>generateMetadata</code> per kursus, dan JSON-LD <code>Course</code>.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">U9</span><span class="chip">Rendah</span><h3>Katalog tanpa pencarian dan filter</h3></div>
+  <dl>
+    <dt>Perbaikan</dt><dd>Tambahkan filter bidang ilmu (Nahwu, Fiqih, Aqidah, dan lain-lain), tingkat, serta gratis/berbayar, plus sampul kursus. Simpan filter di query string supaya bisa dibagikan.</dd>
+  </dl>
+</article>
+</div>
+
+<!-- A11Y -->
+<h2>Aksesibilitas</h2>
+<div class="list">
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">A1</span><span class="chip">Sedang</span><h3>Kontras warna emas dan teks muted gagal WCAG AA</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>--gold-600 #B8860B</code> di atas putih hanya 3,3:1, padahal dipakai untuk eyebrow, harga, dan angka langkah. <code>--gold-500 #D4AF37</code> 2,1:1. <code>--muted #5C7A6F</code> di atas <code>#F8F7F3</code> sekitar 4,4:1. Batas minimum teks kecil adalah 4,5:1.</dd>
+    <dt>Perbaikan</dt><dd>Untuk teks, pakai emas yang lebih gelap (misalnya <code>#8A5C0A</code>, sekitar 5,4:1). Warna emas terang cukup untuk dekorasi dan latar.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">A2</span><span class="chip">Sedang</span><h3>Fokus keyboard hampir tidak terlihat</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Hanya ada 1 aturan <code>:focus-visible</code> di seluruh CSS (44 KB).</dd>
+    <dt>Perbaikan</dt><dd>Pasang outline global <code>:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px }</code> untuk semua link, tombol, dan input.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">A3</span><span class="chip">Rendah</span><h3>Target sentuh kecil dan landmark salah tempat</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Tautan footer hanya setinggi 18px. <code>&lt;header&gt;</code> dan <code>&lt;footer&gt;</code> ada di dalam <code>&lt;main&gt;</code>.</dd>
+    <dt>Perbaikan</dt><dd>Beri padding supaya target minimal 44px. Susun struktur jadi <code>header</code>, <code>main</code>, <code>footer</code> sebagai saudara.</dd>
+  </dl>
+</article>
+</div>
+
+<!-- PERFORMA -->
+<h2>Performa</h2>
+<div class="list">
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">F1</span><span class="chip">Sedang</span><h3>Landing dirender ulang dari database di setiap kunjungan</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd><code>app/page.js</code> memakai <code>dynamic = "force-dynamic"</code>, dengan response <code>Cache-Control: no-store</code>. Setiap kunjungan menjalankan lookup sesi dan query kursus.</dd>
+    <dt>Perbaikan</dt><dd>Render landing secara statis dengan <code>revalidate = 300</code>. Bagian yang bergantung pada login (nama dan tombol header) dibuat jadi komponen klien kecil.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">F2</span><span class="chip">Sedang</span><h3>Query database berulang dan berurutan</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Sesi memakai strategi <code>database</code> (1 query). Layout mencari user via email (1 query), lalu halaman mencarinya lagi (1 query). Halaman pelajaran menjalankan sekitar 7 query berurutan.</dd>
+    <dt>Perbaikan</dt><dd>Masukkan <code>id</code> dan <code>role</code> ke sesi lewat callback <code>session</code>, bungkus <code>getCurrentUser</code> dengan <code>React.cache()</code>, dan jalankan query yang independen dengan <code>Promise.all</code>.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">F3</span><span class="chip">Rendah</span><h3>Font dimuat lewat @import yang memblokir render</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>CSS diawali <code>@import url(fonts.googleapis.com…)</code> untuk 3 keluarga font (termasuk Amiri di semua halaman). <code>next-font-manifest</code> kosong.</dd>
+    <dt>Perbaikan</dt><dd>Pakai <code>next/font/google</code> (self-host, tanpa layout shift), dan muat Amiri hanya di halaman yang menampilkan teks Arab.</dd>
+  </dl>
+</article>
+</div>
+
+<!-- KODE -->
+<h2>Kualitas kode</h2>
+<div class="list">
+
+<article class="finding" data-sev="sedang">
+  <div class="f-head"><span class="f-id">Q1</span><span class="chip">Sedang</span><h3>Logika auth dan user diduplikasi di banyak modul</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Fungsi "ambil user dari sesi via email" muncul setidaknya di 4 tempat (modul guard, actions katalog, actions pelajaran, layout), masing-masing dengan pengecekan yang sedikit berbeda.</dd>
+    <dt>Perbaikan</dt><dd>Satu <code>lib/auth-guard.ts</code> yang berisi <code>requireUser()</code>, <code>requireRole()</code>, dan <code>requireCourseOwner()</code>, dipakai oleh semua page dan action.</dd>
+  </dl>
+</article>
+
+<article class="finding" data-sev="rendah">
+  <div class="f-head"><span class="f-id">Q2</span><span class="chip">Rendah</span><h3>CSS sulit dirawat</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Ada 9 breakpoint berbeda (360 sampai 1025px), 23 <code>!important</code>, banyak <code>style={{…}}</code> inline di JSX, dan nama token yang menyesatkan (<code>--parchment</code> justru hijau tua, sisa tema gelap lama).</dd>
+    <dt>Perbaikan</dt><dd>Seragamkan jadi 3 breakpoint (640/960/1200), pindahkan inline style ke kelas, dan ganti nama token sesuai perannya (<code>--text</code>, <code>--surface</code>, <code>--accent</code>).</dd>
+  </dl>
+</article>
+</div>
+
+<!-- LEGAL -->
+<h2>Kepatuhan dan bisnis</h2>
+<div class="list">
+
+<article class="finding" data-sev="tinggi">
+  <div class="f-head"><span class="f-id">L1</span><span class="chip">Tinggi</span><h3>Belum ada Kebijakan Privasi, S&amp;K, Kebijakan Refund, dan kontak</h3></div>
+  <dl>
+    <dt>Bukti</dt><dd>Footer hanya berisi navigasi dan klaim keamanan. Situs mengumpulkan email, foto profil Google, dan nomor WhatsApp, lalu meneruskannya ke Mayar.</dd>
+    <dt>Dampak</dt><dd>UU PDP No. 27/2022 mewajibkan pemberitahuan pemrosesan data. Payment gateway juga umumnya mensyaratkan halaman refund dan kontak yang jelas.</dd>
+    <dt>Perbaikan</dt><dd>Buat halaman <code>/privasi</code>, <code>/syarat</code>, <code>/refund</code>, dan <code>/kontak</code>, tautkan di footer dan di dialog checkout ("Dengan membayar, Anda menyetujui…").</dd>
+  </dl>
+</article>
+</div>
+
+<h2>Rencana perbaikan</h2>
+<div class="road">
+  <section><p class="eyebrow">Minggu 1</p><h3>Amankan</h3><ul><li>K1 upgrade Next/React</li><li>K2 ganti secret, build ulang</li><li>K3 security headers</li><li>P1 arsip kursus + konfirmasi</li><li>B1 error ke pengguna</li></ul></section>
+  <section><p class="eyebrow">Minggu 2–3</p><h3>Buka funnel</h3><ul><li>U1, U2 katalog dan detail publik</li><li>L1 halaman legal</li><li>P2, P3 status order nyata</li><li>A1, A2 kontras dan fokus</li><li>Desain ulang landing</li></ul></section>
+  <section><p class="eyebrow">Bulan 2</p><h3>Rapikan</h3><ul><li>F1–F3 caching dan font</li><li>Q1, Q2 refactor guard dan CSS</li><li>U5, U6 dashboard dan alat pengajar</li><li>B2–B6, K4–K8</li><li>U8 SEO</li></ul></section>
+</div>
+
+<h2>Keterbatasan audit</h2>
+<p class="small" style="max-width:65ch">Audit ini dibuat dari build production tanpa source asli, skema Prisma, atau file <code>.env</code>. Database dan login Google tidak bisa dijalankan di lokal, jadi halaman dashboard dinilai dari kode hasil kompilasinya, bukan diklik langsung. Skema relasi (misalnya cascade delete) disimpulkan dari perilaku kode. Cocokkan nomor versi patch di K1 dengan advisori resmi Next.js dan React sebelum upgrade.</p>
+</div>
+
+<script>
+(function(){
+  var items=[].slice.call(document.querySelectorAll('.finding'));
+  ['kritis','tinggi','sedang','rendah'].forEach(function(s){
+    var el=document.getElementById('n-'+s);
+    if(el) el.textContent=items.filter(function(i){return i.dataset.sev===s}).length;
+  });
+  var btns=[].slice.call(document.querySelectorAll('.filters button'));
+  btns.forEach(function(b){b.addEventListener('click',function(){
+    var f=b.dataset.f;
+    btns.forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});
+    items.forEach(function(i){i.hidden=!(f==='all'||i.dataset.sev===f)});
+    document.querySelectorAll('.list').forEach(function(l){
+      var sec=l.previousElementSibling;
+      var any=[].slice.call(l.children).some(function(c){return !c.hidden});
+      l.hidden=!any; if(sec&&sec.tagName==='H2') sec.hidden=!any;
+    });
+  })});
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Hanya dokumen dan prototipe yang dilacak.
+# Build production (.next), node_modules, log, dan server.js sengaja tidak ikut:
+# .next menyimpan kunci enkripsi server action dan kunci preview mode.
+/*
+!/.gitignore
+!/README.md
+!/desain-html/
+!/penawaran/
+!/audit/

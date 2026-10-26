@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Katalog · Nizhamiyyah Edu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap">
+<link rel="stylesheet" href="app.css">
+<style>
+.status { padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: center }
+.status .ico { flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--fiqih-soft); display: grid; place-items: center }
+.chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: 600 14px 'Satoshi', sans-serif; cursor: pointer }
+.chip[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink) }
+.grid { padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px 14px }
+.pick { border: 0; background: transparent; font: inherit; color: inherit; text-align: left; cursor: pointer; border-radius: 16px; padding: 6px }
+.pick[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent) }
+.cover .flag { position: absolute; top: 10px; left: 10px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,.92); color: var(--ink); border-radius: 999px; padding: 4px 10px }
+.row-end { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line-2) }
+.sum { background: var(--shell); border-radius: 14px; padding: 6px 14px }
+.sum div { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #DCE1DE; font-size: 14px }
+.sum div:last-child { border-bottom: 0; font-size: 15px; font-weight: 700 }
+.sum span:first-child { color: var(--ink-2) }
+.sum div:last-child span:first-child { color: var(--ink) }
+.field-wa input { min-height: 46px; padding: 0 16px; border: 2px solid var(--line); border-radius: 12px; font: 400 15px 'Satoshi', sans-serif; color: var(--ink); background: #fff; width: 100% }
+.field-wa input[aria-invalid="true"] { border-color: var(--danger) }
+.err { font-size: 13px; color: var(--danger); font-weight: 600 }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="shell">
+
+<aside class="side">
+<a class="brand" href="index.html"><span class="brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#fff" stroke-width="1.8"><rect x="6" y="6" width="12" height="12"/><rect x="6" y="6" width="12" height="12" transform="rotate(45 12 12)"/></svg></span><span class="brand-name">Nizhamiyyah</span></a>
+<nav class="group nav" aria-label="Menu utama">
+<span class="group-label">Menu</span>
+<a href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="8" height="10" rx="2"/><rect x="13" y="3" width="8" height="6" rx="2"/><rect x="3" y="15" width="8" height="6" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/></svg>Dashboard</a>
+<a href="pelajaran.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5h6a3 3 0 0 1 2 1 3 3 0 0 1 2-1h6v14h-6a2 2 0 0 0-2 2 2 2 0 0 0-2-2H4z"/></svg>Kursus saya</a>
+<a href="katalog.html" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Katalog</a>
+<a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Pembayaran</a>
+<a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Profil</a>
+</nav>
+<div class="group" id="fields">
+<span class="group-label">Bidang ilmu</span>
+</div>
+<nav class="group nav side-foot" aria-label="Akun">
+<span class="group-label">Akun</span>
+<a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Pengaturan</a>
+<a href="index.html" class="logout"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Keluar</a>
+</nav>
+</aside>
+
+<div class="main">
+<div class="topbar">
+<label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A948F" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr-only">Cari kursus</span><input id="cari" type="search" placeholder="Cari kursus atau kitab..."></label>
+<div class="who">
+<button type="button" class="icon-btn" aria-label="Pesan"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></button>
+<button type="button" class="icon-btn" aria-label="Notifikasi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></button>
+<span class="divider" aria-hidden="true"></span>
+<span class="avatar" aria-hidden="true">AF</span><span style="font-weight:500">Ahmad Fauzi</span>
+</div>
+</div>
+
+<div class="cols">
+<div class="center">
+
+<div class="card status" role="status">
+<span class="ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A5C0A" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+<div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:2px">
+<b>Pembayaran Ajurrumiyyah masih menunggu</b>
+<span style="font-size:13px;color:var(--ink-2)">Tagihan berlaku sampai 27 Okt, 14.00 WIB. Kelas terbuka otomatis setelah lunas.</span>
+</div>
+<a class="pill-dark" href="#" style="align-self:center">Lanjutkan bayar<i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10231C" stroke-width="2.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></i></a>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px">
+<div style="display:flex;flex-direction:column;gap:2px">
+<h1 style="font-size:28px;font-weight:500;letter-spacing:-.03em">Katalog kursus</h1>
+<span style="font-size:14px;color:var(--ink-2)"><span id="count">5</span> kursus · klik kartu untuk melihat ringkasan dan mendaftar</span>
+</div>
+<div role="group" aria-label="Saring bidang" id="filters" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+</div>
+
+<div class="card grid" id="grid"></div>
+</div>
+
+<aside class="right" aria-labelledby="co-h" id="summary"></aside>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+(function () {
+  var all = [
+    { key: 'nahwu', field: 'Nahwu', level: 'Ula', ar: 'الآجرومية', title: 'Matan al-Ajurrumiyyah', lessons: 24, hours: '± 9 jam', teacher: '[Nama Ustadz]', price: 'Rp [harga]', free: false, badge: 'Menunggu bayar' },
+    { key: 'fiqih', field: 'Fiqih', level: 'Ula', ar: 'سفينة النجاة', title: 'Safinatun Najah', lessons: 18, hours: '± 6 jam', teacher: '[Nama Ustadz]', price: 'Gratis', free: true, badge: 'Diikuti' },
+    { key: 'aqidah', field: 'Aqidah', level: 'Ula', ar: 'عقيدة العوام', title: 'Aqidatul Awam', lessons: 12, hours: '± 4 jam', teacher: '[Nama Ustadzah]', price: 'Rp [harga]', free: false, badge: 'Baru' },
+    { key: 'nahwu', field: 'Nahwu', level: 'Wustha', ar: 'متممة الآجرومية', title: 'Mutammimah al-Ajurrumiyyah', lessons: 30, hours: '± 12 jam', teacher: '[Nama Ustadz]', price: 'Rp [harga]', free: false, badge: 'Wustha' },
+    { key: 'fiqih', field: 'Fiqih', level: 'Wustha', ar: 'متن أبي شجاع', title: 'Matan Abi Syuja’', lessons: 28, hours: '± 11 jam', teacher: '[Nama Ustadz]', price: 'Rp [harga]', free: false, badge: 'Wustha' }
+  ];
+  var fieldLetters = { Nahwu: 'ن', Fiqih: 'ف', Aqidah: 'ع' };
+  var labels = ['Semua', 'Nahwu', 'Fiqih', 'Aqidah', 'Gratis'];
+  var state = { filter: 'Semua', sel: 2 };
+  var star = '<svg class="star-deco" aria-hidden="true" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width=".6" style="left:-24px;top:-24px"><rect x="5" y="5" width="14" height="14"/><rect x="5" y="5" width="14" height="14" transform="rotate(45 12 12)"/></svg>';
+
+  document.getElementById('fields').insertAdjacentHTML('beforeend', ['Nahwu', 'Fiqih', 'Aqidah'].map(function (n) {
+    var k = n.toLowerCase();
+    var count = all.filter(function (c) { return c.field === n; }).length;
+    return '<a class="mini" href="#" data-filter="' + n + '"><span class="letter f-' + k + '" aria-hidden="true">' + fieldLetters[n] + '</span><span><b>' + n + '</b><small>' + count + ' kursus</small></span></a>';
+  }).join(''));
+
+  function card(c, i) {
+    return '<button type="button" class="pick course" data-i="' + i + '" aria-pressed="' + (i === state.sel) + '">' +
+      '<div class="cover c-' + c.key + '">' + star + '<span class="ar" lang="ar" dir="rtl">' + c.ar + '</span><span class="flag">' + c.badge + '</span></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag f-' + c.key + '">' + c.field + '</span><span class="tag plain">' + c.level + '</span></div>' +
+      '<h3>' + c.title + '</h3>' +
+      '<span style="font-size:13px;color:var(--ink-2)">' + c.lessons + ' pelajaran · ' + c.hours + '</span>' +
+      '<div class="row-end"><span class="person"><span class="avatar sm" aria-hidden="true">U</span><b>' + c.teacher + '</b></span><b style="font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap">' + c.price + '</b></div>' +
+      '</button>';
+  }
+
+  function summary(c) {
+    var wa = c.free ? '' :
+      '<div class="field-wa" style="display:flex;flex-direction:column;gap:6px">' +
+      '<label for="wa" style="font-weight:600;font-size:14px">Nomor WhatsApp</label>' +
+      '<input id="wa" type="tel" inputmode="tel" value="0812 34" aria-invalid="true" aria-describedby="wa-err">' +
+      '<span id="wa-err" class="err">Nomor terlalu pendek. Masukkan 10 sampai 13 digit, misalnya 0812 3456 7890.</span></div>';
+    return '<div class="sec-head"><h2 id="co-h">Ringkasan kursus</h2><span class="badge">' + c.field + '</span></div>' +
+      '<div class="c-' + c.key + '" style="height:120px;border-radius:16px;display:grid;place-items:center"><span class="ar" lang="ar" dir="rtl" style="font-weight:700;font-size:30px;line-height:1.2;color:var(--cream)">' + c.ar + '</span></div>' +
+      '<div style="display:flex;flex-direction:column;gap:4px"><b style="font-size:17px">' + c.title + '</b><span style="font-size:13px;color:var(--ink-2)">' + c.lessons + ' pelajaran · ' + c.hours + ' · akses selamanya</span></div>' +
+      '<div class="sum"><div><span>Harga kursus</span><span>' + c.price + '</span></div><div><span>Biaya layanan</span><span>Rp 0</span></div><div><span>Total</span><span>' + c.price + '</span></div></div>' +
+      wa +
+      '<a class="pill-solid" href="#">' + (c.free ? 'Daftar gratis' : 'Bayar ' + c.price + ' lewat Mayar') + '</a>' +
+      '<p style="font-size:12px;color:var(--ink-2);line-height:1.5">QRIS, virtual account, dan e-wallet lewat Mayar. Dengan mendaftar, Anda menyetujui <a href="#">Syarat dan ketentuan</a> serta <a href="#">Kebijakan refund</a>.</p>';
+  }
+
+  function render() {
+    document.getElementById('filters').innerHTML = labels.map(function (l) {
+      return '<button type="button" class="chip" data-filter="' + l + '" aria-pressed="' + (l === state.filter) + '">' + l + '</button>';
+    }).join('');
+    var shown = all.map(function (c, i) { return [c, i]; }).filter(function (p) {
+      var c = p[0], f = state.filter;
+      return f === 'Semua' || (f === 'Gratis' ? c.free : c.field === f);
+    });
+    document.getElementById('count').textContent = shown.length;
+    document.getElementById('grid').innerHTML = shown.map(function (p) { return card(p[0], p[1]); }).join('');
+    document.getElementById('summary').innerHTML = summary(all[state.sel]);
+  }
+
+  document.addEventListener('click', function (e) {
+    var f = e.target.closest('[data-filter]');
+    if (f) { e.preventDefault(); state.filter = f.getAttribute('data-filter'); render(); return; }
+    var p = e.target.closest('.pick');
+    if (p) { state.sel = Number(p.getAttribute('data-i')); render(); document.querySelector('.pick[data-i="' + state.sel + '"]').focus(); }
+  });
+  render();
+})();
+</script>
+</body>
+</html>

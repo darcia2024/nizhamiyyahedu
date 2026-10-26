@@ -1,0 +1,130 @@
+/* Gaya bersama untuk dashboard, katalog, dan halaman pelajaran.
+   Ganti --accent untuk mengganti warna utama (mis. #5B4FD6 untuk ungu). */
+@font-face { font-family: 'Satoshi'; src: url('fonts/Satoshi-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap }
+@font-face { font-family: 'Satoshi'; src: url('fonts/Satoshi-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap }
+@font-face { font-family: 'Satoshi'; src: url('fonts/Satoshi-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap }
+:root {
+  --accent: #1B4D3B;
+  --accent-soft: #E3EAE7;
+  --ink: #10231C;
+  --ink-2: #6B7570;
+  --muted: #8A948F;
+  --line: #E2E6E3;
+  --line-2: #ECEFED;
+  --ground: #E6E9E7;
+  --shell: #F7F8F6;
+  --danger: #B3261E;
+  --cream: #F2E6C4;
+  /* palet per bidang ilmu */
+  --nahwu: #1B4D3B; --nahwu-soft: #E3EEE8; --nahwu-cover: #173F31;
+  --fiqih: #8A5C0A; --fiqih-soft: #F6EBD3; --fiqih-cover: #4A3410;
+  --aqidah: #3D5A9E; --aqidah-soft: #E4EAF7; --aqidah-cover: #22345E;
+}
+* { box-sizing: border-box }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: 'Satoshi', system-ui, sans-serif; font-size: 15px }
+a { color: var(--ink) }
+a:hover { color: #000 }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px }
+h1, h2, h3, p { margin: 0 }
+h1, h2, h3 { letter-spacing: -.02em }
+.ar { font-family: 'Amiri', serif }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+
+/* kerangka */
+.page { padding: 32px max(16px, 3vw); min-height: 100vh }
+.shell { max-width: 1360px; margin: 0 auto; background: var(--shell); border-radius: 28px; overflow: hidden; display: flex; flex-wrap: wrap }
+.side { flex: 1 1 230px; max-width: 100%; background: #fff; padding: 28px 18px; display: flex; flex-direction: column; gap: 28px }
+.main { flex: 999 1 760px; min-width: 0; padding: 24px; display: flex; flex-direction: column; gap: 22px }
+.cols { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start }
+.center { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 22px }
+.right { flex: 1 1 280px; max-width: 360px; min-width: 0; background: #fff; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 20px }
+
+/* sidebar */
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 12px; text-decoration: none }
+.brand-mark { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); display: grid; place-items: center }
+.brand-name { font-size: 20px; font-weight: 500; letter-spacing: -.02em }
+.group { display: flex; flex-direction: column; gap: 2px }
+.group-label { padding: 0 12px 8px; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted) }
+.nav a { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; text-decoration: none; color: #5B6660; font-weight: 500 }
+.nav a:hover { background: #F1F3F1; color: var(--ink) }
+.nav a[aria-current="page"] { color: var(--ink); font-weight: 500 }
+.nav a { font-size: 16px }
+.nav a[aria-current="page"] svg { color: var(--accent) }
+.nav a.logout { color: var(--danger) }
+.side-foot { margin-top: auto }
+.mini { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 10px; text-decoration: none; color: var(--ink) }
+.mini:hover, .mini.on { background: #F1F3F1 }
+.mini > span:last-child { display: flex; flex-direction: column; min-width: 0 }
+.mini b { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.mini small { font-size: 12px; color: var(--muted) }
+.letter { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font: 700 15px 'Amiri', serif }
+
+/* bidang */
+.f-nahwu { color: var(--nahwu); background: var(--nahwu-soft) }
+.f-fiqih { color: var(--fiqih); background: var(--fiqih-soft) }
+.f-aqidah { color: var(--aqidah); background: var(--aqidah-soft) }
+.c-nahwu { background: var(--nahwu-cover) }
+.c-fiqih { background: var(--fiqih-cover) }
+.c-aqidah { background: var(--aqidah-cover) }
+
+/* top bar */
+.topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 14px }
+.search { flex: 1 1 320px; min-width: 0; display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 0 18px; min-height: 48px }
+.search input { flex: 1; min-width: 0; border: 0; outline: none; font: 400 15px 'Satoshi', sans-serif; background: transparent; color: var(--ink) }
+.search:focus-within { outline: 2px solid var(--ink); outline-offset: 2px }
+.who { display: flex; align-items: center; gap: 10px }
+.divider { width: 1px; height: 32px; background: var(--line); margin: 0 6px }
+.icon-btn { position: relative; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: #fff; display: grid; place-items: center; cursor: pointer; color: var(--ink); text-decoration: none }
+.icon-btn.sm { width: 36px; height: 36px }
+.icon-btn.fill { background: var(--accent); border-color: var(--accent); color: #fff }
+.dot { position: absolute; top: 10px; right: 11px; width: 8px; height: 8px; border-radius: 50%; background: #D9822B }
+.avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700 }
+.avatar.sm { width: 30px; height: 30px; font-size: 12px; background: #EEF1EF; color: var(--ink) }
+
+/* umum */
+.card { background: #fff; border-radius: 20px }
+.sec-head { display: flex; justify-content: space-between; align-items: center; gap: 12px }
+.sec-head h2 { font-size: 19px; font-weight: 500; letter-spacing: -.02em }
+.sec-head a { font-size: 14px; font-weight: 600 }
+.badge { font-size: 11px; color: var(--muted); background: #F1F3F1; border-radius: 6px; padding: 3px 8px }
+.tag { align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border-radius: 6px; padding: 3px 8px }
+.tag.plain { color: var(--ink-2); background: #F1F3F1; font-weight: 600; letter-spacing: 0; text-transform: none }
+.pill-dark { align-self: flex-start; display: inline-flex; align-items: center; gap: 12px; background: var(--ink); color: #fff; border-radius: 999px; padding: 6px 6px 6px 18px; min-height: 44px; text-decoration: none; font-weight: 600; font-size: 14px }
+.pill-dark:hover { color: #fff }
+.pill-dark i { width: 32px; height: 32px; border-radius: 50%; background: #fff; display: grid; place-items: center }
+.pill-soft { display: grid; place-items: center; min-height: 44px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 14px; text-decoration: none }
+.pill-solid { display: grid; place-items: center; min-height: 48px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 700; font-size: 15px; text-decoration: none }
+.pill-solid:hover { color: #fff; filter: brightness(.92) }
+.progress { height: 4px; background: var(--line-2); border-radius: 99px; overflow: hidden }
+.progress > div { height: 100%; background: var(--accent) }
+.ring { position: relative; flex: none; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--accent) 0 var(--deg), var(--line-2) var(--deg) 360deg) }
+.ring > div { border-radius: 50%; background: #fff; display: grid; place-items: center }
+.star-deco { position: absolute; pointer-events: none }
+
+/* sampul kursus */
+.cover { position: relative; height: 128px; border-radius: 14px; display: flex; align-items: flex-end; justify-content: flex-end; padding: 14px; overflow: hidden }
+.cover .ar { position: relative; font-weight: 700; font-size: 26px; line-height: 1.2; color: var(--cream) }
+.course { display: flex; flex-direction: column; gap: 10px; min-width: 0 }
+.course h3 { font-size: 15px; font-weight: 500; line-height: 1.35; letter-spacing: -.01em }
+.person { display: flex; align-items: center; gap: 10px }
+.person > span:last-child { display: flex; flex-direction: column }
+.person b { font-size: 13px; font-weight: 500 }
+.person small { font-size: 12px; color: var(--muted) }
+
+/* tabel */
+.table-box { overflow-x: auto }
+table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px }
+th { text-align: left; font-weight: 600; padding: 16px 12px; border-bottom: 1px solid var(--line-2); color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase }
+td { padding: 14px 12px; border-bottom: 1px solid #F1F3F1 }
+th:first-child, td:first-child { padding-left: 20px }
+th:last-child, td:last-child { padding-right: 20px; text-align: right }
+tbody tr:hover { background: var(--shell) }
+tbody tr:last-child td { border-bottom: 0 }
+.go { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid #D5DBD7; color: var(--accent) }
+
+/* daftar ber-garis putus */
+.dash-list { background: var(--shell); border-radius: 16px; padding: 4px 14px 10px; display: flex; flex-direction: column }
+.dash-list > * { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px dashed #DCE1DE; text-decoration: none; color: var(--ink) }
+.dash-list > *:last-child { border-bottom: 0 }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
