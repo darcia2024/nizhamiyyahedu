@@ -7,189 +7,317 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: satu lembar surat di atas latar abu hangat. Isinya cuma masalah dan perbaikannya. */
+/* Layout: surat dari Dar Dev. Desktop = kolom isi + panel samping yang menempel (daftar isi dan ringkasan).
+   Mobile = satu kolom, navigasi chip menempel di atas, ringkasan menempel di bawah. */
 :root{
-  --ground:#dad8d3; --paper:#fbfaf6; --ink:#161616; --ink-2:#56544f; --line:#e4e1d9; --mark:#e9f23a; --red:#a3271c;
+  --ground:#dad8d3; --paper:#fbfaf6; --card:#ffffff; --ink:#161616; --ink-2:#57554f; --line:#e4e1d9;
+  --lime:#e9f23a; --lime-soft:#f6f9b9; --red:#a3271c; --red-bg:#fbe6e2; --dark:#161616;
   --font:"Inter Tight","Segoe UI",system-ui,sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--ground);color:var(--ink);font:400 18px/1.65 var(--font);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 56px}
-.sheet{max-width:780px;margin:0 auto;background:var(--paper);border-radius:18px;padding:clamp(28px,6vw,72px) clamp(22px,6vw,80px)}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 17px/1.65 var(--font)}
 h1,h2,h3,p{margin:0}
-h1{overflow-wrap:anywhere;font-size:clamp(30px,4.4vw,46px);font-weight:500;line-height:1.1;letter-spacing:-.025em;text-wrap:balance}
-h2{font-size:24px;font-weight:600;letter-spacing:-.015em;line-height:1.25;margin-top:56px;padding-top:28px;border-top:1px solid var(--line);text-wrap:balance}
-h3{font-size:18px;font-weight:600;line-height:1.4}
 a{color:var(--ink)}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.from{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;font-size:15px;color:var(--ink-2);margin-bottom:40px}
-.from b{color:var(--ink);font-weight:600}
-.intro{display:flex;flex-direction:column;gap:18px;margin-top:28px}
-.intro p{color:#2c2b28}
-.lead{font-size:16px;color:var(--ink-2);margin-top:10px}
-ol.items{list-style:none;margin:28px 0 0;padding:0;display:flex;flex-direction:column;gap:30px;counter-reset:n}
-ol.items li{counter-increment:n;display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 10px}
-ol.items li::before{content:counter(n) ".";font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums;padding-top:1px}
-ol.items li > *{grid-column:2}
-ol.items p{color:#2c2b28}
-.fix{margin-top:6px;padding-left:14px;border-left:3px solid var(--mark)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- kepala surat ---------- */
+.top{background:var(--dark);color:#fff}
+.top-in{max-width:1180px;margin:0 auto;padding:clamp(28px,5vw,64px) max(16px,env(safe-area-inset-left,0px)) clamp(28px,5vw,56px);padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:22px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:14px;color:rgba(255,255,255,.7)}
+.meta b{color:#fff;font-weight:600}
+.top h1{font-size:clamp(32px,5vw,60px);font-weight:500;line-height:1.05;letter-spacing:-.03em;max-width:21ch;text-wrap:balance;overflow-wrap:break-word}
+.top h1 .dom{white-space:nowrap}
+.top h1 em{font-style:normal;background:var(--lime);color:var(--ink);padding:0 .12em;border-radius:6px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.facts{display:flex;flex-wrap:wrap;gap:10px}
+.fact{border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 16px;font-size:15px;display:flex;gap:8px;align-items:baseline}
+.fact b{font-weight:600;font-size:17px}
+
+/* ---------- kerangka ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:28px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px));display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start}
+.letter{background:var(--paper);border-radius:20px;padding:clamp(28px,4.5vw,56px);min-width:0}
+.aside{position:sticky;top:24px;display:flex;flex-direction:column;gap:14px}
+
+/* ---------- isi surat ---------- */
+.intro{display:flex;flex-direction:column;gap:16px;max-width:64ch}
+.intro p{color:#2b2a27}
+section.grp{margin-top:52px;scroll-margin-top:24px}
+.grp-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.grp-head .n{font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--ink-2)}
+.grp-head h2{font-size:clamp(22px,2.4vw,27px);font-weight:600;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
+.grp-head .tag{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:3px 8px;background:var(--red-bg);color:var(--red)}
+.grp-lead{margin-top:12px;color:var(--ink-2);max-width:62ch}
+.items{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;gap:14px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:40px minmax(0,1fr);gap:6px 14px}
+.item .k{grid-row:1/4;width:32px;height:32px;border-radius:50%;background:#f1efe8;display:grid;place-items:center;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.item.hot .k{background:var(--red-bg);color:var(--red)}
+.item h3{font-size:18px;font-weight:600;line-height:1.35;letter-spacing:-.01em}
+.item p{color:#2b2a27;max-width:62ch}
+.fix{margin-top:8px;background:var(--lime-soft);border-radius:10px;padding:12px 14px;font-size:16px;max-width:62ch}
 .fix b{font-weight:600}
-.urgent{color:var(--red);font-weight:600}
-.plain{margin-top:20px;display:flex;flex-direction:column;gap:14px}
-.plain p{color:#2c2b28}
-ul.small{margin:12px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;color:#2c2b28}
-.steps{margin:20px 0 0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px}
-.close{margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
-.sign{margin-top:12px}
-.sign b{font-weight:600}
+.minor{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+.minor p{color:#2b2a27;max-width:64ch}
+.minor ul{margin:12px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;color:#2b2a27}
+
+/* jadwal 7 hari */
+.days{margin-top:18px;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.day{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:baseline;gap:16px;padding:15px 22px;border-bottom:1px solid var(--line);min-width:0}
+.day:last-child{border-bottom:0}
+.day b{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.day span{font-size:16px;line-height:1.5}
+.day.first{background:var(--dark);color:#fff}
+.day.first b{color:var(--lime)}
+
+.close{margin-top:52px;padding-top:28px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:16px;max-width:64ch}
+.price{background:var(--lime);border-radius:16px;padding:22px 24px;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px}
+.price b{font-size:clamp(30px,4vw,40px);font-weight:600;letter-spacing:-.03em;line-height:1}
+.price span{font-size:16px}
+.sign{margin-top:8px;line-height:1.5}
+.sign b{font-weight:600;font-size:19px}
 .note{font-size:15px;color:var(--ink-2)}
-mark{background:var(--mark);padding:0 3px;border-radius:3px}
+
+/* ---------- panel samping (desktop) ---------- */
+.box{background:var(--card);border-radius:18px;padding:20px 22px}
+.box h4{margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.toc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.toc a{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;margin:0 -10px;border-radius:8px;text-decoration:none;font-size:15px;line-height:1.35}
+.toc a:hover{background:#f3f2ec}
+.toc a.on{background:var(--ink);color:#fff}
+.toc a small{color:inherit;opacity:.6;font-variant-numeric:tabular-nums}
+.sum{background:var(--dark);color:#fff;border-radius:18px;padding:22px}
+.sum dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:10px 14px;font-size:15px}
+.sum dt{color:rgba(255,255,255,.65)}
+.sum dd{margin:0;text-align:right;font-weight:600}
+.sum .big{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.18);display:flex;justify-content:space-between;align-items:baseline}
+.sum .big b{font-size:30px;letter-spacing:-.03em;color:var(--lime);font-weight:600}
+
+/* ---------- elemen khusus mobile ---------- */
+.mnav,.mbar{display:none}
+
+/* ---------- MOBILE: layout terpisah ---------- */
+@media (max-width:860px){
+  body{font-size:16px;padding-bottom:76px}
+  .wrap{display:block;padding-top:0}
+  .aside{display:none}
+  .letter{border-radius:0 0 18px 18px;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:24px 18px 32px}
+  .top-in{gap:16px}
+  .top h1{font-size:clamp(24px,7vw,40px)}
+  .fact{padding:6px 12px;font-size:14px}
+  .fact b{font-size:15px}
+  /* navigasi chip menempel */
+  .mnav{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);padding:12px 18px;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));border-bottom:1px solid var(--line)}
+  .mnav::-webkit-scrollbar{display:none}
+  .mnav a{flex:none;text-decoration:none;font-size:14px;font-weight:500;border:1px solid var(--line);background:#fff;border-radius:999px;padding:0 14px;min-height:40px;display:inline-flex;align-items:center;white-space:nowrap}
+  .mnav a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  section.grp{margin-top:36px;scroll-margin-top:72px}
+  .grp-head{gap:8px}
+  .item{padding:18px 16px;grid-template-columns:minmax(0,1fr);gap:6px}
+  .item .k{grid-row:auto;width:28px;height:28px;font-size:13px}
+  .item h3{font-size:17px}
+  .fix{font-size:15px}
+  .minor{padding:18px 16px}
+  /* jadwal jadi daftar vertikal */
+  .days{border-radius:14px}
+  .day{grid-template-columns:58px minmax(0,1fr);gap:12px;padding:13px 16px}
+  .day span{font-size:15px}
+  .price{padding:18px}
+  /* ringkasan menempel di bawah */
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--dark);color:#fff;padding:12px max(18px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));align-items:center;justify-content:space-between;gap:12px}
+  .mbar span{font-size:13px;color:rgba(255,255,255,.75);line-height:1.3}
+  .mbar span b{display:block;color:#fff;font-size:15px;font-weight:600}
+  .mbar a{flex:none;background:var(--lime);color:var(--ink);text-decoration:none;font-weight:600;font-size:15px;border-radius:10px;padding:0 16px;min-height:44px;display:inline-flex;align-items:center}
+}
 </style>
 </head>
 <body>
 
 
-<article class="sheet">
+<header class="top">
+  <div class="top-in">
+    <div class="meta"><span>Dari <b>Dar Dev</b></span><span>Untuk tim Nizhamiyyah Edu</span><span>Oktober 2026</span></div>
+    <h1>Hasil cek website <span class="dom">belajarditimurtengah.com,</span> dan <em>gimana saya benerinnya</em></h1>
+    <div class="facts">
+      <span class="fact"><b class="num">37</b> masalah ketemu</span>
+      <span class="fact"><b class="num">7</b> hari kerja</span>
+      <span class="fact"><b class="num">Rp3,5 jt</b> semuanya</span>
+    </div>
+  </div>
+</header>
 
-<div class="from"><span>Dari <b>Dar Dev</b></span><span>Untuk tim Nizhamiyyah Edu · Oktober 2026</span></div>
+<div class="wrap">
+<article class="letter">
 
-<h1>Apa yang bermasalah di belajarditimurtengah.com, dan cara saya membereskannya</h1>
+  <nav class="mnav" aria-label="Lompat ke bagian">
+    <a href="#g1">Mendesak</a><a href="#g2">Calon siswa</a><a href="#g3">Siswa &amp; pengajar</a><a href="#g4">Belakang layar</a><a href="#jadwal">Jadwal</a><a href="#biaya">Biaya</a>
+  </nav>
 
-<div class="intro">
-<p>Assalamu'alaikum.</p>
-<p>Beberapa hari ini saya membongkar website Nizhamiyyah Edu: membaca kode yang sedang berjalan di server, mencoba semua halaman di laptop dan HP, dan mengecek alur pendaftaran sampai pembayaran. Totalnya saya menemukan 37 masalah. Sebagian besar kecil, tapi ada beberapa yang menurut saya perlu ditangani secepatnya.</p>
-<p>Di bawah ini saya tulis apa adanya. Untuk tiap masalah ada penjelasan singkat kenapa itu jadi masalah, lalu apa yang akan saya kerjakan.</p>
-</div>
+  <div class="intro" style="margin-top:8px">
+    <p>Assalamu'alaikum,</p>
+    <p>Beberpa hari ini saya bongkar website Nizhamiyyah Edu. Saya baca kode yang lagi jalan di server, coba semua halaman di laptop dan HP, terus saya tes alur daftar sampai bayar. Hasilnya ada 37 masalah. Kebanyakan kecil, tapi ada beberapa yang menurut saya harus diberesin secepatnya.</p>
+    <p>Saya tulis apa adanya di bawah. Tiap masalah ada penjelasan singkat kenapa itu jadi masalah, terus apa yang bakal saya kerjain. Semuanya bisa selesai dalam seminggu.</p>
+  </div>
 
-<h2>Yang harus dibereskan minggu ini</h2>
-<p class="lead">Ini menyangkut keamanan server dan uang siswa.</p>
-<ol class="items">
-<li>
-<h3><span class="urgent">Server bisa dibobol tanpa login.</span></h3>
-<p>Website ini jalan di Next.js 15.1.3 dan React 19.0.0. Desember 2025 lalu ditemukan celah di versi-versi ini yang memungkinkan orang luar menjalankan perintah di server tanpa perlu login. Kalau itu terjadi, isi database, kunci pembayaran Mayar, dan data siswa bisa diambil.</p>
-<p class="fix"><b>Yang saya lakukan:</b> upgrade Next.js dan React ke versi yang sudah diperbaiki, lalu tes ulang semua halaman dan alur bayar supaya tidak ada yang rusak.</p>
-</li>
-<li>
-<h3>Kunci rahasia server ikut tersimpan di file build.</h3>
-<p>File hasil build yang ada di hosting menyimpan kunci enkripsi. Siapa pun yang pernah memegang salinan file itu bisa memalsukan permintaan ke server.</p>
-<p class="fix"><b>Yang saya lakukan:</b> ganti semua kunci (login Google, Mayar, password database), lalu build ulang dengan kunci enkripsi baru yang disimpan di pengaturan server.</p>
-</li>
-<li>
-<h3>Pengaman dasar dari browser belum dipasang.</h3>
-<p>Website belum mengirim header keamanan sama sekali. Akibatnya halaman dashboard bisa ditampilkan di dalam situs lain untuk menjebak orang mengklik tombol tertentu.</p>
-<p class="fix"><b>Yang saya lakukan:</b> pasang header keamanan standar dan sembunyikan informasi versi framework.</p>
-</li>
-<li>
-<h3>Kursus bisa terhapus dengan sekali klik.</h3>
-<p>Tombol "Hapus" di halaman Kelola Kursus langsung menghapus tanpa tanya. Yang ikut terhapus juga data pendaftaran siswa, termasuk yang sudah bayar. Satu salah klik bisa berujung komplain dan permintaan refund.</p>
-<p class="fix"><b>Yang saya lakukan:</b> ganti jadi "arsipkan" dengan konfirmasi. Kursus yang masih punya siswa berbayar tidak bisa dihapus permanen.</p>
-</li>
-<li>
-<h3>Pesan error tidak pernah muncul ke pengguna.</h3>
-<p>Contohnya waktu siswa salah ketik nomor WhatsApp saat checkout. Pesan "nomor tidak valid" sebenarnya sudah ada di kode, tapi yang muncul justru layar error kosong. Ini terjadi tepat di langkah pembayaran.</p>
-<p class="fix"><b>Yang saya lakukan:</b> tampilkan pesan error di bawah kolom yang salah di semua form, dan siapkan halaman error berbahasa Indonesia untuk kejadian tak terduga.</p>
-</li>
-</ol>
+  <section class="grp" id="g1" aria-labelledby="g1h">
+    <div class="grp-head"><span class="n">01</span><h2 id="g1h">Yang harus diberesin duluan</h2><span class="tag">Mendesak</span></div>
+    <p class="grp-lead">Ini soal keamanan server sama uang siswa, jadi saya kerjain di hari pertama.</p>
+    <ol class="items">
+      <li class="item hot"><span class="k">1</span><h3>Server bisa dibobol tanpa login.</h3>
+        <p>Website ini jalan di Next.js 15.1.3 dan React 19.0.0. Desember 2025 kemarin ketemu celah di versi ini yang bikin orang luar bisa jalanin perintah di server tanpa login. Kalau sampai kejadian, isi database, kunci pembayaran Mayar, dan data siswa bisa diambil.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> upgrade Next.js dan React ke versi yang udah diperbaiki, terus tes ulang semua halaman dan alur bayar biar gak ada yang rusak.</p></li>
+      <li class="item hot"><span class="k">2</span><h3>Kunci rahasia server ikut kesimpan di file build.</h3>
+        <p>File hasil build di hosting nyimpen kunci enkripsi. Siapa aja yang pernah pegang salinan file itu bisa malsuin permintaan ke server.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> ganti semua kunci (login Google, Mayar, password database), terus build ulang pakai kunci enkripsi baru yang disimpan di pengaturan server.</p></li>
+      <li class="item hot"><span class="k">3</span><h3>Pengaman dasar dari browser belum dipasang.</h3>
+        <p>Website belum ngirim header kemanan sama sekali. Akibatnya halaman dashboard bisa ditampilin di dalam situs lain buat ngejebak orang ngeklik tombol tertentu.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> pasang header keamanan standar dan sembunyiin info versi framework.</p></li>
+      <li class="item hot"><span class="k">4</span><h3>Kursus bisa kehapus sekali klik.</h3>
+        <p>Tombol "Hapus" di Kelola Kursus langsung ngehapus tanpa nanya. Data pendaftaran siswa ikut kehapus, termasuk yang udah bayar. Satu salah klik bisa jadi komplain dan minta refund.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> ganti jadi "arsipkan" pakai konfirmasi. Kursus yang masih punya siswa berbayar gak bisa dihapus permanen.</p></li>
+      <li class="item hot"><span class="k">5</span><h3>Pesan error gak pernah nyampe ke pengguna.</h3>
+        <p>Contohnya pas siswa salah ketik nomor WhatsApp waktu checkout. Pesan "nomor tidak valid" sebenernya udah ada di kode, tapi yang muncul malah layar error kosong. Dan ini kejadiannya pas di langkah pembayran.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> tampilin pesan error di bawah kolom yang salah di semua form, dan siapin halaman error bahasa Indonesia buat kejadian yang gak terduga.</p></li>
+    </ol>
+  </section>
 
-<h2>Yang bikin calon siswa batal daftar</h2>
-<p class="lead">Ini yang paling berpengaruh ke jumlah pendaftar.</p>
-<ol class="items">
-<li>
-<h3>Enam tombol utama di beranda tidak berfungsi untuk pengunjung baru.</h3>
-<p>"Jelajahi Katalog Kursus", "Masuk ke Portal", dan empat tombol lain mengarah ke halaman yang butuh login. Pengunjung yang belum login cuma dikembalikan ke beranda tanpa penjelasan. Saya sudah coba sendiri, dan rasanya seperti websitenya rusak.</p>
-<p class="fix"><b>Yang saya lakukan:</b> buka katalog untuk umum, lengkap dengan pencarian dan filter bidang ilmu. Login baru diminta waktu mendaftar, dan setelah login siswa kembali ke kursus yang tadi dipilih.</p>
-</li>
-<li>
-<h3>Calon siswa tidak bisa melihat isi kursus sebelum membayar.</h3>
-<p>Di katalog cuma ada judul, deskripsi singkat, dan harga. Silabus dan pengajar baru kelihatan setelah terdaftar.</p>
-<p class="fix"><b>Yang saya lakukan:</b> buat halaman detail untuk tiap kursus yang bisa dibuka siapa saja. Isinya daftar pelajaran, profil pengajar, harga, dan satu pelajaran yang bisa ditonton gratis.</p>
-</li>
-<li>
-<h3>Belum ada kebijakan privasi, syarat dan ketentuan, maupun kebijakan refund.</h3>
-<p>Website ini menyimpan email dan nomor WhatsApp siswa. UU Pelindungan Data Pribadi mewajibkan pemberitahuan soal itu, dan payment gateway biasanya juga meminta halaman refund dan kontak yang jelas.</p>
-<p class="fix"><b>Yang saya lakukan:</b> buat keempat halaman itu (privasi, syarat, refund, kontak), lalu tautkan di footer dan di langkah pembayaran. Isinya bisa dari tim Nizhamiyyah, atau saya siapkan drafnya untuk ditinjau.</p>
-</li>
-<li>
-<h3>Beranda belum menunjukkan apa yang sebenarnya diajarkan.</h3>
-<p>Isinya banyak klaim seperti "silabus mu'tamad" dan "kitab muktabar", tapi tidak ada nama kitab, nama pengajar, atau contoh materi. Di HP, tombol masuk juga tersembunyi di dalam menu.</p>
-<p class="fix"><b>Yang saya lakukan:</b> tata ulang beranda supaya langsung menampilkan jenjang kitab, pengajar, dan katalog. Tombol masuk saya buat selalu terlihat di HP.</p>
-</li>
-<li>
-<h3>Status pembayaran yang ditampilkan tidak sesuai kenyataan.</h3>
-<p>Setelah membayar, siswa selalu melihat tulisan "sedang diproses", walaupun pembayarannya sudah lunas atau malah gagal. Tagihan lama juga tidak pernah kedaluwarsa, dan kalau tombol bayar diklik dua kali bisa muncul dua tagihan.</p>
-<p class="fix"><b>Yang saya lakukan:</b> tampilkan status sebenarnya (menunggu, lunas, atau kedaluwarsa) dengan tombol yang sesuai, beri batas waktu pada tagihan, dan cegah tagihan ganda.</p>
-</li>
-<li>
-<h3>Jalur notifikasi pembayaran dari Mayar belum dikunci.</h3>
-<p>Pengecekan pembayarannya sendiri sudah benar karena selalu dikonfirmasi ulang ke Mayar. Tapi siapa saja bisa mengirim permintaan ke alamat itu terus-menerus sampai kuota API habis.</p>
-<p class="fix"><b>Yang saya lakukan:</b> cek token dari Mayar di setiap permintaan, batasi jumlah permintaan, dan jangan tampilkan detail error ke luar.</p>
-</li>
-<li>
-<h3>Sebagian teks sulit dibaca.</h3>
-<p>Warna emas yang dipakai untuk judul kecil dan harga terlalu pucat di atas latar putih. Pengguna keyboard juga tidak bisa melihat tombol mana yang sedang dipilih.</p>
-<p class="fix"><b>Yang saya lakukan:</b> ganti warna teks supaya kontrasnya cukup, dan beri garis penanda pada tombol yang sedang aktif.</p>
-</li>
-</ol>
+  <section class="grp" id="g2" aria-labelledby="g2h">
+    <div class="grp-head"><span class="n">02</span><h2 id="g2h">Yang bikin calon siswa batal daftar</h2></div>
+    <p class="grp-lead">Ini yang paling ngaruh ke jumlah pendaftar.</p>
+    <ol class="items">
+      <li class="item"><span class="k">6</span><h3>Enam tombol utama di beranda gak jalan buat pengunjung baru.</h3>
+        <p>"Jelajahi Katalog Kursus", "Masuk ke Portal", dan empat tombol lain ngarah ke halaman yang butuh login. Pengunjung yang belum login cuma dibalikin ke beranda tanpa penjelasan. Saya udah coba sendiri, rasanya kayak websitenya rusak.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> buka katalog buat umum, lengkap sama pencarian dan filter bidang ilmu. Login baru diminta pas daftar, dan habis login siswa balik lagi ke kursus yang tadi dia pilih.</p></li>
+      <li class="item"><span class="k">7</span><h3>Calon siswa gak bisa liat isi kursus sebelum bayar.</h3>
+        <p>Di katalog cuma ada judul, deskripsi singkat, dan harga. Silabus sama pengajarnya baru keliatan setelah terdaftar.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> bikin halaman detail tiap kursus yang bisa dibuka siapa aja. Isinya daftar pelajaran, profil pengajar, harga, dan satu pelajaran yang bisa ditonton gratis.</p></li>
+      <li class="item"><span class="k">8</span><h3>Belum ada kebijakan privasi, syarat dan ketentuan, sama kebijakan refund.</h3>
+        <p>Website ini nyimpen email dan nomor WhatsApp siswa. UU Pelindungan Data Pribadi wajibin pemberitahuan soal itu, dan payment gateway biasanya juga minta halaman refund dan kontak yang jelas.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> bikin keempat halaman itu (privasi, syarat, refund, kontak), terus saya taruh linknya di footer dan di langkah pembayaran. Isinya bisa dari tim Nizhamiyyah, atau saya siapin drafnya buat dicek.</p></li>
+      <li class="item"><span class="k">9</span><h3>Beranda belum nunjukin apa yang sebenernya diajarin.</h3>
+        <p>Isinya banyak klaim kayak "silabus mu'tamad" dan "kitab muktabar", tapi gak ada nama kitab, nama pengajar, atau contoh materi. Di HP, tombol masuk juga ketutup di dalam menu.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> tata ulang beranda biar langsung nampilin jenjang kitab, pengajar, dan katalog. Tombol masuk saya bikin selalu keliatan di HP.</p></li>
+      <li class="item"><span class="k">10</span><h3>Status pembayaran yang ditampilin gak sesuai kenyataan.</h3>
+        <p>Habis bayar, siswa selalu liat tulisan "sedang diproses", padahal bisa aja udah lunas atau malah gagal. Tagihan lama juga gak pernah kedaluwarsa, dan kalau tombol bayar diklik dua kali bisa muncul dua tagihan.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> tampilin status yang asli (menunggu, lunas, atau kedaluwarsa) dengan tombol yang pas, kasih batas waktu di tagihan, dan cegah tagihan dobel.</p></li>
+      <li class="item"><span class="k">11</span><h3>Jalur notifikasi pembayaran dari Mayar belum dikunci.</h3>
+        <p>Pengecekan pembayarannya sendiri udah bener karena selalu dikonfirmasi ulang ke Mayar. Masalahnya, siapa aja bisa ngirim permintaan ke alamat itu terus-terusan sampai kuota API abis.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> cek token dari Mayar di tiap permintaan, batasi jumlah permintaan, dan gak nampilin detail error ke luar.</p></li>
+      <li class="item"><span class="k">12</span><h3>Sebagian teks susah dibaca.</h3>
+        <p>Warna emas buat judul kecil dan harga terlalu pucat di atas latar putih. Yang pakai keyboard juga gak bisa liat tombol mana yang lagi dipilih.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> ganti warna teksnya biar kontrasnya cukup, dan kasih garis penanda di tombol yang lagi aktif.</p></li>
+    </ol>
+  </section>
 
-<h2>Yang mengganggu siswa dan pengajar yang sudah terdaftar</h2>
-<ol class="items">
-<li>
-<h3>Dashboard siswa belum membantu melanjutkan belajar.</h3>
-<p>Angka "Kursus Aktif" selalu mentok di 3 berapa pun jumlah kursusnya. Ada tiga menu "Segera Hadir" yang belum bisa dipakai, dan di Profil muncul karakter rusak "â€”" serta ID internal yang tidak berguna untuk siswa.</p>
-<p class="fix"><b>Yang saya lakukan:</b> tata ulang dashboard supaya siswa langsung bisa lanjut dari pelajaran terakhir dan melihat progres tiap kitab. Angka yang salah dan karakter rusak saya perbaiki, dan menu yang belum ada saya sembunyikan.</p>
-</li>
-<li>
-<h3>Materi pelajaran kehilangan format.</h3>
-<p>Baris baru, huruf tebal, dan daftar tidak tampil. Teks Arab juga tidak tampil dari kanan ke kiri, padahal matan kitab adalah inti tiap pelajaran.</p>
-<p class="fix"><b>Yang saya lakukan:</b> dukung format teks sederhana dan blok teks Arab yang rapi dari kanan ke kiri.</p>
-</li>
-<li>
-<h3>Alat untuk pengajar masih minim.</h3>
-<p>Urutan pelajaran tidak bisa diubah, harga kursus tidak bisa diedit setelah dibuat, kursus baru langsung tayang walau masih kosong, dan pengajar tidak bisa melihat siapa saja siswanya. Pengajar dan admin yang membuka pelajaran juga akan melihat error kalau mengklik "Tandai Selesai".</p>
-<p class="fix"><b>Yang saya lakukan:</b> tambahkan pengurutan pelajaran, edit harga, status draf, daftar siswa dan progresnya, dan mode pratinjau untuk pengajar.</p>
-</li>
-<li>
-<h3>Perubahan peran pengguna tidak tercatat.</h3>
-<p>Admin bisa menurunkan admin lain dengan sekali klik, dan tidak ada catatan siapa mengubah apa.</p>
-<p class="fix"><b>Yang saya lakukan:</b> minta konfirmasi untuk perubahan peran, cegah admin terakhir diturunkan, dan simpan catatan aktivitasnya.</p>
-</li>
-</ol>
+  <section class="grp" id="g3" aria-labelledby="g3h">
+    <div class="grp-head"><span class="n">03</span><h2 id="g3h">Yang ganggu siswa dan pengajar yang udah terdaftar</h2></div>
+    <ol class="items">
+      <li class="item"><span class="k">13</span><h3>Dashboard siswa belum bantu buat lanjut belajar.</h3>
+        <p>Angka "Kursus Aktif" selalu mentok di 3 berapapun jumlah kursusnya. Ada tiga menu "Segera Hadir" yang belum bisa dipakai, dan di Profil muncul karakter rusak "â€”" sama ID internal yang gak ada gunanya buat siswa.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> tata ulang dashboard biar siswa bisa langsung lanjut dari pelajaran terakhir dan liat progres tiap kitab. Angka yang salah dan karakter rusak saya benerin, menu yang belum ada saya sembunyiin.</p></li>
+      <li class="item"><span class="k">14</span><h3>Materi pelajaran kehilangan format.</h3>
+        <p>Baris baru, huruf tebal, dan daftar gak tampil. Teks Arab juga gak tampil dari kanan ke kiri, padahal matan kitab itu inti tiap pelajaran.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> dukung format teks sederhana, plus blok teks Arab yang rapi dari kanan ke kiri.</p></li>
+      <li class="item"><span class="k">15</span><h3>Alat buat pengajar masih minim.</h3>
+        <p>Urutan pelajaran gak bisa diubah, harga kursus gak bisa diedit setelah dibuat, kursus baru langsung tayang padahal masih kosong, dan pengajar gak bisa liat siapa aja siswanya. Pengajar dan admin yang buka pelajaran juga bakal ketemu error kalau klik "Tandai Selesai".</p>
+        <p class="fix"><b>Yang saya lakuin:</b> tambahin pengurutan pelajaran, edit harga, status draf, daftar siswa sama progresnya, dan mode pratinjau buat pengajar.</p></li>
+      <li class="item"><span class="k">16</span><h3>Perubahan peran pengguna gak tercatat.</h3>
+        <p>Admin bisa nurunin admin lain sekali klik, dan gak ada catatan siapa ngubah apa.</p>
+        <p class="fix"><b>Yang saya lakuin:</b> minta konfirmasi tiap ganti peran, cegah admin terakhir diturunin, dan simpan catatan aktivitasnya.</p></li>
+    </ol>
+  </section>
 
-<h2>Yang perlu dirapikan di belakang layar</h2>
-<p class="lead">Tidak terlihat langsung oleh siswa, tapi berpengaruh ke kecepatan website dan seberapa mudah dirawat nanti.</p>
-<div class="plain">
-<p>Beranda saat ini mengambil data dari database setiap kali ada yang membuka, padahal isinya jarang berubah. Data pengguna juga dicari dua sampai tiga kali di setiap halaman. Saya akan membuat beranda bisa disimpan sementara (cache) dan merapikan pengambilan datanya supaya halaman lebih cepat terbuka.</p>
-<p>Selain itu ada beberapa perbaikan kecil yang akan saya kerjakan sekaligus:</p>
-<ul class="small">
-<li>Validasi semua isian form, termasuk batas panjang teks dan batas harga.</li>
-<li>Alamat video pelajaran hanya boleh dari YouTube atau file video langsung, supaya situs lain tidak bisa disisipkan.</li>
-<li>Pengecekan hak akses dikumpulkan di satu tempat supaya tidak ada halaman yang terlewat.</li>
-<li>Halaman 404 dan error yang berbahasa Indonesia, menggantikan layar hitam bawaan.</li>
-<li>Favicon, gambar pratinjau saat link dibagikan di WhatsApp, dan sitemap untuk Google.</li>
-<li>Font dimuat dari server sendiri, dan kode tampilan dirapikan.</li>
-<li>Alamat kursus yang berjudul Arab, alamat website yang tertanam saat build, halaman status server yang terbuka, dan tombol yang terlalu kecil di HP.</li>
-</ul>
-</div>
+  <section class="grp" id="g4" aria-labelledby="g4h">
+    <div class="grp-head"><span class="n">04</span><h2 id="g4h">Yang perlu dirapiin di belakang layar</h2></div>
+    <p class="grp-lead">Gak keliatan langsung sama siswa, tapi ngaruh ke kecepatan website dan seberapa gampang dirawat nanti.</p>
+    <div class="minor">
+      <p>Beranda sekarang ngambil data dari database tiap kali ada yang buka, padahal isinya jarang berubah. Data pengguna juga dicari dua sampai tiga kali di tiap halaman. Beranda bakal saya bikin bisa disimpan sementara (cache), dan pengambilan datanya saya rapiin biar halaman lebih cepet kebuka.</p>
+      <p style="margin-top:12px">Terus ada beberapa perbaikan kecil yang saya kerjain sekalian:</p>
+      <ul>
+        <li>Validasi semua isian form, termasuk batas panjang teks dan batas harga.</li>
+        <li>Alamat video pelajaran cuma boleh dari YouTube atau file video langsung, biar situs lain gak bisa diselipin.</li>
+        <li>Pengecekan hak akses dikumpulin di satu tempat biar gak ada halaman yang kelewat.</li>
+        <li>Halaman 404 dan error bahasa Indonesia, gantiin layar hitam bawaan.</li>
+        <li>Favicon, gambar pratinjau pas link dibagiin di WhatsApp, dan sitemap buat Google.</li>
+        <li>Font dimuat dari server sendiri, dan kode tampilannya dirapiin.</li>
+        <li>Alamat kursus yang judulnya huruf Arab, alamat website yang ketanam pas build, halaman status server yang kebuka, dan tombol yang kekecilan di HP.</li>
+      </ul>
+    </div>
+  </section>
 
-<h2>Urutan kerjanya</h2>
-<ol class="steps">
-<li><b>Minggu 1:</b> lima masalah keamanan dan data di bagian pertama.</li>
-<li><b>Minggu 2 sampai 4:</b> semua yang membuat calon siswa batal daftar, plus salinan website untuk uji coba pembayaran sebelum dirilis.</li>
-<li><b>Minggu 5 sampai 7:</b> dashboard, halaman pelajaran, alat pengajar, dan perapian di belakang layar.</li>
-<li><b>Minggu 8:</b> uji bersama tim, panduan untuk admin dan pengajar, dan satu sesi pelatihan.</li>
-</ol>
+  <section class="grp" id="jadwal" aria-labelledby="jh">
+    <div class="grp-head"><span class="n">05</span><h2 id="jh">Jadwalnya, seminggu beres</h2></div>
+    <p class="grp-lead">Tiap hari saya kabarin progresnya, dan semua perubahan masuk lewat pull request dulu sebelum naik ke website.</p>
+    <div class="days">
+      <div class="day first"><b>Hari 1</b><span>Upgrade framework, ganti semua kunci, pasang header keamanan.</span></div>
+      <div class="day"><b>Hari 2</b><span>Arsip kursus, pesan error di semua form, salinan website buat uji coba.</span></div>
+      <div class="day"><b>Hari 3</b><span>Katalog publik, halaman detail kursus, halaman legal.</span></div>
+      <div class="day"><b>Hari 4</b><span>Beranda baru, status pembayaran, jalur notifikasi Mayar.</span></div>
+      <div class="day"><b>Hari 5</b><span>Dashboard siswa, halaman pelajaran, teks Arab.</span></div>
+      <div class="day"><b>Hari 6</b><span>Alat pengajar, catatan admin, perapian belakang layar.</span></div>
+      <div class="day"><b>Hari 7</b><span>Tes bareng tim, panduan admin dan pengajar, rilis.</span></div>
+    </div>
+  </section>
 
-<div class="close">
-<p>Total biayanya <mark><b>Rp3,5 juta</b></mark> untuk semua yang tertulis di atas, dibayar bertahap setiap kali satu tahap selesai dan sudah Anda cek.</p>
-<p>Untuk mulai, saya butuh akses ke repository kode, panel hosting, akun Mayar (mode sandbox), dan Google Cloud Console. Semua perubahan akan masuk lewat pull request, jadi tim Nizhamiyyah bisa melihat dan menyetujui dulu sebelum ada yang berubah di website.</p>
-<p>Kalau ada yang ingin ditanyakan atau mau dibahas dulu, kabari saja.</p>
-<p class="sign">Wassalamu'alaikum,<br><b>Dar Dev</b></p>
-<p class="note">Detail teknis tiap masalah, lengkap dengan bukti di kodenya, ada di <a href="../audit/">laporan audit</a>.</p>
-</div>
-
+  <div class="close" id="biaya">
+    <div class="price"><b class="num">Rp3,5 juta</b><span>buat semua yang ditulis di atas</span></div>
+    <p>Dibayar setelah semuanya selesai dan udah dicek sama tim Nizhamiyyah.</p>
+    <p>Buat mulai, saya butuh akses ke repository kode, panel hosting, akun Mayar (mode sandbox), dan Google Cloud Console. Semua perubahan masuk lewat pull request, jadi tim Nizhamiyyah bisa liat dan setujuin dulu sebelum ada yang berubah di website.</p>
+    <p>Kalo ada yang mau ditanyain atau mau dibahas dulu, kabarin aja ya.</p>
+    <p class="sign">Wassalamu'alaikum,<br><b>Dar Dev</b></p>
+    <p class="note">Detail teknis tiap masalah, lengkap sama buktinya di kode, ada di <a href="../audit/">laporan audit</a>.</p>
+  </div>
 </article>
+
+<aside class="aside" aria-label="Ringkasan">
+  <div class="sum">
+    <dl>
+      <dt>Masalah</dt><dd class="num">37</dd>
+      <dt>Mendesak</dt><dd class="num">5</dd>
+      <dt>Waktu kerja</dt><dd class="num">7 hari</dd>
+    </dl>
+    <div class="big"><span>Biaya</span><b class="num">Rp3,5 jt</b></div>
+  </div>
+  <div class="box">
+    <h4>Isi surat</h4>
+    <ul class="toc">
+      <li><a href="#g1"><span>Yang harus diberesin duluan</span><small>5</small></a></li>
+      <li><a href="#g2"><span>Bikin calon siswa batal daftar</span><small>7</small></a></li>
+      <li><a href="#g3"><span>Ganggu siswa dan pengajar</span><small>4</small></a></li>
+      <li><a href="#g4"><span>Rapiin di belakang layar</span><small>8</small></a></li>
+      <li><a href="#jadwal"><span>Jadwal seminggu</span><small>7 hari</small></a></li>
+      <li><a href="#biaya"><span>Biaya dan cara mulai</span><small></small></a></li>
+    </ul>
+  </div>
+</aside>
+</div>
+
+<div class="mbar" role="region" aria-label="Ringkasan biaya">
+  <span><b>Rp3,5 juta · 7 hari</b>37 masalah diberesin</span>
+  <a href="#biaya">Lihat biaya</a>
+</div>
+
+<script>
+(function(){
+  var ids=['g1','g2','g3','g4','jadwal','biaya'];
+  var links=[].slice.call(document.querySelectorAll('.toc a, .mnav a'));
+  function mark(id){
+    links.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href')==='#'+id); });
+    var chip=document.querySelector('.mnav a.on');
+    if(chip && chip.parentNode.scrollWidth>chip.parentNode.clientWidth){
+      var nav=chip.parentNode; nav.scrollLeft=chip.offsetLeft-nav.clientWidth/2+chip.clientWidth/2;
+    }
+  }
+  if(!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting) mark(e.target.id); });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  ids.forEach(function(id){ var el=document.getElementById(id); if(el) io.observe(el); });
+})();
+</script>
 
 </body>
 </html>
