@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Amiri } from "next/font/google";
+import { Amiri, Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "@/styles/globals.css";
 
 const amiri = Amiri({ subsets: ["arabic", "latin"], weight: ["400", "700"], variable: "--f-amiri", display: "swap", preload: false });
+const inter = Inter({ subsets: ["latin"], variable: "--f-inter", display: "swap" });
 const satoshi = localFont({
   src: [
     { path: "../fonts/Satoshi-Regular.woff2", weight: "400" },
@@ -28,7 +29,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${amiri.variable} ${satoshi.variable}`}>
+    <html lang="id" className={`${amiri.variable} ${satoshi.variable} ${inter.variable}`}>
       <body>
         <a className="skip" href="#isi">Lewati ke konten</a>
         {children}
