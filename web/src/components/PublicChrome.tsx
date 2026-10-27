@@ -11,8 +11,25 @@ const NAV = [
   { href: "/#faq", label: "Tanya jawab" },
 ];
 
+const TICKER = [
+  "Katalog dan silabus terbuka tanpa login",
+  "Pelajaran pratinjau gratis",
+  "Bayar lewat QRIS, virtual account, atau e-wallet",
+  "Akses selamanya",
+  "Bantuan lewat WhatsApp",
+];
+
+function Ticker() {
+  const items = (hidden: boolean) => (
+    <ul aria-hidden={hidden || undefined}>{TICKER.map((t) => <li key={t}>{t}<i aria-hidden="true">✦</i></li>)}</ul>
+  );
+  return <div className="ticker" aria-label="Keunggulan Nizhamiyyah Edu"><div className="ticker-track">{items(false)}{items(true)}</div></div>;
+}
+
 export function PublicHeader({ landing = false }: { landing?: boolean }) {
   return (
+    <>
+    {landing && <Ticker />}
     <header className={`pub-header gutter${landing ? " landing-header" : ""}`}>
       <div className="wrap">
         <Link href="/" aria-label="Nizhamiyyah Edu, ke beranda"><Logo /></Link>
@@ -30,6 +47,7 @@ export function PublicHeader({ landing = false }: { landing?: boolean }) {
         </div>
       </div>
     </header>
+    </>
   );
 }
 
