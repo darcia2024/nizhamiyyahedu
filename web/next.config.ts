@@ -1,7 +1,15 @@
 ﻿import type { NextConfig } from "next";
 
+// "/web" saat dipasang di nizhamiyyahedu.vercel.app/web; kosong di lokal.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || undefined;
+// Domain lain yang meneruskan permintaan ke aplikasi ini (rewrite Vercel), dipisah koma.
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+
 const config: NextConfig = {
-  experimental: { serverActions: { bodySizeLimit: "2mb" } },
+  basePath,
+  experimental: { serverActions: { bodySizeLimit: "2mb", allowedOrigins } },
+  // Database contoh untuk deployment demo, disalin ke /tmp saat aplikasi berjalan.
+  outputFileTracingIncludes: { "/**/*": ["./prisma/demo.db"] },
   poweredByHeader: false,
   async headers() {
     return [

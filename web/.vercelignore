@@ -1,0 +1,14 @@
+# Jangan unggah rahasia lokal, database lokal, dan hasil uji ke Vercel.
+.env
+.env.*
+!.env.example
+*.db
+*.db-journal
+uploads/
+tests/
+test-results/
+.playwright-mcp/
+admin-desktop.png
+admin-mobile.png
+audit-dependencies.json
+tsconfig.tsbuildinfo

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { withBase } from "@/lib/base-path";
 import { Award, BookOpen, CreditCard, LifeBuoy, LineChart, LogOut, PencilRuler, Settings2, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { InstallButton } from "@/components/InstallButton";
@@ -24,7 +25,7 @@ export default async function MenuPage() {
 
   async function logout() {
     "use server";
-    await signOut({ redirectTo: "/" });
+    await signOut({ redirectTo: withBase("/") });
   }
 
   return (

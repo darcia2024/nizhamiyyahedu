@@ -1,4 +1,5 @@
 import { ManageHeading } from "./ManageUI";
+import { withBase } from "@/lib/base-path";
 import { PrintButton } from "./PrintButton";
 
 type Guide = { title: string; image: string; alt: string; steps: string[]; note?: string };
@@ -47,7 +48,7 @@ export function AdminHelp() {
         <ol className="help-steps">{g.steps.map((s) => <li key={s}>{s}</li>)}</ol>
         {g.note && <p className="small muted"><strong>Catatan:</strong> {g.note}</p>}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="help-shot" src={`/bantuan/${g.image}.png`} alt={g.alt} width={1280} height={760} loading="lazy" />
+        <img className="help-shot" src={withBase(`/bantuan/${g.image}.png`)} alt={g.alt} width={1280} height={760} loading="lazy" />
       </section>
     ))}
   </>;

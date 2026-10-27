@@ -6,13 +6,17 @@ import { settleOrder } from "@/lib/orders";
 import { rupiah } from "@/lib/format";
 import { SubmitButton } from "@/components/SubmitButton";
 import { requireUser } from "@/lib/auth-guard";
+import { demoMode } from "@/lib/base-path";
+
+// Simulasi tidak boleh ada di production asli. Deployment demo (DEMO_MODE=1) tetap boleh.
+const blockedInProd = () => process.env.NODE_ENV === "production" && !demoMode;
 
 export const metadata = { title: "Simulasi Mayar", robots: { index: false } };
 export const dynamic = "force-dynamic";
 
 /** Halaman bayar tiruan, hanya ada saat MAYAR_API_KEY kosong (lokal). */
 export default async function SimMayar({ params }: { params: Promise<{ orderId: string }> }) {
-  if (!mayarSimulated() || process.env.NODE_ENV === "production") notFound();
+  if (!mayarSimulated() || blockedInProd()) notFound();
   const { orderId } = await params;
   const user = await requireUser(`/dev/mayar/${orderId}`);
   const order = await db.order.findUnique({ where: { id: orderId }, include: { course: true } });
@@ -20,7 +24,7 @@ export default async function SimMayar({ params }: { params: Promise<{ orderId: 
 
   async function pay() {
     "use server";
-    if (process.env.NODE_ENV === "production" || !mayarSimulated()) notFound();
+    if (blockedInProd() || !mayarSimulated()) notFound();
     const actor = await requireUser();
     const target = await db.order.findFirst({ where: { id: orderId, userId: actor.id } });
     if (!target) notFound();
@@ -30,7 +34,7 @@ export default async function SimMayar({ params }: { params: Promise<{ orderId: 
   }
   async function cancel() {
     "use server";
-    if (process.env.NODE_ENV === "production" || !mayarSimulated()) notFound();
+    if (blockedInProd() || !mayarSimulated()) notFound();
     const actor = await requireUser();
     await db.order.updateMany({ where: { id: orderId, userId: actor.id, status: "PENDING" }, data: { status: "FAILED" } });
     redirect(`/dashboard/pembayaran/${orderId}`);

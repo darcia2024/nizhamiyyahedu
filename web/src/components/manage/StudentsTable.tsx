@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { withBase } from "@/lib/base-path";
 import { db } from "@/lib/db";
 import { dateWib } from "@/lib/format";
 
@@ -15,7 +16,7 @@ export async function StudentsTable({ courseId, linkUsers }: { courseId: string;
   if (!enrollments.length) return <div className="empty-state"><h2 className="serif" style={{ fontSize: 20, fontWeight: 600 }}>Belum ada siswa</h2><p className="muted">User yang mendaftar akan muncul di sini beserta progresnya.</p></div>;
   return (
     <div className="card table-box">
-      <div className="pad"><a className="btn btn-ghost sm" href={`/api/courses/${courseId}/users`}>Unduh progres CSV</a></div>
+      <div className="pad"><a className="btn btn-ghost sm" href={withBase(`/api/courses/${courseId}/users`)}>Unduh progres CSV</a></div>
       <table className="t">
         <thead><tr><th>User</th><th>Email</th><th>Sumber</th><th>Bergabung</th><th>Progres</th></tr></thead>
         <tbody>

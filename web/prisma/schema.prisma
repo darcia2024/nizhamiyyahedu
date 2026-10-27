@@ -6,7 +6,8 @@
 generator client {
   provider      = "prisma-client-js"
   // Tambahkan target server (mis. "debian-openssl-1.1.x") sesuai OpenSSL hosting.
-  binaryTargets = ["native"]
+  // "rhel-openssl-3.0.x" dipakai fungsi Node.js di Vercel (deployment demo /web).
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

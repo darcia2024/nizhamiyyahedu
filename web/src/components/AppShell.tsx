@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { withBase } from "@/lib/base-path";
 import { Award, BookOpen, BookText, ChevronsUpDown, CirclePlay, CreditCard, Ellipsis, LayoutGrid, LifeBuoy, LineChart, LogOut, NotebookPen, PencilRuler, Search, Settings2, ShieldCheck } from "lucide-react";
 import { StarMark } from "@/components/Logo";
 import { InstallButton } from "@/components/InstallButton";
@@ -55,7 +56,7 @@ export async function AppShell({
 
   async function logout() {
     "use server";
-    await signOut({ redirectTo: "/" });
+    await signOut({ redirectTo: withBase("/") });
   }
 
   const link = (i: Item) => (

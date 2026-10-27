@@ -15,3 +15,5 @@ test-results/
 .playwright-mcp/
 uploads/
 tsconfig.tsbuildinfo
+.vercel
+.env*

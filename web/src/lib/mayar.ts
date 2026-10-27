@@ -6,10 +6,12 @@
  * Status: https://docs.mayar.id/api-reference/reqpayment/detail
  * Transaksi sandbox dengan akun merchant tetap wajib sebelum rilis.
  */
+import { demoMode } from "@/lib/base-path";
+
 const base = () => process.env.MAYAR_API_BASE ?? "https://api.mayar.id/hl/v1";
 const key = () => process.env.MAYAR_API_KEY ?? "";
 
-export const mayarSimulated = () => process.env.NODE_ENV !== "production" && !key();
+export const mayarSimulated = () => (process.env.NODE_ENV !== "production" || demoMode) && !key();
 
 export type Invoice = { id: string; link: string };
 

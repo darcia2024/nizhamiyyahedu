@@ -1,4 +1,5 @@
 import sharp from "sharp";
+import { withBase } from "@/lib/base-path";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
@@ -14,6 +15,6 @@ export async function saveTeacherPhoto(file:File):Promise<{ok:true;url:string}|{
     const name=`${randomUUID()}.webp`;
     await mkdir(uploadDirectory(),{recursive:true});
     await writeFile(join(uploadDirectory(),name),bytes,{flag:"wx"});
-    return {ok:true,url:`/api/media/${name}`};
+    return {ok:true,url:withBase(`/api/media/${name}`)};
   } catch { return {ok:false,error:"Foto tidak bisa diproses. Pilih file gambar lain."}; }
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { withBase } from "@/lib/base-path";
 import { CircleCheck, Flame } from "lucide-react";
 
 /**
@@ -10,12 +11,12 @@ export function LearningMockup() {
     <div className="hm-scene" aria-label="Pratinjau ruang belajar Nizhamiyyah Edu di laptop dan HP">
       <div className="hm-laptop">
         <div className="hm-bar" aria-hidden="true"><span /><span /><span /><i>belajarditimurtengah.com/dashboard</i></div>
-        <Image src="/hero/lms-desktop.jpg" alt="Dashboard ruang belajar: kartu statistik, lanjutkan belajar, dan daftar kursus" width={2880} height={1720} priority sizes="(max-width: 760px) 118vw, 780px" />
+        <Image src={withBase("/hero/lms-desktop.jpg")} alt="Dashboard ruang belajar: kartu statistik, lanjutkan belajar, dan daftar kursus" width={2880} height={1720} priority sizes="(max-width: 760px) 118vw, 780px" />
       </div>
 
       <div className="hm-phone">
         <span className="hm-notch" aria-hidden="true" />
-        <Image src="/hero/lms-mobile.jpg" alt="Halaman Matan mode hafalan di HP" width={1170} height={2340} priority sizes="(max-width: 760px) 40vw, 210px" />
+        <Image src={withBase("/hero/lms-mobile.jpg")} alt="Halaman Matan mode hafalan di HP" width={1170} height={2340} priority sizes="(max-width: 760px) 40vw, 210px" />
       </div>
 
       <div className="hm-chip hm-chip-a" aria-hidden="true">

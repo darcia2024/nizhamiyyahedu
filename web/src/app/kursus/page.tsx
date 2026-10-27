@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { withBase } from "@/lib/base-path";
 import type { Metadata } from "next";
 import { PublicShell } from "@/components/PublicChrome";
 import { CourseCardView } from "@/components/CourseCard";
@@ -47,7 +48,7 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
             <p className="muted" role="status">{filtered.length} kursus · terbuka untuk semua pengunjung</p>
           </div>
 
-          <form className="filters" method="get" action="/kursus" role="search">
+          <form className="filters" method="get" action={withBase("/kursus")} role="search">
             <div className="searchbox">
               <label className="sr-only" htmlFor="q">Cari kursus atau kitab</label>
               <input id="q" name="q" type="search" className="input" placeholder="Cari kursus atau kitab…" defaultValue={sp.q ?? ""} minLength={2} maxLength={80} />

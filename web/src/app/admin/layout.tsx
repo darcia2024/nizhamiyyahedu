@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { withBase } from "@/lib/base-path";
 import { requireRole } from "@/lib/auth-guard";
 import { AdminNav } from "@/components/AdminNav";
 import { StarMark } from "@/components/Logo";
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin panel", robots: { index: false, follow: false } };
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await requireRole(["ADMIN"], "/admin");
-  async function logout() { "use server"; await signOut({ redirectTo: "/" }); }
+  async function logout() { "use server"; await signOut({ redirectTo: withBase("/") }); }
   return <div className="admin-app"><aside className="admin-side">
     <Link className="brand" href="/"><span className="brand-mark"><StarMark size={22} stroke="#fff" dot={false} /></span><b>Nizhamiyyah</b></Link>
     <p className="group-label">Ruang pengelola</p><AdminNav />

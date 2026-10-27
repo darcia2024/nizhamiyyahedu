@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { withBase } from "@/lib/base-path";
 import { ArrowRight, BookOpenCheck, CirclePlay, Compass, GraduationCap, Search, ShieldCheck } from "lucide-react";
 import { PlanShowcase } from "@/components/PlanShowcase";
 import { StepsShowcase } from "@/components/StepsShowcase";
@@ -30,7 +31,7 @@ export default async function HomePage() {
             <p className="landing-pill"><span>Baru</span> Belajar kitab dalam satu ruang <ArrowRight size={13} /></p>
             <h1 id="hero-h">Belajar kitab.<br /><span className="hl-line"><span className="hl">Dibuat lebih terarah.</span></span></h1>
             <p className="landing-lead">Kurikulum berjenjang, matan yang gampang diikuti, dan progres yang selalu tersimpan. Belajar dari dasar sampai paham, sesuai ritme kamu.</p>
-            <form className="hero-search" action="/kursus" method="get" role="search">
+            <form className="hero-search" action={withBase("/kursus")} method="get" role="search">
               <Search size={20} aria-hidden="true" />
               <label htmlFor="hero-q" className="sr-only">Cari kursus atau kitab</label>
               <input id="hero-q" name="q" type="search" minLength={2} maxLength={80} placeholder="Cari kitab, misalnya Ajurrumiyyah" autoComplete="off" />

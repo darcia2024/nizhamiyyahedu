@@ -5,6 +5,7 @@ import { GoogleG } from "@/components/HeaderAuth";
 import { SubmitButton } from "@/components/SubmitButton";
 import { signIn, googleEnabled, devLoginEnabled } from "@/auth";
 import { getCurrentUser, safeCallback } from "@/lib/auth-guard";
+import { withBase, demoMode } from "@/lib/base-path";
 
 export const metadata: Metadata = { title: "Masuk", robots: { index: false } };
 
@@ -15,11 +16,11 @@ export default async function MasukPage({ searchParams }: { searchParams: Promis
 
   async function google() {
     "use server";
-    await signIn("google", { redirectTo: to });
+    await signIn("google", { redirectTo: withBase(to) });
   }
   async function dev(fd: FormData) {
     "use server";
-    await signIn("dev", { email: String(fd.get("email") ?? ""), redirectTo: to });
+    await signIn("dev", { email: String(fd.get("email") ?? ""), redirectTo: withBase(to) });
   }
 
   return (
@@ -40,7 +41,7 @@ export default async function MasukPage({ searchParams }: { searchParams: Promis
 
           {devLoginEnabled && (
             <form action={dev} className="block" style={{ marginTop: 8 }} aria-label="Login uji lokal">
-              <p className="eyebrow">Hanya untuk pengembangan lokal</p>
+              <p className="eyebrow">{demoMode ? "Mode demo: data contoh, bisa direset sewaktu-waktu" : "Hanya untuk pengembangan lokal"}</p>
               <div className="field" style={{ marginTop: 10 }}>
                 <label htmlFor="email">Email akun uji</label>
                 <select id="email" name="email" className="select" defaultValue="siswa@contoh.test" data-testid="dev-email">
@@ -52,7 +53,7 @@ export default async function MasukPage({ searchParams }: { searchParams: Promis
               <div style={{ marginTop: 12 }}><SubmitButton className="btn btn-primary block" testId="login-dev">Masuk (uji)</SubmitButton></div>
             </form>
           )}
-          <p className="small muted">Dengan masuk, kamu menyetujui <a href="/syarat">Syarat dan ketentuan</a> dan <a href="/privasi">Kebijakan privasi</a>.</p>
+          <p className="small muted">Dengan masuk, kamu menyetujui <a href={withBase("/syarat")}>Syarat dan ketentuan</a> dan <a href={withBase("/privasi")}>Kebijakan privasi</a>.</p>
         </div>
       </div>
     </PublicShell>

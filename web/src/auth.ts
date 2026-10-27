@@ -3,8 +3,10 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import type { Provider } from "next-auth/providers";
 import { db } from "@/lib/db";
+import { basePath, demoMode } from "@/lib/base-path";
 
-const devLogin = process.env.DEV_LOGIN === "1" && process.env.NODE_ENV !== "production";
+// Login uji hanya di lokal, kecuali deployment demo publik yang memakai DEMO_MODE=1 dan database contoh.
+const devLogin = (process.env.DEV_LOGIN === "1" && process.env.NODE_ENV !== "production") || demoMode;
 
 const providers: Provider[] = [];
 if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
@@ -32,6 +34,7 @@ export const devLoginEnabled = devLogin;
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers,
+  basePath: `${basePath}/api/auth`,
   session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 30 },
   pages: { signIn: "/masuk" },
   trustHost: true,

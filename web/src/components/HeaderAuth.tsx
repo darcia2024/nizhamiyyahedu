@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { withBase } from "@/lib/base-path";
 import { useEffect, useState } from "react";
 import { initials } from "@/lib/format";
 
@@ -10,7 +11,7 @@ export function HeaderAuth() {
   const [me, setMe] = useState<Me>(null);
   useEffect(() => {
     let alive = true;
-    fetch("/api/me", { cache: "no-store" })
+    fetch(withBase("/api/me"), { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => alive && setMe(j?.user ?? null))
       .catch(() => {});
