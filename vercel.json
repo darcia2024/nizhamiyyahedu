@@ -1,5 +1,7 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/penawaran/index.html" }
+    { "source": "/", "destination": "/penawaran/index.html" },
+    { "source": "/web", "destination": "https://nizhamiyyahedu-web.vercel.app/web" },
+    { "source": "/web/:path*", "destination": "https://nizhamiyyahedu-web.vercel.app/web/:path*" }
   ]
 }
