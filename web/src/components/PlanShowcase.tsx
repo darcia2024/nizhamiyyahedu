@@ -25,11 +25,6 @@ export function PlanShowcase({ courses }: { courses: CourseCard[] }) {
           return (
             <article key={c.id} className="plan-card">
               <Link className={`plan-thumb c-${tone}`} href={`/kursus/${c.slug}`} tabIndex={-1} aria-hidden="true">
-                <svg className="star" aria-hidden="true" width="240" height="240" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth=".35">
-                  <rect x="5" y="5" width="14" height="14" />
-                  <rect x="5" y="5" width="14" height="14" transform="rotate(45 12 12)" />
-                  <circle cx="12" cy="12" r="3.2" />
-                </svg>
                 <span className="plan-top"><span>{FIELD_LABEL[c.field]}</span><span>{LEVEL_LABEL[c.level]}</span></span>
                 <span className="plan-ar ar" lang="ar" dir="rtl">{c.titleAr ?? c.title}</span>
                 {(free || c.hasFreePreview) && <span className="plan-hot"><CirclePlay size={14} /> {free ? "Gratis" : "Pratinjau gratis"}</span>}

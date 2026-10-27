@@ -15,6 +15,7 @@ Status ini membedakan aplikasi lokal yang bisa dicoba dari gerbang rilis PRD. Ja
 
 Ditambahkan setelahnya: gambar OG per kursus (judul Latin, bidang, jenjang, pengajar, harga; teks Arab belum dirender karena butuh berkas font Arab untuk generator gambar), riwayat versi dan pemulihan untuk beranda/FAQ/kontak (`SiteContentVersion`, migrasi `202610270002`), dan panduan admin bergambar yang bisa dicetak sebagai PDF (`/admin/bantuan`, tangkapan layar di `web/public/bantuan/`; perlu diambil ulang bila tampilan admin berubah).
 
+Menu LMS tambahan (27 Oktober 2026, di luar PRD awal atas permintaan klien): **Catatan saya** (catatan pribadi per pelajaran, daftar dan pencarian di `/dashboard/catatan`), **Matan** (`/dashboard/matan`: mode baca, hafalan, uji terjemah, acak urutan, penanda sudah hafal tersimpan di perangkat), **Tanya pengajar** (tombol WhatsApp di halaman pelajaran, memakai nomor kontak admin), **Progres** (`/dashboard/progres`: hari beruntun, aktivitas 14 hari, riwayat selesai), **Sertifikat** (`/dashboard/sertifikat`: terbit otomatis saat semua pelajaran selesai, cetak atau simpan sebagai PDF) dan halaman **Menu** untuk layar kecil. Catatan disimpan di tabel baru `LessonNote` (migrasi `202610270003`). Sertifikat belum punya halaman verifikasi publik dan nomornya belum disimpan di database.
 ## Pengujian lokal
 
 - TypeScript tanpa error.

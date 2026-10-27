@@ -73,7 +73,7 @@ Audit menemukan **37 masalah** (1 kritis, 7 tinggi, 16 sedang, 13 rendah — rin
 
 ### 2.2 Non-tujuan (tidak dikerjakan di rilis ini)
 
-- Sertifikat, forum/diskusi, kuis/ujian, notifikasi email/WhatsApp otomatis, aplikasi mobile native.
+- Forum/diskusi, kuis/ujian, notifikasi email/WhatsApp otomatis, aplikasi mobile native. (Sertifikat penyelesaian dikeluarkan dari daftar ini pada 27 Okt 2026 atas permintaan klien dan dibangun sebagai halaman cetak/PDF.)
 - Metode login selain Google. Multi-bahasa (situs tetap Bahasa Indonesia; teks Arab hanya untuk matan).
 - Langganan/paket bundel, kupon, afiliasi, refund otomatis lewat API (refund tetap proses manual lewat admin + dashboard Mayar).
 - Hosting video sendiri (video tetap YouTube atau file video langsung dari host yang di-allowlist).

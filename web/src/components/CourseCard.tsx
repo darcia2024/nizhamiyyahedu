@@ -7,10 +7,6 @@ export function Cover({ c, flag }: { c: Pick<C, "field" | "titleAr" | "title" | 
   const tone = FIELD_TONE[c.field];
   return (
     <div className={`cover c-${tone}`}>
-      <svg className="star" aria-hidden="true" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth=".6">
-        <rect x="5" y="5" width="14" height="14" />
-        <rect x="5" y="5" width="14" height="14" transform="rotate(45 12 12)" />
-      </svg>
       <div className="top"><span>{FIELD_LABEL[c.field]}</span><span>{LEVEL_LABEL[c.level]}</span></div>
       <p className="ar" lang="ar" dir="rtl">{c.titleAr ?? c.title}</p>
       {flag && <span className="flag">{flag}</span>}

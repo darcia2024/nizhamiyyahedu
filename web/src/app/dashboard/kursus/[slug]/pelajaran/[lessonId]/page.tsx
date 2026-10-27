@@ -6,6 +6,8 @@ import { LessonView } from "@/components/LessonView";
 import { requireUser, canManageCourse } from "@/lib/auth-guard";
 import { db } from "@/lib/db";
 import { FIELD_LABEL, type Field } from "@/lib/constants";
+import { getContent } from "@/lib/content";
+import { whatsappLink } from "@/lib/learning";
 
 type Props = { params: Promise<{ slug: string; lessonId: string }> };
 
@@ -48,6 +50,8 @@ export default async function LessonPage({ params }: Props) {
     });
   }
   const completed = new Set(prog.filter((p) => p.completedAt).map((p) => p.lessonId));
+  const [note, contact] = await Promise.all([mode === "student" ? db.lessonNote.findUnique({ where: { userId_lessonId: { userId: user.id, lessonId } } }) : Promise.resolve(null), getContent("contact.main")]);
+  const askUrl = mode === "student" ? whatsappLink(contact.whatsapp, `Assalamu'alaikum, saya ${user.name ?? "siswa"}. Mau tanya soal kursus "${course.title}", pelajaran ${lesson.position}: ${lesson.title}.`) : null;
 
   return (
     <AppShell user={user} active="kursus" activeCourse={slug}>
@@ -64,6 +68,8 @@ export default async function LessonPage({ params }: Props) {
         lesson={lesson}
         lessons={lessons}
         completed={completed}
+        note={note?.body ?? ""}
+        askUrl={askUrl}
         basePath={`/dashboard/kursus/${slug}/pelajaran`}
       />
     </AppShell>

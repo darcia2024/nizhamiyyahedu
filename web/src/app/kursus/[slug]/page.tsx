@@ -97,9 +97,6 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
           <div className="detail">
             <div style={{ minWidth: 0 }}>
               <header className={`detail-hero c-${tone}`}>
-                <svg aria-hidden="true" width="260" height="260" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth=".4" style={{ position: "absolute", left: -50, top: -50, opacity: 0.13 }}>
-                  <rect x="5" y="5" width="14" height="14" /><rect x="5" y="5" width="14" height="14" transform="rotate(45 12 12)" /><circle cx="12" cy="12" r="4" />
-                </svg>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", position: "relative" }}>
                   <span className={`tag f-${tone}`}>{FIELD_LABEL[field]}</span>
                   <span className="tag plain">{LEVEL_LABEL[level]}</span>

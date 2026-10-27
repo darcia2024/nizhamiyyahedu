@@ -1,7 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, Check, PlayCircle } from "lucide-react";
+import { ArrowRight, Check, MessageCircleQuestion, PlayCircle } from "lucide-react";
 import { Markdown, MatanList, parseMatan } from "@/components/Markdown";
 import { SubmitButton } from "@/components/SubmitButton";
+import { ActionForm, Field as FormField } from "@/components/ActionForm";
+import { saveNote } from "@/app/dashboard/catatan/actions";
+import { NOTE_MAX } from "@/lib/learning";
 import { toggleComplete } from "@/app/dashboard/kursus/[slug]/pelajaran/actions";
 import { parseVideoUrl } from "@/lib/video";
 import { FIELD_LABEL, FIELD_TONE, type Field } from "@/lib/constants";
@@ -15,6 +18,8 @@ export type LessonViewProps = {
   lesson: { id: string; title: string; position: number; durationMin: number | null; videoUrl: string | null; matan: string | null; notesMd: string | null };
   lessons: LessonLite[];
   completed: Set<string>;
+  note?: string;
+  askUrl?: string | null;
   basePath: string; // mis. /dashboard/kursus/slug/pelajaran
 };
 
@@ -46,7 +51,7 @@ function VideoBox({ url }: { url: string | null }) {
   );
 }
 
-export function LessonView({ mode, course, lesson, lessons, completed, basePath }: LessonViewProps) {
+export function LessonView({ mode, course, lesson, lessons, completed, note = "", askUrl = null, basePath }: LessonViewProps) {
   const field = course.field as Field;
   const idx = lessons.findIndex((l) => l.id === lesson.id);
   const next = idx >= 0 ? lessons[idx + 1] : undefined;
@@ -115,6 +120,22 @@ export function LessonView({ mode, course, lesson, lessons, completed, basePath 
           </section>
         )}
 
+        {mode === "student" && (
+          <section className="card lesson-box" aria-labelledby="cs-h" data-testid="my-note">
+            <div className="sec-hd"><h2 id="cs-h">Catatan saya</h2><Link href="/dashboard/catatan">Semua catatan</Link></div>
+            <ActionForm action={saveNote} submit="Simpan catatan" pendingText="Menyimpan…">
+              <input type="hidden" name="lessonId" value={lesson.id} />
+              <FormField name="body" label="Catatan pribadi (cuma kamu yang bisa lihat)" type="textarea" rows={5} defaultValue={note} maxLength={NOTE_MAX} full />
+            </ActionForm>
+            {askUrl && (
+              <p className="ask-row">
+                <MessageCircleQuestion size={18} aria-hidden="true" />
+                <span>Ada yang belum paham?</span>
+                <a className="btn btn-ghost sm" href={askUrl} target="_blank" rel="noopener noreferrer" data-testid="ask-wa">Tanya lewat WhatsApp</a>
+              </p>
+            )}
+          </section>
+        )}
         {mode === "student" && (
           <div className="card done-bar">
             <span className={`state${isDone ? " on" : ""}`} data-testid="done-state">
