@@ -28,9 +28,9 @@
 
   --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-pill: 999px;
 
-  --font-serif: var(--f-satoshi), system-ui, sans-serif;
-  --font-body: var(--f-satoshi), system-ui, sans-serif;
-  --font-app: var(--f-satoshi), system-ui, sans-serif;
+  --font-serif: var(--f-bricolage), system-ui, sans-serif;
+  --font-body: var(--f-bricolage), system-ui, sans-serif;
+  --font-app: var(--f-bricolage), system-ui, sans-serif;
   --font-ar: var(--f-amiri), "Traditional Arabic", serif;
 
   color-scheme: light;
