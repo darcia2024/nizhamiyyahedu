@@ -7,7 +7,7 @@ import { dateTimeWib } from "@/lib/format";
 import { ManageHeading } from "./ManageUI";
 async function ContentHistory({contentKey}:{contentKey:string}){
   const versions=await db.siteContentVersion.findMany({where:{key:contentKey},orderBy:{version:"desc"},take:10});
-  if(!versions.length)return <p className="small muted">Belum ada riwayat. Versi pertama tersimpan saat Anda menyimpan perubahan.</p>;
+  if(!versions.length)return <p className="small muted">Belum ada riwayat. Versi pertama tersimpan saat kamu menyimpan perubahan.</p>;
   return <details className="admin-disclosure"><summary>Riwayat versi ({versions.length})</summary>{versions.map((v,i)=><div key={v.id} className="form-grid"><p className="small">Versi {v.version} / {dateTimeWib(v.createdAt)}{i===0?" (tayang sekarang)":""}</p>{i>0&&<ActionForm action={restoreContentVersion} submit="Pulihkan versi ini" submitClass="btn btn-ghost"><input type="hidden" name="versionId" value={v.id}/></ActionForm>}</div>)}</details>;
 }
 export async function AdminContent(){

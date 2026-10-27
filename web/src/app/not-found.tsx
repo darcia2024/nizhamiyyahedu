@@ -8,7 +8,7 @@ export default function NotFound() {
         <div>
           <p className="eyebrow">Kode 404</p>
           <h1>Halaman tidak ditemukan</h1>
-          <p className="muted">Alamat yang Anda buka tidak ada atau sudah dipindahkan. Silakan kembali ke beranda atau telusuri katalog kursus.</p>
+          <p className="muted">Alamat yang kamu buka nggak ada atau sudah dipindah. Balik ke beranda atau cek katalog kursus, yuk.</p>
           <div className="cta-row" style={{ justifyContent: "center" }}>
             <Link className="btn btn-primary" href="/">Ke beranda</Link>
             <Link className="btn btn-ghost" href="/kursus">Lihat katalog</Link>

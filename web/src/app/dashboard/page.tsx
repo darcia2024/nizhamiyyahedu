@@ -34,7 +34,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     <AppShell user={user} active="dashboard">
       <div className="cols">
         <div className="center">
-          {sp.akses === "ditolak" && <div className="alert err-box" role="alert">Anda tidak punya akses ke halaman itu.</div>}
+          {sp.akses === "ditolak" && <div className="alert err-box" role="alert">Kamu nggak punya akses ke halaman itu.</div>}
           {pending && (
             <div className="card status-banner wait" role="status" data-testid="pending-banner">
               <Clock size={22} aria-hidden="true" />
@@ -48,7 +48,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <h1>Assalamu&apos;alaikum, {firstName(user.name)}</h1>
-            <span className="small muted">{progress.length ? "Lanjutkan perjalanan keilmuan Anda." : "Mulai perjalanan keilmuan Anda dari katalog."}</span>
+            <span className="small muted">{progress.length ? "Lanjutkan perjalanan keilmuanmu." : "Mulai perjalanan keilmuanmu dari katalog."}</span>
           </div>
 
           {hero ? (
@@ -117,7 +117,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           </div>
           {progress.some((p) => p.teacherName) && (
             <>
-              <h2>Pengajar Anda</h2>
+              <h2>Pengajarmu</h2>
               <div className="dash-list">
                 {Array.from(new Set(progress.map((p) => p.teacherName).filter(Boolean))).slice(0, 4).map((t) => (
                   <div key={t}><span className="avatar sm" aria-hidden="true">U</span><b style={{ fontWeight: 500 }}>{t}</b></div>

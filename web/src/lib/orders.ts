@@ -38,8 +38,8 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
   if (course.priceRupiah <= 0) return { ok: false, error: "Kursus ini gratis, gunakan tombol Daftar gratis." };
 
   const enrolled = await db.enrollment.findUnique({ where: { userId_courseId: { userId: user.id, courseId } } });
-  if (enrolled?.status === "ACTIVE") return { ok: false, error: "Anda sudah terdaftar di kursus ini." };
-  if (enrolled?.status === "REVOKED") return { ok: false, error: "Akses Anda dinonaktifkan oleh admin. Hubungi pengelola terlebih dahulu." };
+  if (enrolled?.status === "ACTIVE") return { ok: false, error: "Kamu sudah terdaftar di kursus ini." };
+  if (enrolled?.status === "REVOKED") return { ok: false, error: "Aksesmu dinonaktifkan admin. Hubungi pengelola dulu ya." };
 
   await db.user.update({ where: { id: user.id }, data: { whatsapp: phone.value } });
 

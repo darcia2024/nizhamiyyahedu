@@ -20,25 +20,25 @@ export const DEFAULTS = {
   "home.main": {
     eyebrow: "Kelas kitab daring · kurikulum pesantren Timur Tengah",
     title: "Belajar kitab, satu marhalah demi satu marhalah.",
-    sub: "Setiap kursus mengikuti satu kitab rujukan, diajarkan oleh pengajar yang sanadnya jelas. Mulai dari matan dasar, naik ke jenjang berikutnya saat Anda siap.",
-    note: "Katalog dan silabus bisa dilihat tanpa login. Pembayaran lewat QRIS atau virtual account, dan kelas aktif otomatis setelah lunas.",
+    sub: "Satu kursus, satu kitab rujukan, diajar pengajar yang sanadnya jelas. Mulai dari matan dasar, lalu naik ke jenjang berikutnya kalau kamu sudah siap.",
+    note: "Katalog dan silabus bisa dilihat tanpa login. Bayar pakai QRIS atau virtual account, kelas langsung aktif begitu lunas.",
     steps: [
-      { title: "Pilih kursus", text: "Baca silabus, kenali pengajarnya, dan tonton satu pelajaran pratinjau gratis." },
-      { title: "Masuk dan bayar", text: "Masuk dengan akun Google, lalu bayar lewat QRIS atau virtual account. Kursus gratis langsung terbuka." },
-      { title: "Belajar sesuai ritme", text: "Tonton, baca matan, tandai pelajaran selesai, dan lanjutkan tepat dari pelajaran terakhir." },
+      { title: "Pilih kursus", text: "Baca silabusnya, kenalan sama pengajarnya, dan tonton satu pelajaran pratinjau gratis." },
+      { title: "Masuk dan bayar", text: "Masuk pakai akun Google, lalu bayar lewat QRIS atau virtual account. Kalau kursusnya gratis, langsung terbuka." },
+      { title: "Belajar sesuai ritme", text: "Tonton videonya, baca matan, tandai pelajaran yang sudah selesai, dan lanjut persis dari pelajaran terakhir." },
     ],
     bandEyebrow: "Seperti apa belajarnya",
     bandTitle: "Matan di depan mata, penjelasan di bawahnya.",
-    bandText: "Setiap pelajaran menampilkan teks Arab kitab apa adanya, terjemah per kalimat, lalu syarah dari pengajar dalam bentuk video dan bacaan.",
+    bandText: "Tiap pelajaran menampilkan teks Arab kitab apa adanya, terjemahan per kalimat, lalu penjelasan pengajar lewat video dan bacaan.",
     bandAr: "الكَلَامُ هُوَ اللَّفْظُ المُرَكَّبُ المُفِيدُ بِالوَضْعِ",
     bandCaption: "\"Kalam adalah lafaz yang tersusun, berfaedah, dan diucapkan dengan bahasa Arab.\" Matan al-Ajurrumiyyah, bab pertama.",
   } satisfies HomeContent,
   "faq.items": [
-    { q: "Apakah harus bisa bahasa Arab dulu?", a: "Tidak. Kursus marhalah ula ditujukan untuk pemula dan setiap teks Arab disertai terjemah." },
-    { q: "Metode pembayaran apa saja?", a: "QRIS, virtual account bank, dan e-wallet melalui Mayar. Kelas aktif otomatis setelah pembayaran terverifikasi." },
-    { q: "Bagaimana jika sudah bayar tapi kelas belum terbuka?", a: "Buka halaman Pembayaran di dashboard untuk melihat status. Jika setelah 15 menit masih menunggu, hubungi admin lewat WhatsApp yang tertera di halaman Kontak." },
-    { q: "Apakah ada kebijakan pengembalian dana?", a: "Ada. Ketentuannya tertulis di halaman Kebijakan refund." },
-    { q: "Apakah tersedia kursus gratis?", a: "Ya. Gunakan filter \"Gratis\" di katalog untuk melihat kursus yang bisa langsung diikuti." },
+    { q: "Harus bisa bahasa Arab dulu?", a: "Nggak harus. Kursus marhalah ula dibuat buat pemula, dan setiap teks Arab ada terjemahannya." },
+    { q: "Bayarnya bisa pakai apa aja?", a: "QRIS, virtual account bank, dan e-wallet lewat Mayar. Kelas langsung aktif setelah pembayaran terverifikasi." },
+    { q: "Sudah bayar tapi kelas belum kebuka, gimana?", a: "Cek halaman Pembayaran di dashboard buat lihat statusnya. Kalau 15 menit masih menunggu, chat admin lewat WhatsApp yang ada di halaman Kontak." },
+    { q: "Ada kebijakan refund?", a: "Ada. Ketentuannya ditulis lengkap di halaman Kebijakan refund." },
+    { q: "Ada kursus gratis?", a: "Ada. Pakai filter \"Gratis\" di katalog buat lihat kursus yang bisa langsung kamu ikuti." },
   ] satisfies FaqItem[],
   "contact.main": {
     whatsapp: "[+62 nomor admin]",
@@ -99,23 +99,23 @@ export const LEGAL_DEFAULT: Record<Exclude<LegalSlug, "kontak">, string> = {
   privasi: `> **Draf awal, perlu ditinjau dan disetujui pengelola sebelum diterbitkan.**
 
 ## Data yang kami kumpulkan
-Saat Anda masuk dengan Google, kami menerima nama, alamat email, dan foto profil. Saat membeli kursus berbayar, kami meminta nomor WhatsApp. Kami juga mencatat kemajuan belajar Anda (pelajaran yang dibuka dan diselesaikan).
+Waktu kamu masuk pakai Google, kami menerima nama, alamat email, dan foto profil. Waktu beli kursus berbayar, kami minta nomor WhatsApp. Kami juga mencatat kemajuan belajarmu (pelajaran yang dibuka dan diselesaikan).
 
 ## Tujuan penggunaan
-Data dipakai untuk membuat akun, memproses pembayaran, membuka akses kursus, menyimpan progres belajar, dan menghubungi Anda bila ada kendala pembayaran.
+Data dipakai untuk membuat akun, memproses pembayaran, membuka akses kursus, menyimpan progres belajar, dan menghubungi kamu kalau ada kendala pembayaran.
 
 ## Pihak ketiga
 Login diproses oleh Google. Pembayaran diproses oleh Mayar. Nomor WhatsApp dan email dikirim ke Mayar hanya untuk keperluan tagihan.
 
 ## Penyimpanan dan keamanan
-Data disimpan di server kami dengan akses terbatas. Kami tidak menjual data Anda.
+Data disimpan di server kami dengan akses terbatas. Kami tidak menjual datamu.
 
-## Hak Anda
-Sesuai UU Pelindungan Data Pribadi No. 27 Tahun 2022, Anda dapat meminta akses, perbaikan, atau penghapusan data. Hubungi kami lewat halaman Kontak.`,
+## Hak kamu
+Sesuai UU Pelindungan Data Pribadi No. 27 Tahun 2022, kamu berhak meminta akses, perbaikan, atau penghapusan data. Hubungi kami lewat halaman Kontak.`,
   syarat: `> **Draf awal, perlu ditinjau dan disetujui pengelola sebelum diterbitkan.**
 
 ## Akun
-Anda masuk memakai akun Google. Anda bertanggung jawab atas aktivitas di akun Anda dan tidak membagikan akses kursus kepada orang lain.
+Kamu masuk memakai akun Google. Kamu bertanggung jawab atas aktivitas di akunmu dan tidak membagikan akses kursus ke orang lain.
 
 ## Akses kursus
 Pembelian memberi akses personal ke kursus yang dibeli. Akses tidak dapat dipindahtangankan.

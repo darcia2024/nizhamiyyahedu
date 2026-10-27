@@ -35,7 +35,7 @@ export default async function PaymentsPage() {
           </table>
         </div>
       ) : (
-        <div className="empty-state"><h2 className="serif" style={{ fontSize: 22, fontWeight: 600 }}>Belum ada pembayaran</h2><p className="muted">Riwayat tagihan Anda akan muncul di sini.</p><Link className="btn btn-primary" href="/kursus">Buka katalog</Link></div>
+        <div className="empty-state"><h2 className="serif" style={{ fontSize: 22, fontWeight: 600 }}>Belum ada pembayaran</h2><p className="muted">Riwayat tagihanmu bakal muncul di sini.</p><Link className="btn btn-primary" href="/kursus">Buka katalog</Link></div>
       )}
     </AppShell>
   );

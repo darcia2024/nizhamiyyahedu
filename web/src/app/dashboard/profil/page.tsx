@@ -26,7 +26,7 @@ export default async function ProfilePage() {
         <dl style={{ display: "grid", gridTemplateColumns: "minmax(120px, 180px) 1fr", gap: "14px 24px", margin: 0 }}>
           {rows.map(([k, v]) => (<div key={k} style={{ display: "contents" }}><dt className="muted">{k}</dt><dd style={{ margin: 0, fontWeight: 500, overflowWrap: "anywhere" }}>{v}</dd></div>))}
         </dl>
-        <p className="small muted" style={{ marginTop: 18 }}>Nama dan email mengikuti akun Google Anda.</p>
+        <p className="small muted" style={{ marginTop: 18 }}>Nama dan email mengikuti akun Google kamu.</p>
       </section>
       <section className="card pad"><h2>Nomor WhatsApp</h2><ActionForm action={saveProfile}><Field name="whatsapp" label="WhatsApp" defaultValue={wa} hint="Opsional. Digunakan bila ada kendala pembayaran." full/></ActionForm></section>
     </AppShell>

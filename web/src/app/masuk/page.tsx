@@ -27,7 +27,7 @@ export default async function MasukPage({ searchParams }: { searchParams: Promis
       <div className="gutter" style={{ paddingBlock: "56px 96px" }}>
         <div style={{ maxWidth: 440, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
           <h1 className="serif" style={{ fontWeight: 600, fontSize: 34, lineHeight: 1.15 }}>Masuk ke Nizhamiyyah Edu</h1>
-          <p className="muted">Masuk dengan akun Google, tanpa perlu mengingat kata sandi baru. Setelah masuk Anda kembali ke halaman yang tadi dibuka.</p>
+          <p className="muted">Masuk pakai akun Google, nggak perlu ingat kata sandi baru. Habis masuk, kamu balik ke halaman yang tadi kamu buka.</p>
           {sp.error && <div className="alert err-box" role="alert">Masuk gagal. Coba lagi atau gunakan akun Google lain.</div>}
 
           {googleEnabled ? (
@@ -52,7 +52,7 @@ export default async function MasukPage({ searchParams }: { searchParams: Promis
               <div style={{ marginTop: 12 }}><SubmitButton className="btn btn-primary block" testId="login-dev">Masuk (uji)</SubmitButton></div>
             </form>
           )}
-          <p className="small muted">Dengan masuk, Anda menyetujui <a href="/syarat">Syarat dan ketentuan</a> dan <a href="/privasi">Kebijakan privasi</a>.</p>
+          <p className="small muted">Dengan masuk, kamu menyetujui <a href="/syarat">Syarat dan ketentuan</a> dan <a href="/privasi">Kebijakan privasi</a>.</p>
         </div>
       </div>
     </PublicShell>

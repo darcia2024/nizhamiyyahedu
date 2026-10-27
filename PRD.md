@@ -443,7 +443,7 @@ Safe-area iOS (`env(safe-area-inset-*)`) dipakai di bar bawah. Tidak ada scroll 
 
 ### 7.9 Gaya penulisan (UX writing)
 
-- Bahasa Indonesia baku-ramah, sapaan **"Anda"** di zona publik dan aplikasi (konsisten dengan prototipe); hindari "kamu/lu" di antarmuka.
+- Bahasa Indonesia santai dan natural, sapaan **"kamu"** di zona publik dan aplikasi (keputusan 27 Okt 2026, menggantikan "Anda"); hindari "Anda" dan "gue/lu" di antarmuka. Tetap sopan: tanpa slang berlebihan.
 - Tombol berupa kata kerja spesifik: "Daftar gratis", "Bayar Rp… lewat Mayar", "Lanjutkan belajar", "Arsipkan kursus". Hindari "Submit", "OK".
 - Error: *apa yang salah + cara memperbaiki*. Contoh: "Nomor terlalu pendek. Masukkan 10 sampai 13 digit, misalnya 0812 3456 7890."
 - Hindari klaim kosong ("mu'tamad", "Database Terproteksi"). Tulis yang bisa dibuktikan: nama kitab, pengajar, jumlah pelajaran.

@@ -14,7 +14,7 @@ const checkoutSchema = z.object({
 
 export async function startCheckout(_prev: ActionResult, fd: FormData): Promise<ActionResult> {
   const user = await getCurrentUser();
-  if (!user) return fail("Sesi Anda berakhir. Silakan masuk lagi.");
+  if (!user) return fail("Sesimu sudah berakhir. Masuk lagi dulu ya.");
   const parsed = checkoutSchema.safeParse({
     courseId: fd.get("courseId"),
     whatsapp: String(fd.get("whatsapp") ?? ""),
@@ -29,13 +29,13 @@ export async function startCheckout(_prev: ActionResult, fd: FormData): Promise<
 
 export async function enrollFree(_prev: ActionResult, fd: FormData): Promise<ActionResult> {
   const user = await getCurrentUser();
-  if (!user) return fail("Sesi Anda berakhir. Silakan masuk lagi.");
+  if (!user) return fail("Sesimu sudah berakhir. Masuk lagi dulu ya.");
   const courseId = String(fd.get("courseId") ?? "");
   const course = await db.course.findUnique({ where: { id: courseId } });
   if (!course || course.status !== "PUBLISHED" || course.archivedAt) return fail("Kursus ini tidak tersedia.");
   if (course.priceRupiah > 0) return fail("Kursus ini berbayar.");
   const current = await db.enrollment.findUnique({where:{userId_courseId:{userId:user.id,courseId}}});
-  if(current?.status === "REVOKED") return fail("Akses kursus Anda dinonaktifkan oleh admin. Hubungi pengelola untuk membuka kembali.");
+  if(current?.status === "REVOKED") return fail("Akses kursusmu dinonaktifkan admin. Hubungi pengelola kalau mau dibuka lagi.");
   await db.enrollment.upsert({
     where: { userId_courseId: { userId: user.id, courseId } },
     update: { status: "ACTIVE" },

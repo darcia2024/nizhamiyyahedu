@@ -22,7 +22,7 @@ const GUIDES: Guide[] = [
     steps: ["Buka Isi website lalu gulir ke dokumen yang ingin diubah.", "Edit isi di kolom Markdown dan periksa pratinjaunya.", "Pilih Terbitkan versi baru. Versi lama tetap tersimpan di Versi terdahulu."],
     note: "Draf awal wajib ditinjau pengelola, sebaiknya juga penasihat hukum, sebelum diterbitkan." },
   { title: "Menjadikan seseorang pengajar atau admin", image: "pengguna", alt: "Daftar pengguna dengan pencarian dan filter peran",
-    steps: ["Orang tersebut harus sudah pernah masuk dengan Google.", "Buka User, cari nama atau email, lalu buka akunnya.", "Pilih peran baru, tulis alasan (wajib bila ke atau dari Admin), centang konfirmasi, lalu simpan.", "Untuk pengajar, buka Pengajar dan hubungkan profil ke akun tersebut."],
+    steps: ["Orangnya harus sudah pernah masuk pakai Google.", "Buka User, cari nama atau email, lalu buka akunnya.", "Pilih peran baru, tulis alasan (wajib bila ke atau dari Admin), centang konfirmasi, lalu simpan.", "Untuk pengajar, buka Pengajar dan hubungkan profilnya ke akun itu."],
     note: "Peran akun sendiri tidak dapat diubah dan harus selalu ada minimal satu admin." },
   { title: "Membuka akses kursus secara manual", image: "pengguna", alt: "Halaman user tempat akses kursus dikelola",
     steps: ["Buka User lalu akun yang bersangkutan.", "Pada bagian akses kursus, pilih kursusnya dan tulis alasan.", "Simpan. Tindakan tercatat di Catatan aktivitas."],

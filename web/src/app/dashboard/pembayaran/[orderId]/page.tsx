@@ -35,8 +35,8 @@ export default async function OrderStatusPage({ params }: { params: Promise<{ or
           <div className="small muted">
             {status === "PENDING" && `Berlaku sampai ${dateTimeWib(order.expiresAt)}. Halaman ini memeriksa status otomatis.`}
             {status === "PAID" && order.paidAt && `Dibayar ${dateTimeWib(order.paidAt)}.`}
-            {status === "EXPIRED" && "Batas waktu pembayaran sudah lewat. Anda bisa membuat tagihan baru."}
-            {(status === "FAILED" || status === "CANCELLED") && "Tidak ada dana yang dipotong dari tagihan ini. Silakan coba lagi."}
+            {status === "EXPIRED" && "Batas waktu pembayaran sudah lewat. Kamu bisa bikin tagihan baru."}
+            {(status === "FAILED" || status === "CANCELLED") && "Nggak ada dana yang terpotong dari tagihan ini. Coba lagi ya."}
           </div>
         </div>
         {status === "PAID" && <Link className="btn btn-primary" href={`/dashboard/kursus/${order.course.slug}`}>Mulai belajar</Link>}

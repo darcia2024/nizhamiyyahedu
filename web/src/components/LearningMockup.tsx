@@ -23,12 +23,12 @@ export function LearningMockup({ courses }: { courses: CourseCard[] }) {
             <div className="mock-user"><i>AM</i><span><b>Ahmad</b><small>User</small></span></div>
           </aside>
           <div className="mock-main">
-            <div className="mock-welcome"><span>Ruang belajar</span><b>Assalamu&apos;alaikum, Ahmad</b><small>Lanjutkan pelajaran terakhir Anda.</small></div>
+            <div className="mock-welcome"><span>Ruang belajar</span><b>Assalamu&apos;alaikum, Ahmad</b><small>Lanjut dari pelajaran terakhirmu.</small></div>
             <div className="mock-featured">
               <div><span className="mock-chip">Sedang dipelajari</span><h3>{primary?.title ?? "Al-Ajurrumiyyah"}</h3><p>{primary ? `${FIELD_LABEL[primary.field]} · ${LEVEL_LABEL[primary.level]}` : "Nahwu · Marhalah Ula"}</p><button type="button" tabIndex={-1}>Lanjut belajar <ChevronRight size={14} /></button></div>
               <div className="mock-progress-ring"><span>62%</span></div>
             </div>
-            <div className="mock-row-title"><b>Kursus Anda</b><span>Lihat semua</span></div>
+            <div className="mock-row-title"><b>Kursusmu</b><span>Lihat semua</span></div>
             <div className="mock-course-row">
               {[primary, secondary].map((course, index) => <div className="mock-course" key={course?.id ?? index}>
                 <div className={`mock-cover tone-${index}`}><BookOpen size={18} /><span className="ar" lang="ar" dir="rtl">{course?.titleAr ?? (index ? "الفقه الميسر" : "الآجرومية")}</span></div>

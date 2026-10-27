@@ -20,7 +20,7 @@ async function asAdmin(): Promise<Guard> {
 }
 async function asManager(courseId: string): Promise<Guard> {
   const user = await getCurrentUser();
-  if (!user || !(await canManageCourse(user, courseId))) return { ok: false, result: fail("Anda tidak punya akses ke kursus ini.") };
+  if (!user || !(await canManageCourse(user, courseId))) return { ok: false, result: fail("Kamu nggak punya akses ke kursus ini.") };
   return { ok: true, user };
 }
 
@@ -40,7 +40,7 @@ export async function saveCourse(_p: ActionResult, fd: FormData): Promise<Action
   const raw = formObject(fd);
   const id = String(raw.id ?? "");
   const user = await getCurrentUser();
-  if (!user || (user.role !== "ADMIN" && user.role !== "TEACHER")) return fail("Anda tidak punya akses.");
+  if (!user || (user.role !== "ADMIN" && user.role !== "TEACHER")) return fail("Kamu nggak punya akses.");
   if (id) {
     const g = await asManager(id);
     if (!g.ok) return g.result;
@@ -56,7 +56,7 @@ export async function saveCourse(_p: ActionResult, fd: FormData): Promise<Action
   let teacherId: string | null | undefined;
   if (isAdmin) teacherId = d.teacherId || null;
   else teacherId = (await db.teacherProfile.findUnique({ where: { userId: user.id }, select: { id: true } }))?.id;
-  if(!isAdmin && !teacherId) return fail("Profil pengajar Anda belum ditautkan. Hubungi admin sebelum membuat kursus.");
+  if(!isAdmin && !teacherId) return fail("Profil pengajarmu belum ditautkan. Hubungi admin dulu sebelum bikin kursus.");
 
   const data = {
     title: d.title, titleAr: d.titleAr || null, slug: d.slug, field: d.field, level: d.level, description: d.description,
@@ -307,7 +307,7 @@ export async function changeRole(_p: ActionResult, fd: FormData): Promise<Action
   const u = await db.user.findUnique({ where: { id: userId } });
   if (!u) return fail("Pengguna tidak ditemukan.");
   if (u.role === role.data) return { ok: true, message: "Peran tidak berubah." };
-  if (u.id === g.user.id) return fail("Anda tidak bisa mengubah peran akun sendiri.");
+  if (u.id === g.user.id) return fail("Kamu nggak bisa mengubah peran akunmu sendiri.");
   if (fd.get("confirm") !== "on") return fail("Centang konfirmasi untuk melanjutkan.", { confirm: "Wajib dicentang." });
   if ((u.role === "ADMIN" || role.data === "ADMIN") && reason.length < 3) return fail("Perubahan ke atau dari Admin wajib disertai alasan.", { reason: "Alasan wajib diisi." });
   const result = await db.$transaction(async tx=>{
