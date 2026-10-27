@@ -22,7 +22,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "#143b2d", color: "#f2e6c4", padding: 80, fontFamily: "sans-serif" }}>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "#0F4736", color: "#f2e6c4", padding: 80, fontFamily: "sans-serif" }}>
         <div style={{ fontSize: 26, letterSpacing: 5 }}>NIZHAMIYYAH EDU</div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 28, color: "#d6ddd7", marginBottom: 24 }}>{meta}</div>
