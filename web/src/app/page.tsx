@@ -43,7 +43,7 @@ export default async function HomePage() {
             </div>
             <div className="landing-proof"><span><ShieldCheck size={16} /> Silabus terbuka</span><span><BookOpenCheck size={16} /> Progres tersimpan</span><span><GraduationCap size={16} /> Belajar berjenjang</span></div>
           </div>
-          <div className="mockup-enter"><LearningMockup courses={featured} /></div>
+          <div className="mockup-enter"><LearningMockup /></div>
         </div>
       </section>
 
