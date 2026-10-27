@@ -41,10 +41,10 @@ export const DEFAULTS = {
     { q: "Ada kursus gratis?", a: "Ada. Pakai filter \"Gratis\" di katalog buat lihat kursus yang bisa langsung kamu ikuti." },
   ] satisfies FaqItem[],
   "contact.main": {
-    whatsapp: "[+62 nomor admin]",
+    whatsapp: "01515367729",
     email: "[email admin]",
     hours: "Senin sampai Jumat, 09.00 sampai 17.00 WIB",
-    address: "",
+    address: "S. Fawatem, imarah 12, 3st floor, gamaleya, Cairo",
   } satisfies ContactContent,
 };
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activityByDay, certificateNo, courseFinished, normalizeNote, streakDays, whatsappLink, wibDayKey } from "@/lib/learning";
+import { activityByDay, certificateNo, contactDigits, courseFinished, normalizeNote, streakDays, whatsappLink, wibDayKey } from "@/lib/learning";
 
 const at = (iso: string) => new Date(iso);
 
@@ -60,6 +60,15 @@ describe("tanya pengajar", () => {
   it("membuat tautan WhatsApp dengan pesan yang di-encode", () => {
     const url = whatsappLink("0812 3456 7890", "Halo ustadz, tanya soal bab 1");
     expect(url).toBe("https://wa.me/6281234567890?text=Halo%20ustadz%2C%20tanya%20soal%20bab%201");
+  });
+  it("mendukung nomor Mesir dalam format lokal dan internasional", () => {
+    expect(contactDigits("01515367729")).toBe("201515367729");
+    expect(contactDigits("+20 151 536 7729")).toBe("201515367729");
+    expect(contactDigits("0100 123 4567")).toBe("201001234567");
+    expect(whatsappLink("01515367729", "halo")).toBe("https://wa.me/201515367729?text=halo");
+  });
+  it("nomor Indonesia tetap dikenali", () => {
+    expect(contactDigits("+62 812-3456-7890")).toBe("6281234567890");
   });
   it("mengembalikan null bila kontak masih placeholder", () => {
     expect(whatsappLink("[+62 nomor admin]", "tes")).toBeNull();

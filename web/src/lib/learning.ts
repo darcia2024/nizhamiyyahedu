@@ -56,9 +56,22 @@ export function certificateNo(userId: string, courseId: string, finishedAt: Date
   return `NZ-${finishedAt.getUTCFullYear()}-${hash}`;
 }
 
+/**
+ * Normalisasi nomor kontak ke format internasional tanpa plus untuk wa.me.
+ * Mendukung nomor Mesir (01x xxxx xxxx atau +20 1x xxxx xxxx) dan nomor Indonesia (08xx atau +62).
+ */
+export function contactDigits(raw: string): string | null {
+  const cleaned = (raw ?? "").trim().replace(/[\s\-().]/g, "");
+  let m = cleaned.match(/^\+?20(1[0125]\d{8})$/);
+  if (m) return `20${m[1]}`;
+  m = cleaned.match(/^0(1[0125]\d{8})$/);
+  if (m) return `20${m[1]}`;
+  const id = normalizePhone(raw);
+  return id.ok ? id.value : null;
+}
+
 /** Tautan WhatsApp berisi pesan awal. Null bila nomor kontak belum diisi atau tidak valid. */
 export function whatsappLink(contactNumber: string, text: string): string | null {
-  const n = normalizePhone(contactNumber);
-  if (!n.ok) return null;
-  return `https://wa.me/${n.value}?text=${encodeURIComponent(text)}`;
+  const digits = contactDigits(contactNumber);
+  return digits ? `https://wa.me/${digits}?text=${encodeURIComponent(text)}` : null;
 }
