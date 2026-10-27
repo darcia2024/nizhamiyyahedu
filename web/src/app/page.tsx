@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BookOpenCheck, CirclePlay, Compass, GraduationCap, Layers3, Search, ShieldCheck } from "lucide-react";
+import { ArrowRight, BookOpenCheck, CirclePlay, Compass, GraduationCap, Search, ShieldCheck } from "lucide-react";
 import { PlanShowcase } from "@/components/PlanShowcase";
 import { PublicShell } from "@/components/PublicChrome";
 import { CourseCardView } from "@/components/CourseCard";
@@ -53,9 +53,18 @@ export default async function HomePage() {
         </div>
 
         <section className="journey-section gutter" aria-labelledby="alur-h">
-          <div className="wrap">
-            <div className="landing-section-head" data-reveal><p className="landing-kicker">Satu ruang belajar</p><h2 id="alur-h">Dari pilih kitab sampai<br />lanjut ke marhalah berikutnya.</h2><p>Tidak perlu menebak harus mulai dari mana. Setiap langkah dibuat sederhana dan saling terhubung.</p></div>
-            <ol className="journey-grid">{home.steps.map((step, index) => <li key={step.title} data-reveal style={{ ["--delay" as string]: `${index * 90}ms` }}><span className="journey-no">0{index + 1}</span><div className={`journey-icon ji-${index}`} aria-hidden="true">{index === 0 ? <Compass /> : index === 1 ? <BookOpenCheck /> : <Layers3 />}</div><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol>
+          <div className="wrap sanad">
+            <div className="sanad-intro" data-reveal><p className="landing-kicker">Cara belajar</p><h2 id="alur-h">Tiga langkah dari memilih kitab sampai naik marhalah.</h2><p>Tidak perlu menebak harus mulai dari mana. Setiap langkah punya satu tujuan dan bisa Anda lihat dulu sebelum mendaftar.</p></div>
+            <ol className="sanad-list">{home.steps.map((step, index) => <li key={step.title} data-reveal style={{ ["--delay" as string]: `${index * 90}ms` }}>
+              <span className="sanad-no ar" lang="ar" aria-hidden="true">{["١", "٢", "٣"][index] ?? index + 1}</span>
+              <div className="sanad-body">
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+                {index === 0 && featured[0] && <Link className="sanad-proof" href={`/kursus/${featured[0].slug}`}><b>{featured[0].title}</b><span>{featured[0].lessonCount} pelajaran{featured[0].hasFreePreview ? " · pratinjau gratis" : ""}</span><ArrowRight size={15} aria-hidden="true" /></Link>}
+                {index === 1 && <div className="sanad-proof static"><b>Pembayaran lewat Mayar</b><span>QRIS · virtual account · e-wallet</span></div>}
+                {index === 2 && <div className="sanad-proof static" aria-label="Contoh tampilan progres"><b>Contoh progres</b><span className="sanad-bar" aria-hidden="true"><i /></span><span>6 dari 10 pelajaran selesai</span></div>}
+              </div>
+            </li>)}</ol>
           </div>
         </section>
 
