@@ -69,10 +69,15 @@ export async function getContent<K extends ContentKey>(key: K): Promise<(typeof 
 }
 
 export async function saveContent(key: ContentKey, value: unknown, by: string) {
-  await db.siteContent.upsert({
-    where: { key },
-    update: { value: JSON.stringify(value), updatedBy: by },
-    create: { key, value: JSON.stringify(value), updatedBy: by },
+  const json = JSON.stringify(value);
+  await db.$transaction(async (tx) => {
+    await tx.siteContent.upsert({
+      where: { key },
+      update: { value: json, updatedBy: by },
+      create: { key, value: json, updatedBy: by },
+    });
+    const last = await tx.siteContentVersion.aggregate({ where: { key }, _max: { version: true } });
+    await tx.siteContentVersion.create({ data: { key, version: (last._max.version ?? 0) + 1, value: json, createdBy: by } });
   });
   revalidateTag("content");
   revalidateTag(`content:${key}`);

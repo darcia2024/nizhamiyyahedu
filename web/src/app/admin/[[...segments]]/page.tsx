@@ -9,6 +9,7 @@ import { CoursesList } from "@/components/manage/CoursesList";
 import { ManageHeading } from "@/components/manage/ManageUI";
 import { AdminOverview } from "@/components/manage/AdminOverview";
 import { AdminUsers } from "@/components/manage/AdminUsers";
+import { AdminHelp } from "@/components/manage/AdminHelp";
 import { AdminPayments } from "@/components/manage/AdminPayments";
 import { AdminContent } from "@/components/manage/AdminContent";
 import { AdminTeachers } from "@/components/manage/AdminTeachers";
@@ -31,17 +32,6 @@ export default async function AdminPage({params,searchParams}: {params:Promise<{
   if(s[0]==="pengajar"&&s.length===1)return <AdminTeachers query={q}/>;
   if(s[0]==="konten"&&s.length===1)return <AdminContent/>;
   if(s[0]==="log"&&s.length===1)return <AdminLog query={q}/>;
-  if(s[0]==="bantuan"&&s.length===1)return <><ManageHeading title="Panduan pengelola" text="Panduan untuk mengurus kelas dan operasional website."/>{[
-    ["Menambah kursus","Buka Kursus, pilih Buat kursus. Lengkapi judul, alamat halaman, jenjang, harga, dan pengajar. Kursus baru selalu draf."],
-    ["Menambah pelajaran","Buka detail kursus, pilih Tambah pelajaran. Masukkan judul, video, matan per kalimat, dan catatan. Simpan, lalu ubah statusnya ke Tayang."],
-    ["Mengatur urutan pelajaran","Di detail kursus gunakan tombol Naikkan atau Turunkan. Susunan baru langsung tersimpan."],
-    ["Menayangkan kursus","Pastikan pengajar sudah dipilih dan minimal satu pelajaran tayang. Pilih Tayangkan di detail kursus."],
-    ["Mengarsipkan kursus","Buka bagian Arsip dan hapus. Ketik judul kursus untuk konfirmasi. User lama tetap dapat mengakses materi."],
-    ["Mengubah harga","Ubah harga di detail kursus lalu Simpan perubahan. Harga pada tagihan lama tidak berubah."],
-    ["Mengelola pengajar","Buka Pengajar. Hubungkan profil ke email akun yang sudah masuk Google, lalu isi bio, alumni, dan sanad."],
-    ["Mengubah peran user","Buka User, pilih akun, pilih peran baru dan tulis alasan. Centang konfirmasi. Peran akun sendiri tidak dapat diubah."],
-    ["Menangani pembayaran","Buka Pembayaran, pilih tagihan, lalu Cek ulang ke Mayar. Periksa bukti sebelum memilih Buka akses manual. Tulis alasan."],
-    ["Mengubah isi website","Buka Isi website. Perbarui beranda, kontak, dan tanya jawab lalu simpan. Dokumen legal menyimpan versi baru setiap kali diterbitkan."],
-  ].map(([title,text],i)=><section className="card pad" key={title}><p className="eyebrow">Panduan {i+1}</p><h2>{title}</h2><p className="muted">{text}</p></section>)}</>;
+  if(s[0]==="bantuan"&&s.length===1)return <AdminHelp/>;
   notFound();
 }

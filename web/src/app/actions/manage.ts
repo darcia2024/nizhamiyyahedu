@@ -8,7 +8,7 @@ import { canManageCourse, getCurrentUser, type CurrentUser } from "@/lib/auth-gu
 import { courseSchema, lessonSchema, roleSchema, teacherSchema } from "@/lib/validators";
 import { fetchTransaction, mayarSimulated } from "@/lib/mayar";
 import { settleOrder } from "@/lib/orders";
-import { saveContent, type ContentKey } from "@/lib/content";
+import { saveContent, DEFAULTS, type ContentKey } from "@/lib/content";
 import { saveTeacherPhoto } from "@/lib/media";
 
 type Guard = { ok: true; user: CurrentUser } | { ok: false; result: ActionResult };
@@ -462,6 +462,20 @@ export async function saveSiteContent(_p: ActionResult, fd: FormData): Promise<A
   } else return fail("Bagian tidak dikenal.");
   await audit(g.user, "CONTENT_SAVE", "SiteContent", key);
   return { ok: true, message: "Tersimpan. Halaman publik diperbarui." };
+}
+
+/** Pulihkan isi website ke salah satu versi lama. Pemulihan disimpan sebagai versi baru, riwayat tidak dihapus. */
+export async function restoreContentVersion(_p: ActionResult, fd: FormData): Promise<ActionResult> {
+  const g = await asAdmin();
+  if (!g.ok) return g.result;
+  const v = await db.siteContentVersion.findUnique({ where: { id: String(fd.get("versionId") ?? "") } });
+  if (!v || !(v.key in DEFAULTS)) return fail("Versi tidak ditemukan.");
+  let value: unknown;
+  try { value = JSON.parse(v.value); } catch { return fail("Isi versi ini rusak dan tidak bisa dipulihkan."); }
+  await saveContent(v.key as ContentKey, value, g.user.id);
+  if (v.key === "contact.main") revalidatePath("/kontak");
+  await audit(g.user, "CONTENT_RESTORE", "SiteContent", v.key, { after: { fromVersion: v.version } });
+  return { ok: true, message: `Versi ${v.version} dipulihkan sebagai versi terbaru.` };
 }
 
 export async function publishLegal(_p: ActionResult, fd: FormData): Promise<ActionResult> {

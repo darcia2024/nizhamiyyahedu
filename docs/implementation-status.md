@@ -13,6 +13,8 @@ Status ini membedakan aplikasi lokal yang bisa dicoba dari gerbang rilis PRD. Ja
 | 11 | Ringkasan admin, CRUD kursus/pelajaran/pengajar, foto WebP, user/peran/akses, pembayaran, isi website/FAQ/legal, log/CSV, bantuan teks |
 | 11.7 | Kelola kursus milik pengajar, urut keyboard/seret, draf, matan, catatan, daftar user/CSV, ajukan tayang |
 
+Ditambahkan setelahnya: gambar OG per kursus (judul Latin, bidang, jenjang, pengajar, harga; teks Arab belum dirender karena butuh berkas font Arab untuk generator gambar), riwayat versi dan pemulihan untuk beranda/FAQ/kontak (`SiteContentVersion`, migrasi `202610270002`), dan panduan admin bergambar yang bisa dicetak sebagai PDF (`/admin/bantuan`, tangkapan layar di `web/public/bantuan/`; perlu diambil ulang bila tampilan admin berubah).
+
 ## Pengujian lokal
 
 - TypeScript tanpa error.
@@ -38,9 +40,7 @@ Status ini membedakan aplikasi lokal yang bisa dicoba dari gerbang rilis PRD. Ja
 | Konten final dan legal | Nama, harga, video, kontak, persetujuan kebijakan dari pengelola |
 | Foto di production | Disk persisten atau adapter penyimpanan objek |
 | Performance lapangan | Lighthouse/jaringan 4G, LCP/CLS/INP, bukan angka hasil dev server |
-| Panduan bergambar/PDF, NVDA dan perangkat fisik | Bantuan teks sudah ada, versi bergambar/PDF belum dibuat |
-| Konten berversi untuk semua jenis konten | Dokumen legal berversi; beranda/FAQ/kontak disimpan versi terkini dan dicatat sebagai aktivitas |
-| Preview OG per kursus | Metadata kursus tersedia; gambar OG masih satu gambar umum |
+| NVDA dan perangkat fisik | Belum diuji dengan pembaca layar dan perangkat nyata |
 | Redirect ID kursus lama | Alias katalog/admin tersedia, pemetaan ID lama perlu database asli |
 | Staging/production, cron, monitor, backup dan serah terima | Belum dilakukan pada hosting klien |
 

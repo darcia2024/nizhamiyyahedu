@@ -45,6 +45,15 @@
 .code-preview {white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;background:var(--shell);padding:12px;border-radius:8px;max-width:100%}
 .access-row {display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid var(--line)}
 .admin-disclosure {margin-top:20px}
+.help-steps {margin:12px 0 16px; padding-left:22px; display:grid; gap:8px; list-style:decimal}
+.help-steps li {display:list-item}
+.help-shot {display:block; width:100%; height:auto; margin-top:16px; border:1px solid var(--line); border-radius:var(--r-md)}
+@media print {
+  .no-print, .side, .topbar, .skip-link {display:none !important}
+  .shell {display:block !important; max-width:none !important; border-radius:0 !important}
+  .help-guide {break-inside:avoid; box-shadow:none; border:1px solid var(--line)}
+  body {background:#fff}
+}
 .admin-content summary {cursor:pointer;min-height:44px;padding:10px 0;font-weight:500}
 .faq-admin-row {padding:16px 0;border-bottom:1px solid var(--line)}
 .editor-preview {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
