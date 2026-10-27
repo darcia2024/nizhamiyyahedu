@@ -732,3 +732,18 @@ table.t tbody tr:last-child td { border-bottom: 0 }
   .syl-mobile { display: block }
   .hero-copy { padding-top: 0 }
 }
+
+/* galeri sosial media */
+.social-section { padding-block: 100px; background: #fff }
+.social-follow { margin-top: 4px }
+.social-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px }
+.social-card { position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; background: #e9ece8; border: 1px solid #dbe3dd; transition: transform .25s, box-shadow .25s }
+.social-card img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s }
+.social-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(20,61,41,.16) }
+.social-card:hover img { transform: scale(1.04) }
+.social-over { position: absolute; inset: auto 0 0 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 36px 14px 12px; color: #fff; background: linear-gradient(0deg, rgba(11,44,27,.82), rgba(11,44,27,0)); opacity: 0; transition: opacity .25s }
+.social-over small { font-size: 12.5px; font-weight: 600 }
+.social-card:hover .social-over, .social-card:focus-visible .social-over { opacity: 1 }
+@media (max-width: 1100px) { .social-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+@media (max-width: 760px) { .social-section { padding-block: 76px } .social-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px } .social-card { border-radius: 14px } }
+@media (hover: none), (max-width: 760px) { .social-over { inset: 8px 8px auto auto; width: 30px; height: 30px; padding: 0; justify-content: center; border-radius: 50%; background: rgba(11,44,27,.78); opacity: 1 } .social-over small { display: none } }

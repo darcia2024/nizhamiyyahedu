@@ -3,6 +3,7 @@ import { Menu } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { HeaderAuth } from "@/components/HeaderAuth";
 import { getContent } from "@/lib/content";
+import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "@/lib/social";
 
 const NAV = [
   { href: "/kursus", label: "Katalog" },
@@ -61,6 +62,7 @@ export async function PublicFooter() {
             <span className="serif" style={{ fontWeight: 600, fontSize: 22, color: "#fff" }}>Nizhamiyyah Edu</span>
             <p style={{ maxWidth: "32em" }}>Kelas kitab daring dengan kurikulum berjenjang ala pesantren dan universitas di Timur Tengah.</p>
             <p>WhatsApp admin: <span style={{ color: "#fff" }}>{contact.whatsapp}</span></p>
+            <p>Instagram: <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" style={{ color: "#fff" }}>@{INSTAGRAM_HANDLE}</a></p>
           </div>
           <nav aria-label="Belajar">
             <b>Belajar</b>

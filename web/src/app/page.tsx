@@ -3,6 +3,7 @@ import { withBase } from "@/lib/base-path";
 import { ArrowRight, BookOpenCheck, CirclePlay, Compass, GraduationCap, Search, ShieldCheck } from "lucide-react";
 import { PlanShowcase } from "@/components/PlanShowcase";
 import { StepsShowcase } from "@/components/StepsShowcase";
+import { SocialGallery } from "@/components/SocialGallery";
 import { MarhalahPath } from "@/components/MarhalahPath";
 import { PublicShell } from "@/components/PublicChrome";
 import { CourseCardView } from "@/components/CourseCard";
@@ -78,6 +79,8 @@ export default async function HomePage() {
         <section className="lesson-feature gutter" aria-labelledby="contoh-h"><div className="wrap lesson-panel" data-reveal><div className="lesson-copy"><p className="landing-kicker">{home.bandEyebrow}</p><h2 id="contoh-h">{home.bandTitle}</h2><p>{home.bandText}</p>{previewCourse && <Link className="landing-btn primary" href={`/kursus/${previewCourse.slug}/pratinjau`}>Buka pelajaran gratis <ArrowRight size={17} /></Link>}</div><figure className="new-matan-card"><span>Cuplikan matan</span><p className="ar" lang="ar" dir="rtl">{home.bandAr}</p><figcaption>{home.bandCaption}</figcaption><i aria-hidden="true"><CirclePlay size={22} fill="currentColor" /></i></figure></div></section>
 
         {teachers.length > 0 && <section id="pengajar" className="teacher-section gutter" aria-labelledby="pengajar-h"><div className="wrap"><div className="landing-section-head" data-reveal><p className="landing-kicker">Pengajar</p><h2 id="pengajar-h">Dibimbing oleh orang<br />yang memahami kitabnya.</h2></div><div className="teachers new-teachers">{teachers.map((teacher) => <article key={teacher.id} className="teacher" data-reveal><div className="av" aria-hidden="true">{initials(teacher.displayName)}</div><div><h3>{teacher.displayName}</h3>{teacher.alumni && <p className="small muted">{teacher.alumni}</p>}{teacher.sanad && <p className="small">{teacher.sanad}</p>}<p className="small bio">{teacher.bio}</p></div></article>)}</div></div></section>}
+
+        <SocialGallery />
 
         <section id="faq" className="faq-section gutter" aria-labelledby="faq-h"><div className="wrap faq-layout"><div data-reveal><p className="landing-kicker">Masih penasaran?</p><h2 id="faq-h">Pertanyaan yang sering ditanyakan.</h2><p>Jawaban singkat sebelum kamu mulai belajar.</p></div><div className="faq" data-reveal>{faq.map((item, index) => <details key={item.q} open={index === 0}><summary>{item.q}<span className="plus" aria-hidden="true">+</span></summary><p>{item.a}</p></details>)}</div></div></section>
         <section className="cta-band gutter" aria-labelledby="cta-h"><div className="wrap cta-inner" data-reveal><h2 id="cta-h">Mulai dari satu kitab.<br /><span>Lanjut sesuai ritme kamu.</span></h2><p>Intip silabusnya, coba satu pelajaran gratis, baru putuskan.</p><div className="landing-actions"><Link className="landing-btn primary" href="/kursus">Lihat katalog <ArrowRight size={17} /></Link>{previewCourse && <Link className="landing-btn secondary" href={`/kursus/${previewCourse.slug}/pratinjau`}><CirclePlay size={17} /> Coba pelajaran</Link>}</div></div></section>
