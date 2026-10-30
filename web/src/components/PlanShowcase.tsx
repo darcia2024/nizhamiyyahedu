@@ -22,12 +22,14 @@ export function PlanShowcase({ courses, includes = "Video pelajaran · Matan & t
         {shown.map((c) => {
           const free = c.priceRupiah === 0;
           const tone = FIELD_TONE[c.field];
+          const bundle = c.bundleOf.length > 0;
           return (
             <article key={c.id} className="plan-card">
               <Link className={`plan-thumb c-${tone}`} href={`/kursus/${c.slug}`} tabIndex={-1} aria-hidden="true">
-                <span className="plan-top"><span>{FIELD_LABEL[c.field]}</span><span>{LEVEL_LABEL[c.level]}</span></span>
+                <span className="plan-top"><span>{FIELD_LABEL[c.field]}</span><span>{bundle ? `${c.bundleOf.length} kelas` : LEVEL_LABEL[c.level]}</span></span>
                 <span className="plan-ar ar" lang="ar" dir="rtl">{c.titleAr ?? c.title}</span>
                 {(free || c.hasFreePreview) && <span className="plan-hot"><CirclePlay size={14} /> {free ? "Gratis" : "Pratinjau gratis"}</span>}
+                <span className={`kind${bundle ? " bundle" : ""}`}>{bundle ? "Bundling" : "Kelas Online"}</span>
               </Link>
 
               <div className="plan-body">
@@ -36,7 +38,7 @@ export function PlanShowcase({ courses, includes = "Video pelajaran · Matan & t
                 {c.description && <p className="plan-desc">{c.description}</p>}
 
                 <p className="plan-stats">
-                  <span><ListVideo size={15} aria-hidden="true" /> {c.lessonCount} pelajaran</span>
+                  <span><ListVideo size={15} aria-hidden="true" /> {bundle ? `${c.bundleOf.length} kelas · ` : ""}{c.lessonCount} pelajaran</span>
                   {c.totalMin > 0 && <span><Clock size={15} aria-hidden="true" /> {hoursLabel(c.totalMin)}</span>}
                 </p>
 
@@ -44,7 +46,7 @@ export function PlanShowcase({ courses, includes = "Video pelajaran · Matan & t
 
                 <div className="plan-foot">
                   <p className="plan-price"><b>{free ? "Gratis" : rupiah(c.priceRupiah)}</b><small>{free ? "tanpa biaya" : "sekali bayar"}</small></p>
-                  <Link className="plan-cta" href={`/kursus/${c.slug}`}>{free ? "Daftar gratis" : "Lihat kursus"} <ArrowRight size={16} aria-hidden="true" /></Link>
+                  <Link className="plan-cta" href={`/kursus/${c.slug}`}>{free ? "Daftar gratis" : bundle ? "Lihat paket" : "Lihat kursus"} <ArrowRight size={16} aria-hidden="true" /></Link>
                 </div>
               </div>
             </article>

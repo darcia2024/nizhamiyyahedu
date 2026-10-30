@@ -29,5 +29,15 @@ describe("order lifecycle with real SQLite transactions",()=>{
   it("rejects amount mismatch without granting access",async()=>{expect(await settleOrder(id,1)).toBe("amount_mismatch");expect(await db.enrollment.count({where:{userId:user.id,courseId}})).toBe(0);});
   it("settles once and grants one enrollment",async()=>{expect(await settleOrder(id,150000)).toBe("paid");expect(await settleOrder(id,150000)).toBe("already");expect(await db.enrollment.count({where:{userId:user.id,courseId,status:"ACTIVE"}})).toBe(1);expect(await db.event.count({where:{userId:user.id,name:"order_paid"}})).toBe(1);});
   it("reflects real expiry immediately",()=>{expect(effectiveStatus({status:"PENDING",expiresAt:new Date(0)})).toBe("EXPIRED");});
+  it("bundle payment opens every course in the bundle",async()=>{
+    const stamp=Date.now();
+    const a=await db.course.create({data:{title:"Isi A",slug:`isi-a-${stamp}`,field:"MANTIQ",level:"ULA",status:"PUBLISHED",priceRupiah:70000}});
+    const b=await db.course.create({data:{title:"Isi B",slug:`isi-b-${stamp}`,field:"USHUL_FIQH",level:"ULA",status:"PUBLISHED",priceRupiah:70000}});
+    const pack=await db.course.create({data:{title:"Paket",slug:`paket-${stamp}`,field:"AQLIYAT",level:"ULA",status:"PUBLISHED",priceRupiah:100000,bundleCourseIds:JSON.stringify([a.id,b.id])}});
+    const r=await createOrder(user,pack.id,"081234567890");if(!r.ok)throw new Error(r.error);
+    expect(await settleOrder(r.orderId,100000)).toBe("paid");
+    expect(await db.enrollment.count({where:{userId:user.id,courseId:{in:[a.id,b.id]},status:"ACTIVE"}})).toBe(2);
+    const again=await createOrder(user,pack.id,"081234567890");expect(again.ok).toBe(false);
+  });
   it("keeps an enrolled archived course in the user library",async()=>{await db.course.update({where:{id:courseId},data:{archivedAt:new Date()}});expect((await getUserProgress(user.id)).some(c=>c.courseId===courseId)).toBe(true);});
 });

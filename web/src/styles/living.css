@@ -56,6 +56,31 @@
 /* Judul kitab di sampul sedikit lebih bernapas dari bingkai. */
 .cover[class*="c-"] .top, .plan-thumb[class*="c-"] .plan-top { position: relative; z-index: 1 }
 
+/* ---------- Label jenis di sampul: Kelas Online / Bundling ---------- */
+.cover .kind, .plan-thumb .kind {
+  position: absolute; z-index: 2; left: 14px; bottom: 14px; padding: 4px 10px; border-radius: 999px;
+  background: rgba(255, 255, 255, .92); color: var(--lv-deep); font-size: 11.5px; font-weight: 600; letter-spacing: 0; text-transform: none;
+}
+.cover .kind.bundle, .plan-thumb .kind.bundle { background: var(--lv-cream); color: #6b4a07 }
+.cover:has(.kind) .ar { padding-left: 96px }
+.plan-thumb .kind { position: static; align-self: flex-start; order: 3 }
+
+/* ---------- Isi paket bundling (detail kursus) ---------- */
+.bundle-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none }
+.bundle-list li { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px; border: 1px solid var(--line, #dfe5e0); border-radius: 14px; background: #fff }
+.bundle-list .mini { position: relative; height: 74px; border-radius: 10px; display: grid; place-items: center; color: var(--lv-cream); font-family: var(--f-amiri), serif; font-size: 18px; font-weight: 700; text-align: center; padding: 6px; line-height: 1.2; background-image: var(--lv-tile-soft); background-size: 48px 48px }
+.bundle-list h3 { margin: 0; font-size: 16px }
+.bundle-list p { margin: 3px 0 0 }
+.bundle-list s { color: var(--muted-ui, #6a776f); font-size: 13px }
+.bundle-save { display: inline-flex; margin-top: 12px; padding: 6px 12px; border-radius: 999px; background: var(--lv-cream); color: #6b4a07; font-size: 13.5px; font-weight: 600 }
+@media (max-width: 560px) { .bundle-list li { grid-template-columns: 58px minmax(0, 1fr) } .bundle-list .mini { height: 58px; font-size: 14px } .bundle-list s { grid-column: 2 } }
+
+/* ---------- Admin: pilih isi paket ---------- */
+.bundle-pick { border: 1px solid var(--line, #dfe5e0); border-radius: 12px; padding: 14px 16px; margin: 0 }
+.bundle-pick legend { padding: 0 6px; font-weight: 600 }
+.bundle-pick-list { display: grid; gap: 8px; margin-top: 10px }
+.bundle-pick-list label { display: flex; gap: 10px; align-items: center; min-height: 36px }
+
 /* ---------- Kartu kursus: sedikit hidup saat disorot ---------- */
 .course-card { transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s }
 .course-card:hover { transform: translateY(-4px); box-shadow: 0 18px 38px rgba(20, 61, 41, .14) }

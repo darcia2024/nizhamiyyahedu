@@ -1,9 +1,12 @@
 export const ROLES = ["STUDENT", "TEACHER", "ADMIN"] as const;
 export type Role = (typeof ROLES)[number];
 
-export const FIELDS = ["NAHWU", "SHARAF", "FIQIH", "AQIDAH", "HADITS", "TAFSIR", "LAINNYA"] as const;
+export const FIELDS = ["MANTIQ", "USHUL_FIQH", "AQLIYAT", "NAHWU", "SHARAF", "FIQIH", "AQIDAH", "HADITS", "TAFSIR", "LAINNYA"] as const;
 export type Field = (typeof FIELDS)[number];
 export const FIELD_LABEL: Record<Field, string> = {
+  MANTIQ: "Mantiq",
+  USHUL_FIQH: "Ushul Fiqh",
+  AQLIYAT: "Mantiq & Ushul Fiqh",
   NAHWU: "Nahwu",
   SHARAF: "Sharaf",
   FIQIH: "Fiqih",
@@ -13,7 +16,10 @@ export const FIELD_LABEL: Record<Field, string> = {
   LAINNYA: "Lainnya",
 };
 /** Kelas CSS warna per bidang; bidang tanpa warna sendiri memakai nahwu. */
-export const FIELD_TONE: Record<Field, "nahwu" | "fiqih" | "aqidah"> = {
+export const FIELD_TONE: Record<Field, "nahwu" | "fiqih" | "aqidah" | "aqliyah"> = {
+  MANTIQ: "aqliyah",
+  USHUL_FIQH: "aqliyah",
+  AQLIYAT: "aqliyah",
   NAHWU: "nahwu",
   SHARAF: "nahwu",
   FIQIH: "fiqih",

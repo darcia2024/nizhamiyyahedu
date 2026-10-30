@@ -3,6 +3,7 @@ import { cache } from "react";
 import { db } from "@/lib/db";
 import { normalizeArabic } from "@/lib/slug";
 import { FIELD_LABEL, type Field, type Level } from "@/lib/constants";
+import { parseBundle } from "@/lib/bundle";
 
 const courseSelect = {
   id: true,
@@ -15,6 +16,7 @@ const courseSelect = {
   priceRupiah: true,
   status: true,
   archivedAt: true,
+  bundleCourseIds: true,
   teacher: { select: { id: true, displayName: true, bio: true, alumni: true, sanad: true, photoUrl: true } },
   lessons: { where: { status: "PUBLISHED" }, select: { id: true, durationMin: true, isFreePreview:true } },
 } as const;
@@ -32,7 +34,11 @@ export type CourseCard = {
   lessonCount: number;
   totalMin: number;
   hasFreePreview:boolean;
+  /** Id kursus isi paket; kosong untuk kursus biasa. */
+  bundleOf: string[];
 };
+
+export const isBundleCard = (c: Pick<CourseCard, "bundleOf">) => c.bundleOf.length > 0;
 
 type Raw = Awaited<ReturnType<typeof listRaw>>[number];
 function toCard(c: Raw): CourseCard {
@@ -49,7 +55,24 @@ function toCard(c: Raw): CourseCard {
     lessonCount: c.lessons.length,
     totalMin: c.lessons.reduce((a, l) => a + (l.durationMin ?? 0), 0),
     hasFreePreview:c.lessons.some(l=>l.isFreePreview),
+    bundleOf: parseBundle(c.bundleCourseIds),
   };
+}
+
+/** Paket menampilkan jumlah pelajaran dan pengajar dari kursus-kursus isinya. */
+function withBundleTotals(cards: CourseCard[]): CourseCard[] {
+  const byId = new Map(cards.map((c) => [c.id, c]));
+  return cards.map((c) => {
+    if (!c.bundleOf.length) return c;
+    const items = c.bundleOf.map((id) => byId.get(id)).filter((x): x is CourseCard => !!x);
+    const teachers = Array.from(new Set(items.map((i) => i.teacherName).filter((t): t is string => !!t)));
+    return {
+      ...c,
+      lessonCount: items.reduce((a, i) => a + i.lessonCount, 0),
+      totalMin: items.reduce((a, i) => a + i.totalMin, 0),
+      teacherName: c.teacherName ?? (teachers.length === 1 ? teachers[0] : null),
+    };
+  });
 }
 
 async function listRaw() {
@@ -62,7 +85,7 @@ async function listRaw() {
 
 /** Semua kursus tayang. Dicache 5 menit dan dibuang lewat tag "catalog" saat admin menyimpan. */
 export const getPublishedCourses = unstable_cache(
-  async (): Promise<CourseCard[]> => (await listRaw()).map(toCard),
+  async (): Promise<CourseCard[]> => withBundleTotals((await listRaw()).map(toCard)),
   ["published-courses"],
   { tags: ["catalog", "home"], revalidate: 300 },
 );
@@ -109,7 +132,9 @@ export const getTeachersForHome = unstable_cache(
 
 /** Peta marhalah: bidang × jenjang -> kursus pertama. */
 export function buildMarhalahMap(courses: CourseCard[]) {
-  const fields = Array.from(new Set(courses.map((c) => c.field)));
   const levels = ["ULA", "WUSTHA", "ULYA"] as Level[];
-  return { fields, levels, cell: (f: Field, l: Level) => courses.find((c) => c.field === f && c.level === l) ?? null };
+  // Paket bundling tidak masuk peta; yang dipetakan kursus satuannya.
+  const singles = courses.filter((c) => !c.bundleOf.length);
+  const fields = Array.from(new Set(singles.map((c) => c.field)));
+  return { fields, levels, cell: (f: Field, l: Level) => singles.find((c) => c.field === f && c.level === l) ?? null };
 }

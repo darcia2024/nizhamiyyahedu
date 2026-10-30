@@ -20,6 +20,7 @@ type Props = {
   titleAr: string | null;
   priceLabel: string;
   isFree: boolean;
+  isBundle?: boolean;
   priceNumber: number;
   facts: string[];
   state: BuyState;
@@ -97,7 +98,7 @@ export function BuyPanel(p: Props) {
       <aside className="buy-card" aria-label="Pendaftaran">
         <div>
           <div className="price num">{p.priceLabel}</div>
-          {!p.isFree && <p className="small muted">Sekali bayar, akses selamanya</p>}
+          {!p.isFree && <p className="small muted">{p.isBundle ? "Sekali bayar, semua kelas di paket terbuka" : "Sekali bayar, akses selamanya"}</p>}
         </div>
         <ul className="ticks">
           {p.facts.map((f) => <li key={f}><Check size={16} aria-hidden="true" /><span>{f}</span></li>)}
@@ -122,7 +123,7 @@ export function BuyPanel(p: Props) {
               <button type="button" className="icon-btn" aria-label="Tutup" onClick={() => dialog.current?.close()}>✕</button>
             </div>
             <div className="sum-box">
-              <div><span>Harga kursus</span><span className="num">{p.priceLabel}</span></div>
+              <div><span>{p.isBundle ? "Harga paket" : "Harga kursus"}</span><span className="num">{p.priceLabel}</span></div>
               <div><span>Biaya layanan</span><span>Rp 0</span></div>
               <div><span>Total</span><span className="num">{p.priceLabel}</span></div>
             </div>

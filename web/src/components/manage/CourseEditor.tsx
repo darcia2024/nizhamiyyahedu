@@ -4,6 +4,7 @@ import { ActionForm, Field, InlineAction } from "@/components/ActionForm";
 import { saveCourse, setCourseStatus, archiveCourse, deleteCourse, moveLesson, setLessonFlags, deleteLesson, requestPublication } from "@/app/actions/manage";
 import { FIELDS, FIELD_LABEL, LEVELS, LEVEL_LABEL } from "@/lib/constants";
 import { rupiah } from "@/lib/format";
+import { parseBundle } from "@/lib/bundle";
 import { db } from "@/lib/db";
 import { SlugField } from "./SlugField";
 import { LessonSort } from "./LessonSort";
@@ -19,6 +20,12 @@ export async function CourseEditor({ courseId, base, isAdmin, teachers }: { cour
     : null;
 
   const state = course?.archivedAt ? "Diarsipkan" : course?.status === "PUBLISHED" ? "Tayang" : "Draf";
+  const bundleItems = parseBundle(course?.bundleCourseIds);
+  // Pilihan isi paket: kursus biasa selain kursus ini (paket tidak boleh berisi paket).
+  const bundleOptions = isAdmin
+    ? (await db.course.findMany({ where: { archivedAt: null, NOT: courseId ? { id: courseId } : undefined }, select: { id: true, title: true, priceRupiah: true, bundleCourseIds: true }, orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] }))
+        .filter((c) => !parseBundle(c.bundleCourseIds).length)
+    : [];
 
   return (
     <>
@@ -45,8 +52,8 @@ export async function CourseEditor({ courseId, base, isAdmin, teachers }: { cour
         <h2 id="info-h" style={{ marginBottom: 16 }}>{course ? "Informasi kursus" : "Kursus baru"}</h2>
         <ActionForm action={saveCourse} submit={course ? "Simpan perubahan" : "Buat kursus (draf)"} testId="save-course">
           {course && <input type="hidden" name="id" value={course.id} />}
-          <Field name="title" label="Judul (Latin)" defaultValue={course?.title} placeholder="Matan al-Ajurrumiyyah" />
-          <Field name="titleAr" label="Judul Arab (untuk sampul)" defaultValue={course?.titleAr} dir="rtl" lang="ar" placeholder="متن الآجرومية" />
+          <Field name="title" label="Judul (Latin)" defaultValue={course?.title} placeholder="Dauroh Ushul Fiqh Nizhamiyyah" />
+          <Field name="titleAr" label="Judul Arab (untuk sampul)" defaultValue={course?.titleAr} dir="rtl" lang="ar" placeholder="الورقات" />
           <SlugField initial={course?.slug??""}/>
           <Field name="field" label="Bidang ilmu" type="select" defaultValue={course?.field ?? "NAHWU"} options={FIELDS.map((f) => ({ value: f, label: FIELD_LABEL[f] }))} />
           <Field name="level" label="Jenjang" type="select" defaultValue={course?.level ?? "ULA"} options={LEVELS.map((l) => ({ value: l, label: LEVEL_LABEL[l] }))} />
@@ -55,6 +62,21 @@ export async function CourseEditor({ courseId, base, isAdmin, teachers }: { cour
               <Field name="teacherId" label="Pengajar" type="select" defaultValue={course?.teacherId ?? ""} options={[{ value: "", label: "— pilih pengajar —" }, ...teachers.map((t) => ({ value: t.id, label: t.displayName }))]} />
               <Field name="priceRupiah" label="Harga (Rp)" type="number" defaultValue={course?.priceRupiah ?? 0} min={0} max={50000000} hint="0 = gratis. Maksimal Rp 50.000.000. Pembeli lama tidak terpengaruh." />
               <Field name="sortOrder" label="Urutan di katalog" type="number" defaultValue={course?.sortOrder ?? 0} min={0} />
+              {bundleOptions.length >= 2 && (
+                <fieldset className="full bundle-pick">
+                  <input type="hidden" name="bundleForm" value="1" />
+                  <legend>Paket bundling (opsional)</legend>
+                  <p className="small muted">Centang minimal 2 kursus kalau ini paket. Sekali beli, user langsung dapat semua kursus yang dicentang. Biarkan kosong untuk kursus biasa.</p>
+                  <div className="bundle-pick-list">
+                    {bundleOptions.map((o) => (
+                      <label key={o.id}>
+                        <input type="checkbox" name="bundleItem" value={o.id} defaultChecked={bundleItems.includes(o.id)} />
+                        <span>{o.title} <span className="muted">· {rupiah(o.priceRupiah)}</span></span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              )}
             </>
           ) : (
             <p className="small muted full">Harga dan pengajar diatur oleh admin. Kursus baru dibuat sebagai draf.</p>

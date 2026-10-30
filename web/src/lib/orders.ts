@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { ORDER_TTL_HOURS, type OrderStatus } from "@/lib/constants";
 import { normalizePhone } from "@/lib/phone";
 import { createInvoice } from "@/lib/mayar";
+import { unlockedCourseIds } from "@/lib/bundle";
 import type { CurrentUser } from "@/lib/auth-guard";
 import { Prisma } from "@prisma/client";
 
@@ -37,9 +38,13 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
   }
   if (course.priceRupiah <= 0) return { ok: false, error: "Kursus ini gratis, gunakan tombol Daftar gratis." };
 
-  const enrolled = await db.enrollment.findUnique({ where: { userId_courseId: { userId: user.id, courseId } } });
-  if (enrolled?.status === "ACTIVE") return { ok: false, error: "Kamu sudah terdaftar di kursus ini." };
-  if (enrolled?.status === "REVOKED") return { ok: false, error: "Aksesmu dinonaktifkan admin. Hubungi pengelola dulu ya." };
+  // Paket bundling dianggap sudah dimiliki bila semua kursus isinya sudah aktif.
+  const unlocks = unlockedCourseIds(course);
+  const enrolled = await db.enrollment.findMany({ where: { userId: user.id, courseId: { in: unlocks } } });
+  if (enrolled.some((e) => e.status === "REVOKED")) return { ok: false, error: "Aksesmu dinonaktifkan admin. Hubungi pengelola dulu ya." };
+  if (enrolled.filter((e) => e.status === "ACTIVE").length === unlocks.length) {
+    return { ok: false, error: unlocks.length > 1 ? "Kamu sudah punya semua kelas di paket ini." : "Kamu sudah terdaftar di kursus ini." };
+  }
 
   await db.user.update({ where: { id: user.id }, data: { whatsapp: phone.value } });
 
@@ -117,11 +122,14 @@ export async function settleOrder(orderId: string, paidAmount: number): Promise<
     if (o.status === "PAID") return "already";
     if (o.status === "CANCELLED" || o.status === "FAILED") return "cancelled";
     await tx.order.update({ where: { id: o.id }, data: { status: "PAID", paidAt: new Date() } });
-    await tx.enrollment.upsert({
-      where: { userId_courseId: { userId: o.userId, courseId: o.courseId } },
-      update: { status: "ACTIVE", source: "PAID" },
-      create: { userId: o.userId, courseId: o.courseId, status: "ACTIVE", source: "PAID" },
-    });
+    const course = await tx.course.findUnique({ where: { id: o.courseId }, select: { id: true, bundleCourseIds: true } });
+    for (const courseId of course ? unlockedCourseIds(course) : [o.courseId]) {
+      await tx.enrollment.upsert({
+        where: { userId_courseId: { userId: o.userId, courseId } },
+        update: { status: "ACTIVE", source: "PAID" },
+        create: { userId: o.userId, courseId, status: "ACTIVE", source: "PAID" },
+      });
+    }
     await tx.event.create({ data: { name: "order_paid", courseId: o.courseId, userId: o.userId } });
     return "paid";
   });

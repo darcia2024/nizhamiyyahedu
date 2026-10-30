@@ -56,6 +56,7 @@ model Course {
   status      String   @default("DRAFT") // DRAFT | PUBLISHED
   priceRupiah Int      @default(0)
   sortOrder   Int      @default(0)
+  bundleCourseIds String? // JSON: [courseId]; terisi = paket bundling yang membuka kursus-kursus ini
   archivedAt  DateTime?
   teacherId   String?
   teacher     TeacherProfile? @relation(fields: [teacherId], references: [id])

@@ -28,7 +28,7 @@ function VideoBox({ url }: { url: string | null }) {
   if (!v) {
     return (
       <div className="video" role="img" aria-label="Video belum tersedia">
-        <div className="ph"><PlayCircle size={44} aria-hidden="true" /><span>Video pelajaran belum diunggah</span></div>
+        <div className="ph"><PlayCircle size={44} aria-hidden="true" /><span>Video pertemuan ini menyusul</span></div>
       </div>
     );
   }

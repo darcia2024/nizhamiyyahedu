@@ -22,7 +22,7 @@ export const SITE_COPY_DEFAULTS = {
   faqText: "Jawaban singkat sebelum kamu mulai belajar.",
   ctaTitle: "Mulai dari satu kitab.",
   ctaAccent: "Lanjut sesuai ritme kamu.",
-  ctaText: "Intip silabusnya, coba satu pelajaran gratis, baru putuskan.",
+  ctaText: "Ambil satu kelas, atau dua sekaligus lewat paket bundling.",
   socialKicker: "Sosial media",
   socialTitle: "Intip kegiatan kami di Instagram.",
   socialText: "Kelas, nadwah ilmiah, dan kabar terbaru dari Nizhamiyyah Edu di Mesir. Ikuti supaya nggak ketinggalan jadwal berikutnya.",
@@ -43,13 +43,13 @@ export const SITE_COPY_DEFAULTS = {
   catalogLink: "Lihat semua kursus",
   catalogEmptyTitle: "Kursus sedang disiapkan",
   catalogEmptyText: "Jadwal kursus terbaru akan segera dipublikasikan.",
-  courseIncludes: "Video pelajaran · Matan & terjemah · Catatan pengajar",
+  courseIncludes: "Video tiap pertemuan · Bisa diulang · Akses selamanya",
   lessonLabel: "Cuplikan matan",
   lessonButton: "Buka pelajaran gratis",
   ctaButton: "Lihat katalog",
   heroPlace: "Dar Nizhamiyyah · Gamaliya, Kairo",
   boardLabel: "Kegiatan terbaru di majelis",
-  tickerItems: "Dars Ushul Fiqh · Matan Waraqat | Ilmu Mantiq · Matan Isaghuji | Nadwah ilmiah, siaran langsung di YouTube | Kelas tatap muka di Dar Nizhamiyyah, Gamaliya | Pengajar mahasiswa pascasarjana Al-Azhar, Kairo",
+  tickerItems: "Bundling Dauroh Aqliyat · Mantiq & Ushul Fiqh Rp 100.000 | Dauroh Ushul Fiqh · Matan Waraqat · 8 pertemuan | Dauroh Mantiq · Matan Isaghuji · 5 pertemuan | Pengajar mahasiswa pascasarjana Al-Azhar, Kairo | Dari Dar Nizhamiyyah, Gamaliya",
 };
 export type SiteCopy = typeof SITE_COPY_DEFAULTS;
 export const COPY_GROUPS: { title: string; fields: { key: keyof SiteCopy; label: string }[] }[] = [

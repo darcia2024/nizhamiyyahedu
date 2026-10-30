@@ -11,6 +11,7 @@ import { settleOrder } from "@/lib/orders";
 import { getContent, saveContent, DEFAULTS, type ContentKey } from "@/lib/content";
 import { validateSiteCopy } from "@/lib/site-copy";
 import { saveSiteImage, saveTeacherPhoto } from "@/lib/media";
+import { parseBundle, unlockedCourseIds } from "@/lib/bundle";
 
 type Guard = { ok: true; user: CurrentUser } | { ok: false; result: ActionResult };
 
@@ -59,9 +60,21 @@ export async function saveCourse(_p: ActionResult, fd: FormData): Promise<Action
   else teacherId = (await db.teacherProfile.findUnique({ where: { userId: user.id }, select: { id: true } }))?.id;
   if(!isAdmin && !teacherId) return fail("Profil pengajarmu belum ditautkan. Hubungi admin dulu sebelum bikin kursus.");
 
+  // Isi paket bundling (khusus admin): hanya kursus biasa, bukan paket lain dan bukan dirinya sendiri.
+  let bundleCourseIds: string | null | undefined;
+  if (isAdmin && fd.has("bundleForm")) {
+    const picked = fd.getAll("bundleItem").map(String).filter((x) => x && x !== id);
+    const valid = picked.length
+      ? (await db.course.findMany({ where: { id: { in: picked } }, select: { id: true, bundleCourseIds: true } })).filter((c) => !parseBundle(c.bundleCourseIds).length).map((c) => c.id)
+      : [];
+    if (valid.length === 1) return fail("Paket bundling minimal berisi 2 kursus.", { bundleItem: "Pilih minimal 2 kursus, atau kosongkan semua." });
+    bundleCourseIds = valid.length ? JSON.stringify(valid) : null;
+  }
+
   const data = {
     title: d.title, titleAr: d.titleAr || null, slug: d.slug, field: d.field, level: d.level, description: d.description,
     ...(isAdmin ? { priceRupiah: d.priceRupiah ?? 0, sortOrder: d.sortOrder ?? 0 } : {}),
+    ...(bundleCourseIds !== undefined ? { bundleCourseIds } : {}),
     ...(teacherId !== undefined ? { teacherId } : {}),
   };
 
@@ -91,8 +104,9 @@ export async function setCourseStatus(_p: ActionResult, fd: FormData): Promise<A
   if (!c) return fail("Kursus tidak ditemukan.");
   if (to === "PUBLISHED") {
     const missing: string[] = [];
-    if (c.lessons.length < 1) missing.push("minimal 1 pelajaran berstatus Tayang");
-    if (!c.teacherId) missing.push("pengajar belum dipilih");
+    const bundle = parseBundle(c.bundleCourseIds).length > 0;
+    if (!bundle && c.lessons.length < 1) missing.push("minimal 1 pelajaran berstatus Tayang");
+    if (!bundle && !c.teacherId) missing.push("pengajar belum dipilih");
     if (c.archivedAt) missing.push("kursus masih diarsipkan");
     if (missing.length) return fail(`Belum bisa ditayangkan: ${missing.join(", ")}.`);
   }
@@ -325,6 +339,17 @@ export async function changeRole(_p: ActionResult, fd: FormData): Promise<Action
   return { ok: true, message: `Peran ${u.name ?? u.email} diubah menjadi ${role.data}.` };
 }
 
+/** Buka akses manual; untuk paket bundling yang dibuka adalah kursus-kursus isinya. */
+async function openAccess(userId: string, courseIds: string[]) {
+  for (const courseId of courseIds) {
+    await db.enrollment.upsert({
+      where: { userId_courseId: { userId, courseId } },
+      update: { status: "ACTIVE" },
+      create: { userId, courseId, status: "ACTIVE", source: "MANUAL" },
+    });
+  }
+}
+
 export async function grantAccess(_p: ActionResult, fd: FormData): Promise<ActionResult> {
   const g = await asAdmin();
   if (!g.ok) return g.result;
@@ -333,13 +358,9 @@ export async function grantAccess(_p: ActionResult, fd: FormData): Promise<Actio
   const reason = String(fd.get("reason") ?? "").trim();
   if (!courseId) return fail("Pilih kursus.", { courseId: "Pilih kursus." });
   if (reason.length < 3) return fail("Alasan wajib diisi.", { reason: "Alasan wajib diisi." });
-  const [targetUser,targetCourse]=await Promise.all([db.user.findUnique({where:{id:userId},select:{id:true}}),db.course.findUnique({where:{id:courseId},select:{id:true}})]);
+  const [targetUser,targetCourse]=await Promise.all([db.user.findUnique({where:{id:userId},select:{id:true}}),db.course.findUnique({where:{id:courseId},select:{id:true,bundleCourseIds:true}})]);
   if(!targetUser||!targetCourse)return fail("User atau kursus tidak ditemukan.");
-  await db.enrollment.upsert({
-    where: { userId_courseId: { userId, courseId } },
-    update: { status: "ACTIVE" },
-    create: { userId, courseId, status: "ACTIVE", source: "MANUAL" },
-  });
+  await openAccess(userId, unlockedCourseIds(targetCourse));
   await audit(g.user, "ACCESS_GRANT", "User", userId, { after: { courseId }, reason });
   revalidatePath(`/admin/pengguna/${userId}`);
   return { ok: true, message: "Akses kursus dibuka." };
@@ -391,11 +412,8 @@ export async function manualGrantOrder(_p: ActionResult, fd: FormData): Promise<
   if (reason.length < 3) return fail("Alasan wajib diisi.", { reason: "Alasan wajib diisi." });
   const o = await db.order.findUnique({ where: { id } });
   if (!o) return fail("Order tidak ditemukan.");
-  await db.enrollment.upsert({
-    where: { userId_courseId: { userId: o.userId, courseId: o.courseId } },
-    update: { status: "ACTIVE" },
-    create: { userId: o.userId, courseId: o.courseId, source: "MANUAL" },
-  });
+  const course = await db.course.findUnique({ where: { id: o.courseId }, select: { id: true, bundleCourseIds: true } });
+  await openAccess(o.userId, course ? unlockedCourseIds(course) : [o.courseId]);
   await db.order.update({ where: { id }, data: { note: `Akses dibuka manual: ${reason}` } });
   await audit(g.user, "ORDER_MANUAL_GRANT", "Order", id, { after: { userId: o.userId, courseId: o.courseId }, reason });
   revalidatePath(`/admin/pembayaran/${id}`);

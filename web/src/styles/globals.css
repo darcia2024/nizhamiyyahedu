@@ -118,6 +118,8 @@ button, input, select, textarea { font: inherit; color: inherit }
 .c-nahwu { background: var(--nahwu-cover) }
 .c-fiqih { background: var(--fiqih-cover) }
 .c-aqidah { background: var(--aqidah-cover) }
+.f-aqliyah { color: var(--aqliyah); background: var(--aqliyah-soft) }
+.c-aqliyah { background: var(--aqliyah-cover) }
 .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; padding: 3px 9px; background: #EEF1EE; color: var(--ink-2) }
 .badge.ok { background: var(--success-soft); color: var(--success) }
 .badge.wait { background: var(--warning-soft); color: var(--warning) }

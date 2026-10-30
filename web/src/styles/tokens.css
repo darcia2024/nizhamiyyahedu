@@ -25,6 +25,8 @@
   --nahwu: #1E715C; --nahwu-soft: #E4F0EB; --nahwu-cover: #1E715C;
   --fiqih: #8A5C0A; --fiqih-soft: #F6EBD3; --fiqih-cover: #4A3410;
   --aqidah: #3D5A9E; --aqidah-soft: #E4EAF7; --aqidah-cover: #22345E;
+  /* Daurah Aqliyah (Mantiq, Ushul Fiqh): hijau tua seperti sampul resminya. */
+  --aqliyah: #165340; --aqliyah-soft: #E2EEE7; --aqliyah-cover: #0F4A36;
 
   --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-pill: 999px;
 

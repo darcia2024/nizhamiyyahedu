@@ -13,6 +13,7 @@ import { FIELD_LABEL, FIELD_TONE, LEVEL_LABEL, type Field, type Level } from "@/
 import { dateTimeWib, hoursLabel, initials, isPlaceholder, rupiah } from "@/lib/format";
 import { getContent } from "@/lib/content";
 import { TrackCourseView } from "@/components/TrackCourseView";
+import { parseBundle, unlockedCourseIds } from "@/lib/bundle";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ lanjut?: string; pratinjau?: string }> };
 
@@ -42,7 +43,18 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
   const field = course.field as Field;
   const level = course.level as Level;
   const tone = FIELD_TONE[field];
-  const totalMin = course.lessons.reduce((a, l) => a + (l.durationMin ?? 0), 0);
+  // Paket bundling: isi paket menggantikan silabus; jumlah pelajaran dihitung dari kursus isinya.
+  const bundleIds = parseBundle(course.bundleCourseIds);
+  const bundle = bundleIds.length
+    ? (await db.course.findMany({
+        where: { id: { in: bundleIds }, archivedAt: null },
+        select: { id: true, slug: true, title: true, titleAr: true, field: true, priceRupiah: true, status: true, lessons: { where: { status: "PUBLISHED" }, select: { durationMin: true } } },
+      })).sort((a, b) => bundleIds.indexOf(a.id) - bundleIds.indexOf(b.id))
+    : [];
+  const isBundle = bundle.length > 0;
+  const lessonCount = isBundle ? bundle.reduce((a, b) => a + b.lessons.length, 0) : course.lessons.length;
+  const totalMin = (isBundle ? bundle.flatMap((b) => b.lessons) : course.lessons).reduce((a, l) => a + (l.durationMin ?? 0), 0);
+  const normalPrice = bundle.reduce((a, b) => a + b.priceRupiah, 0);
   const isFree = course.priceRupiah === 0;
   const contact = await getContent("contact.main");
 
@@ -56,8 +68,9 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
       previewHref: `/dashboard/kursus/${course.slug}`,
     };
   } else {
-    const enr = await db.enrollment.findUnique({ where: { userId_courseId: { userId: user.id, courseId: course.id } } });
-    if (enr?.status === "ACTIVE") state = { kind: "enrolled", href: `/dashboard/kursus/${course.slug}` };
+    const unlocks = unlockedCourseIds(course);
+    const active = await db.enrollment.count({ where: { userId: user.id, courseId: { in: unlocks }, status: "ACTIVE" } });
+    if (active === unlocks.length) state = { kind: "enrolled", href: isBundle ? "/dashboard/kursus" : `/dashboard/kursus/${course.slug}` };
     else if (isFree) state = { kind: "free" };
     else {
       const pending = await db.order.findFirst({
@@ -67,12 +80,19 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
     }
   }
 
-  const facts = [
-    `${course.lessons.length} pelajaran${totalMin ? ` · ${hoursLabel(totalMin)}` : ""}`,
-    "Teks Arab kitab + terjemah per kalimat",
-    "Catatan dan video dari pengajar",
-    ...(isFree ? [] : ["Akses selamanya"]),
-  ];
+  const facts = isBundle
+    ? [
+        ...bundle.map((b) => `Kelas ${b.title}`),
+        `${lessonCount} pelajaran${totalMin ? ` · ${hoursLabel(totalMin)}` : ""}`,
+        "Video dari pengajar, bisa diulang",
+        "Akses selamanya",
+      ]
+    : [
+        `${lessonCount} pelajaran${totalMin ? ` · ${hoursLabel(totalMin)}` : ""}`,
+        "Video dari pengajar, bisa diulang",
+        "Catatan pribadi per pelajaran",
+        ...(isFree ? [] : ["Akses selamanya"]),
+      ];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -99,12 +119,13 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
               <header className={`detail-hero c-${tone}`}>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", position: "relative" }}>
                   <span className={`tag f-${tone}`}>{FIELD_LABEL[field]}</span>
-                  <span className="tag plain">{LEVEL_LABEL[level]}</span>
+                  <span className="tag plain">{isBundle ? "Bundling" : "Kelas Online"}</span>
+                  {!isBundle && <span className="tag plain">{LEVEL_LABEL[level]}</span>}
                 </div>
                 {course.titleAr && <p className="ar" lang="ar" dir="rtl" style={{ position: "relative" }}>{course.titleAr}</p>}
                 <h1 style={{ position: "relative" }}>{course.title}</h1>
                 <p className="meta" style={{ position: "relative" }}>
-                  {!isPlaceholder(course.teacher?.displayName) && `Bersama ${course.teacher!.displayName} · `}{course.lessons.length} pelajaran{totalMin ? ` · ${hoursLabel(totalMin)}` : ""}
+                  {!isPlaceholder(course.teacher?.displayName) && `Bersama ${course.teacher!.displayName} · `}{isBundle ? `${bundle.length} kelas · ` : ""}{lessonCount} pelajaran{totalMin ? ` · ${hoursLabel(totalMin)}` : ""}
                 </p>
               </header>
 
@@ -120,6 +141,24 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
                 {course.description ? <Markdown source={course.description} /> : <p className="muted">Deskripsi kursus akan segera ditambahkan.</p>}
               </section>
 
+              {isBundle ? (
+              <section className="block" id="silabus" aria-labelledby="silabus-h">
+                <h2 id="silabus-h">Isi paket · {bundle.length} kelas</h2>
+                <ul className="bundle-list">
+                  {bundle.map((b) => (
+                    <li key={b.id}>
+                      <span className={`mini c-${FIELD_TONE[b.field as Field]}`} lang={b.titleAr ? "ar" : undefined} dir={b.titleAr ? "rtl" : undefined} aria-hidden="true">{b.titleAr ?? FIELD_LABEL[b.field as Field]}</span>
+                      <div>
+                        <h3>{b.status === "PUBLISHED" ? <Link href={`/kursus/${b.slug}`}>{b.title}</Link> : b.title}</h3>
+                        <p className="small muted">{FIELD_LABEL[b.field as Field]} · {b.lessons.length} pelajaran</p>
+                      </div>
+                      <s className="num">{rupiah(b.priceRupiah)}</s>
+                    </li>
+                  ))}
+                </ul>
+                {normalPrice > course.priceRupiah && <p className="bundle-save">Lebih hemat {rupiah(normalPrice - course.priceRupiah)} dibanding beli satu per satu</p>}
+              </section>
+              ) : (
               <section className="block" id="silabus" aria-labelledby="silabus-h">
                 <h2 id="silabus-h">Silabus · {course.lessons.length} pelajaran</h2>
                 {course.lessons.length ? (
@@ -139,6 +178,7 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
                   </ol>
                 ) : <p className="muted">Pelajaran sedang disiapkan.</p>}
               </section>
+              )}
 
               <section className="block" id="pengajar" aria-labelledby="pengajar-h">
                 <h2 id="pengajar-h">Pengajar</h2>
@@ -171,6 +211,7 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
               priceLabel={rupiah(course.priceRupiah)}
               priceNumber={course.priceRupiah}
               isFree={isFree}
+              isBundle={isBundle}
               facts={facts}
               state={state}
               autoOpen={sp.lanjut === "1"}
