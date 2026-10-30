@@ -17,8 +17,12 @@ function Set-VercelEnv([string]$name, [string]$value) {
   if ([string]::IsNullOrWhiteSpace($value)) { Write-Host "  - $name dilewati" -ForegroundColor DarkGray; return }
   # Hapus nilai lama (bila ada) lalu tambahkan yang baru.
   & npx vercel env rm $name production --yes *> $null
-  $value.Trim() | & npx vercel env add $name production *> $null
-  if ($LASTEXITCODE -ne 0) { throw "Gagal menyimpan $name ke Vercel." }
+  $out = $value.Trim() | & npx vercel env add $name production 2>&1
+  if ($LASTEXITCODE -ne 0) {
+    # Keluaran Vercel tidak memuat nilai rahasia, jadi aman ditampilkan untuk mencari penyebabnya.
+    $out | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkYellow }
+    throw "Gagal menyimpan $name ke Vercel."
+  }
   Write-Host "  + $name tersimpan" -ForegroundColor Green
 }
 
