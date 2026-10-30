@@ -27,6 +27,15 @@ const config: NextConfig = {
           },
         ],
       },
+      {
+        // Service worker selalu diperiksa ulang supaya versi baru aplikasi cepat sampai ke HP user.
+        source: "/sw.js",
+        headers: [
+          { key: "Content-Type", value: "application/javascript; charset=utf-8" },
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'" },
+        ],
+      },
     ];
   },
 };

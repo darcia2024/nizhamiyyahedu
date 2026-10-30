@@ -4,6 +4,7 @@ import { Award, BookOpen, ChevronsUpDown, CirclePlay, CreditCard, Ellipsis, Layo
 import { StarMark } from "@/components/Logo";
 import { InstallButton } from "@/components/InstallButton";
 import { SidebarSearch } from "@/components/SidebarSearch";
+import { BackButton } from "@/components/BackButton";
 import { signOut } from "@/auth";
 import type { CurrentUser } from "@/lib/auth-guard";
 import { initials } from "@/lib/format";
@@ -70,6 +71,7 @@ export async function AppShell({
     <div className="app">
       <div className="shell">
         <aside className="side">
+          <BackButton />
           <Link href="/" className="ws" aria-label="Ke beranda Nizhamiyyah Edu">
             <span className="brand-mark"><StarMark size={22} stroke="#fff" dot={false} /></span>
             <span className="ws-info"><b>Nizhamiyyah</b><small>Ruang belajar</small></span>

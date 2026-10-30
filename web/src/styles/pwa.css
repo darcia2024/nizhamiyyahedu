@@ -1,0 +1,128 @@
+/* Rasa aplikasi native di HP dan saat dipasang sebagai PWA.
+   Mode aplikasi ditandai html[data-standalone] (diset PwaProvider) atau @media (display-mode: standalone). */
+
+/* ---------- Sentuhan dasar ---------- */
+html { -webkit-tap-highlight-color: transparent }
+a, button, summary, label, input, select, textarea, [role="button"] { touch-action: manipulation }
+html[data-standalone] body { overscroll-behavior-y: none }
+@media (pointer: coarse) {
+  /* Umpan balik tekan: elemen sedikit mengecil seperti tombol native. */
+  .btn, .landing-btn, .plan-cta, .chip, .course-card, .plan-card, .lv-row, .lv-poster, .social-card, .top-btn,
+  .tabbar a, .pwa-tabbar a, .admin-nav a, .nav a, .menu-d summary, .pwa-back { transition: transform .14s ease, background-color .2s, color .2s }
+  .btn:active, .landing-btn:active, .plan-cta:active, .chip:active, .top-btn:active, .menu-d summary:active, .pwa-back:active { transform: scale(.96) }
+  .course-card:active, .plan-card:active, .lv-row:active, .social-card:active { transform: scale(.985) }
+  .nav a:active, .admin-nav a:active { background: rgba(30, 113, 92, .08) }
+  /* Menu dan tombol tidak ikut terpilih saat ditekan lama. */
+  .tabbar, .pwa-tabbar, .admin-nav, .nav, .btn, .landing-btn, .chip, .pwa-back { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none }
+  /* iPhone memperbesar layar kalau font kolom isian di bawah 16px. */
+  input, select, textarea, .input, .select, .textarea { font-size: max(16px, 1em) }
+}
+
+/* ---------- Tombol kembali (hanya mode aplikasi) ---------- */
+.pwa-back { display: none; flex: none; place-items: center; width: 40px; height: 40px; margin-left: -8px; padding: 0; border: 0; border-radius: 999px; background: transparent; color: inherit; cursor: pointer }
+.pwa-back:hover { background: rgba(0, 0, 0, .05) }
+.landing-header .pwa-back { color: #fff }
+html[data-standalone] .pwa-back { display: inline-grid }
+@media (display-mode: standalone) { .pwa-back { display: inline-grid } }
+html[data-standalone] .pub-header .wrap, html[data-standalone] .admin-top { gap: 6px }
+@media (min-width: 961px) { .side > .pwa-back { display: none !important } }
+@media (max-width: 960px) {
+  html[data-standalone] .side > .pwa-back { display: inline-grid }
+  html[data-standalone] .side { flex-direction: row; align-items: center; gap: 4px }
+}
+
+/* ---------- Kepala halaman menempel di HP, berkaca seperti bilah aplikasi ---------- */
+@media (max-width: 760px) {
+  .pub-header { position: sticky; top: 0; z-index: 30 }
+  .pub-header:not(.landing-header) { background: rgba(255, 255, 255, .9); -webkit-backdrop-filter: saturate(1.8) blur(16px); backdrop-filter: saturate(1.8) blur(16px) }
+  main [id] { scroll-margin-top: 84px }
+}
+@media (max-width: 960px) {
+  .side { position: sticky; top: 0; z-index: 30; background: rgba(250, 250, 249, .88); -webkit-backdrop-filter: saturate(1.8) blur(16px); backdrop-filter: saturate(1.8) blur(16px) }
+  .admin-top { position: sticky; top: 0; z-index: 30; background: rgba(255, 255, 255, .9); -webkit-backdrop-filter: saturate(1.8) blur(16px); backdrop-filter: saturate(1.8) blur(16px) }
+}
+
+/* ---------- Tab bar bawah: kaca buram + penanda aktif berbentuk pil ---------- */
+.pwa-tabbar, .pwa-tabbar-space { display: none }
+@media (max-width: 640px) {
+  .tabbar, .pwa-tabbar {
+    background: rgba(255, 255, 255, .88) !important; -webkit-backdrop-filter: saturate(1.8) blur(18px); backdrop-filter: saturate(1.8) blur(18px);
+    border-top: 1px solid rgba(20, 30, 25, .08) !important;
+    padding: 4px max(6px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px, env(safe-area-inset-left)) !important;
+  }
+  .tabbar a, .pwa-tabbar a { gap: 3px !important; min-height: 58px; font-size: 11px; letter-spacing: .01em }
+  .tabbar a svg, .pwa-tabbar a svg { box-sizing: content-box; padding: 4px 16px; border-radius: 999px; transition: background-color .25s, padding .25s, color .2s }
+  .tabbar a[aria-current="page"] svg, .pwa-tabbar a[aria-current="page"] svg { background: #dcebe4; color: #0F4736 }
+  .tabbar a[aria-current="page"], .pwa-tabbar a[aria-current="page"] { color: #0F4736 !important; font-weight: 700 }
+}
+.pwa-tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40 }
+.pwa-tabbar a { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #5f6a63; font-weight: 600 }
+@media (max-width: 760px) {
+  /* Halaman publik: tab bar sudah muncul di lebar HP. */
+  .pwa-tabbar:not(.admin-tabbar) { display: flex; background: rgba(255, 255, 255, .9); -webkit-backdrop-filter: saturate(1.8) blur(18px); backdrop-filter: saturate(1.8) blur(18px); border-top: 1px solid rgba(20, 30, 25, .08); padding: 4px max(6px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px, env(safe-area-inset-left)) }
+  .pwa-tabbar:not(.admin-tabbar) a { min-height: 58px; gap: 3px; font-size: 11px }
+  .pwa-tabbar-space { display: block; height: calc(66px + env(safe-area-inset-bottom)); background: #0F4736 }
+}
+@media (max-width: 640px) {
+  .admin-tabbar { display: flex }
+  .admin-content { padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important }
+  .main { padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important }
+}
+
+/* ---------- Perpindahan halaman: konten masuk pelan seperti layar baru ---------- */
+@keyframes pwa-page-in { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
+@keyframes pwa-fade-in { from { opacity: 0 } to { opacity: 1 } }
+.panel, .admin-content { animation: pwa-page-in .34s cubic-bezier(.2, .8, .2, 1) both }
+/* Halaman publik hanya memudar: bilah beli di detail kelas memakai position: fixed. */
+main#isi:not(.landing-page):not(.admin-content) { animation: pwa-fade-in .28s ease-out both }
+
+/* ---------- Kabar offline dan versi baru ---------- */
+.pwa-toasts { position: fixed; z-index: 90; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; width: min(440px, calc(100% - 24px)); pointer-events: none }
+@media (max-width: 760px) { .pwa-toasts { bottom: calc(80px + env(safe-area-inset-bottom)) } }
+.pwa-toast { pointer-events: auto; display: flex; align-items: center; gap: 10px; margin: 0; padding: 12px 14px 12px 16px; border-radius: 16px; background: #10231c; color: #fff; font-size: 14px; line-height: 1.4; box-shadow: 0 14px 34px rgba(0, 0, 0, .25); animation: pwa-toast-in .35s cubic-bezier(.2, .8, .2, 1) both }
+.pwa-toast svg { flex: none; color: #f6e7b4 }
+.pwa-toast button { margin-left: auto; flex: none; min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: #f6e7b4; color: #143d29; font: inherit; font-weight: 700; cursor: pointer }
+@keyframes pwa-toast-in { from { opacity: 0; transform: translateY(16px) scale(.98) } to { opacity: 1; transform: none } }
+
+/* ---------- Lembar "Pasang aplikasi" ---------- */
+.pwa-sheet-wrap { position: fixed; inset: 0; z-index: 100; display: flex; align-items: flex-end; justify-content: center }
+.pwa-sheet-scrim { position: absolute; inset: 0; border: 0; padding: 0; background: rgba(8, 20, 14, .45); animation: pwa-fade-in .25s ease-out both; cursor: default }
+.pwa-sheet {
+  position: relative; width: min(520px, 100%); padding: 10px 20px calc(22px + env(safe-area-inset-bottom)); border-radius: 26px 26px 0 0; background: #fff; color: #141414;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, .18); animation: pwa-sheet-up .42s cubic-bezier(.2, .9, .25, 1) both; transition: transform .3s cubic-bezier(.2, .9, .25, 1); outline: none; touch-action: pan-x
+}
+@keyframes pwa-sheet-up { from { transform: translateY(100%) } to { transform: none } }
+.pwa-grab { display: block; width: 40px; height: 5px; margin: 0 auto 14px; border-radius: 999px; background: #d5dbd7 }
+.pwa-sheet-close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 999px; background: #f1f3f1; color: #4b4b48; cursor: pointer }
+.pwa-sheet-head { display: flex; gap: 14px; align-items: center; padding-right: 36px }
+.pwa-sheet-head img { flex: none; border-radius: 14px; box-shadow: 0 6px 16px rgba(20, 61, 41, .25) }
+.pwa-sheet-head h2 { margin: 0; font-family: var(--font-app); font-size: 18px; line-height: 1.25; letter-spacing: -.01em }
+.pwa-sheet-head p { margin: 4px 0 0; font-size: 14px; line-height: 1.45; color: #5b6560 }
+.pwa-sheet-actions { display: grid; gap: 8px; margin-top: 20px }
+.pwa-sheet-actions .btn { min-height: 50px; border-radius: 14px; gap: 8px }
+.pwa-steps { display: grid; gap: 4px; margin: 18px 0 0; padding: 0; list-style: none }
+.pwa-steps li { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-radius: 14px; background: #f4f7f5; font-size: 14.5px }
+.pwa-steps li > span { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 999px; background: #1E715C; color: #fff; font-size: 12.5px; font-weight: 700 }
+.pwa-steps svg { color: #1E715C }
+
+/* ---------- Halaman offline ---------- */
+.offline-page { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 24px 20px; background: #143d29 }
+.offline-card { display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 380px; text-align: center; color: #e3efea }
+.offline-mark { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 22px; background: #1E715C; box-shadow: 0 16px 40px rgba(0, 0, 0, .3) }
+.offline-card h1 { margin: 8px 0 0; color: #fff; font-family: var(--font-app); font-size: 26px; line-height: 1.15; letter-spacing: -.02em }
+.offline-card p { margin: 0; line-height: 1.55 }
+.offline-retry { margin-top: 10px; min-height: 50px; padding-inline: 26px; border-radius: 999px; gap: 8px; background: #f6e7b4 !important; color: #143d29 !important; border: 0 }
+.offline-link { color: #cfe1d7; font-size: 14px }
+
+/* ---------- Pemuatan: bilah tipis di atas + kerangka konten ---------- */
+.pwa-progress { position: fixed; top: 0; left: 0; right: 0; z-index: 95; height: 3px; overflow: hidden; background: rgba(30, 113, 92, .12) }
+.pwa-progress::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 40%; background: #1E715C; border-radius: 0 3px 3px 0; animation: pwa-progress 1.1s cubic-bezier(.4, 0, .2, 1) infinite }
+@keyframes pwa-progress { from { transform: translateX(-100%) } to { transform: translateX(260%) } }
+.pwa-skeleton { display: grid; gap: 16px; max-width: 1180px; margin: 0 auto; padding: 28px 16px 120px }
+.pwa-skeleton i { display: block; border-radius: 16px; background: linear-gradient(90deg, #eceee9 0%, #f6f7f4 45%, #eceee9 90%); background-size: 220% 100%; animation: pwa-shimmer 1.3s linear infinite }
+@keyframes pwa-shimmer { from { background-position: 120% 0 } to { background-position: -120% 0 } }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel, .admin-content, main#isi, .pwa-toast, .pwa-sheet, .pwa-sheet-scrim { animation: none !important }
+  .pwa-progress::after, .pwa-skeleton i { animation: none }
+}

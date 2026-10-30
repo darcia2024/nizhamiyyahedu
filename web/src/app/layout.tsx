@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Amiri, Bricolage_Grotesque, Reem_Kufi } from "next/font/google";
 import "@/styles/globals.css";
 import "@/styles/living.css";
+import "@/styles/pwa.css";
+import { PwaProvider } from "@/components/PwaProvider";
 
 const amiri = Amiri({ subsets: ["arabic", "latin"], weight: ["400", "700"], variable: "--f-amiri", display: "swap", preload: false });
 const bricolage = Bricolage_Grotesque({ subsets: ["latin"], axes: ["opsz"], variable: "--f-bricolage", display: "swap" });
@@ -16,9 +18,14 @@ export const metadata: Metadata = {
   description: "Kelas kitab daring berjenjang dengan kurikulum pesantren Timur Tengah. Katalog dan silabus terbuka untuk semua.",
   openGraph: { siteName: "Nizhamiyyah Edu", locale: "id_ID", type: "website" },
   robots: { index: true, follow: true },
+  applicationName: "Nizhamiyyah",
+  // Mode aplikasi di iPhone: dibuka dari layar utama tanpa bilah Safari.
+  appleWebApp: { capable: true, title: "Nizhamiyyah", statusBarStyle: "default" },
+  formatDetection: { telephone: false, email: false, address: false },
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#1E715C" };
+// viewportFit "cover" supaya tab bar bawah bisa memakai area aman (safe-area) di HP berponi.
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#1E715C" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -26,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a className="skip" href="#isi">Lewati ke konten</a>
         {children}
+        <PwaProvider />
       </body>
     </html>
   );

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Menu } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { HeaderAuth } from "@/components/HeaderAuth";
+import { BackButton } from "@/components/BackButton";
+import { PublicTabbar } from "@/components/PublicTabbar";
 import { getContent } from "@/lib/content";
 
 export async function PublicHeader({ landing = false }: { landing?: boolean }) {
@@ -17,6 +19,7 @@ export async function PublicHeader({ landing = false }: { landing?: boolean }) {
     <>
     <header className={`pub-header gutter${landing ? " landing-header" : ""}`}>
       <div className="wrap">
+        <BackButton className="on-header" />
         <Link href="/" aria-label="Nizhamiyyah Edu, ke beranda"><Logo /></Link>
         <nav className="nav-inline" aria-label="Navigasi utama">
           {NAV.map((n) => <Link key={n.href} href={n.href}>{n.label}</Link>)}
@@ -75,6 +78,7 @@ export function PublicShell({ children, landing = false }: { children: React.Rea
       <PublicHeader landing={landing} />
       <main id="isi" className={landing ? "landing-page" : undefined}>{children}</main>
       <PublicFooter />
+      <PublicTabbar />
     </>
   );
 }
