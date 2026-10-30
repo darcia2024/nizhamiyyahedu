@@ -31,6 +31,11 @@ export function hoursLabel(totalMin: number): string {
   return h < 1 ? `± ${totalMin} menit` : `± ${Math.round(h * 10) / 10} jam`.replace(".", ",");
 }
 
+/** Data contoh seperti "[Nama Ustadz]" belum layak ditampilkan ke pengunjung. */
+export function isPlaceholder(s?: string | null): boolean {
+  return !s || s.includes("[");
+}
+
 export function firstName(name?: string | null): string {
   return (name ?? "").trim().split(/\s+/)[0] || "Penuntut ilmu";
 }

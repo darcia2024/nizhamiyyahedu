@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CourseCard as C } from "@/lib/queries";
 import { FIELD_LABEL, FIELD_TONE, LEVEL_LABEL } from "@/lib/constants";
-import { hoursLabel, rupiah } from "@/lib/format";
+import { hoursLabel, isPlaceholder, rupiah } from "@/lib/format";
 
 export function Cover({ c, flag }: { c: Pick<C, "field" | "titleAr" | "title" | "level">; flag?: string }) {
   const tone = FIELD_TONE[c.field];
@@ -27,7 +27,7 @@ export function CourseCardView({ c, flag }: { c: C; flag?: string }) {
         <h3><Link href={`/kursus/${c.slug}`}>{c.title}</Link></h3>
         {c.description && <p style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{c.description}</p>}
         <p className="small" style={{ color: "var(--ink-2)" }}>
-          {c.teacherName ?? "Pengajar"} · {c.lessonCount} pelajaran{c.totalMin ? ` · ${hoursLabel(c.totalMin)}` : ""}
+          {!isPlaceholder(c.teacherName) && `${c.teacherName} · `}{c.lessonCount} pelajaran{c.totalMin ? ` · ${hoursLabel(c.totalMin)}` : ""}
         </p>
         <div className="cc-foot">
           <b className="num">{rupiah(c.priceRupiah)}</b>

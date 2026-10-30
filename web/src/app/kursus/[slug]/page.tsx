@@ -10,7 +10,7 @@ import { db } from "@/lib/db";
 import { getCurrentUser, canManageCourse } from "@/lib/auth-guard";
 import { getCourseBySlug } from "@/lib/queries";
 import { FIELD_LABEL, FIELD_TONE, LEVEL_LABEL, type Field, type Level } from "@/lib/constants";
-import { dateTimeWib, hoursLabel, initials, rupiah } from "@/lib/format";
+import { dateTimeWib, hoursLabel, initials, isPlaceholder, rupiah } from "@/lib/format";
 import { getContent } from "@/lib/content";
 import { TrackCourseView } from "@/components/TrackCourseView";
 
@@ -104,7 +104,7 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
                 {course.titleAr && <p className="ar" lang="ar" dir="rtl" style={{ position: "relative" }}>{course.titleAr}</p>}
                 <h1 style={{ position: "relative" }}>{course.title}</h1>
                 <p className="meta" style={{ position: "relative" }}>
-                  {course.teacher?.displayName ?? "Pengajar"} · {course.lessons.length} pelajaran{totalMin ? ` · ${hoursLabel(totalMin)}` : ""}
+                  {!isPlaceholder(course.teacher?.displayName) && `Bersama ${course.teacher!.displayName} · `}{course.lessons.length} pelajaran{totalMin ? ` · ${hoursLabel(totalMin)}` : ""}
                 </p>
               </header>
 
@@ -142,14 +142,14 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
 
               <section className="block" id="pengajar" aria-labelledby="pengajar-h">
                 <h2 id="pengajar-h">Pengajar</h2>
-                {course.teacher ? (
+                {course.teacher && !isPlaceholder(course.teacher.displayName) ? (
                   <div className="teacher" style={{ border: 0, padding: 0 }}>
                     <div className="av" aria-hidden="true">{initials(course.teacher.displayName)}</div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                       <h3>{course.teacher.displayName}</h3>
-                      {course.teacher.alumni && <p className="small muted">{course.teacher.alumni}</p>}
-                      {course.teacher.sanad && <p className="small">{course.teacher.sanad}</p>}
-                      <p className="small">{course.teacher.bio}</p>
+                      {!isPlaceholder(course.teacher.alumni) && <p className="small muted">{course.teacher.alumni}</p>}
+                      {!isPlaceholder(course.teacher.sanad) && <p className="small">{course.teacher.sanad}</p>}
+                      {!isPlaceholder(course.teacher.bio) && <p className="small">{course.teacher.bio}</p>}
                     </div>
                   </div>
                 ) : <p className="muted">Profil pengajar akan segera ditambahkan.</p>}

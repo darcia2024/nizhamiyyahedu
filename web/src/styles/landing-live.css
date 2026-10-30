@@ -1,30 +1,10 @@
 /* Beranda "hidup": diambil dari kehidupan nyata Nizhamiyyah (poster kegiatan, Kairo, matan),
    bukan template landing generik. Semua aturan di-scope ke beranda (.landing-page / .lv-*). */
 
-:root {
-  --lv-green: #1e715c;
-  --lv-deep: #143d29;
-  --lv-ink: #10231c;
-  --lv-cream: #f6e7b4;
-  --lv-mist: #e3efea;
-  /* Bintang delapan (rub el hizb) untuk ornamen. */
-  --lv-star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1l3.2 4.8L21 5l-.8 5.8L23 12l-2.8 1.2L21 19l-5.8-.8L12 23l-3.2-4.8L3 19l.8-5.8L1 12l2.8-1.2L3 5l5.8.8z'/%3E%3C/svg%3E");
-}
+/* Variabel warna, pola, dan watermark ada di living.css (dipakai bersama halaman lain). */
 
 /* ---------- Hero ---------- */
 .lv-hero { position: relative; overflow: hidden; background: var(--lv-green); color: #fff; padding-block: 64px 104px }
-.lv-pattern {
-  position: absolute; inset: 0; pointer-events: none; opacity: .09;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88' fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Cpath d='M44 14l8.5 12.8L68 24.6l-2.2 15.3L74 44l-8.2 4.1L68 63.4l-15.5-2.2L44 74l-8.5-12.8L20 63.4l2.2-15.3L14 44l8.2-4.1L20 24.6l15.5 2.2z'/%3E%3Ccircle cx='44' cy='44' r='9'/%3E%3C/svg%3E");
-  background-size: 88px 88px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 78% 40%, #000 20%, transparent 75%);
-  mask-image: radial-gradient(ellipse 70% 80% at 78% 40%, #000 20%, transparent 75%);
-}
-.lv-watermark {
-  position: absolute; right: -3%; bottom: -5%; margin: 0; pointer-events: none; user-select: none;
-  font-family: var(--f-kufi), var(--f-amiri), serif; font-weight: 700; font-size: clamp(120px, 19vw, 280px); line-height: 1;
-  color: rgba(255, 255, 255, .055); white-space: nowrap;
-}
 .lv-hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 56px; align-items: center }
 .lv-hero-copy { text-align: left; display: flex; flex-direction: column; align-items: flex-start }
 .lv-place { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; padding: 7px 14px; border: 1px solid rgba(255, 255, 255, .28); border-radius: 999px; font-size: 13.5px; color: #e8f2ed }

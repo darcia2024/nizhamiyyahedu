@@ -45,6 +45,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const peak = Math.max(1, ...week.map((d) => d.count));
   const finished = progress.filter((p) => p.finished).length;
   const date = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", weekday: "long", day: "numeric", month: "long" }).format(now);
+  // Tanggal hijriah (Umm al-Qura) di samping tanggal masehi, sentuhan kecil yang akrab bagi penuntut ilmu.
+  const hijri = new Intl.DateTimeFormat("id-ID-u-ca-islamic-umalqura", { timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric" }).format(now);
 
   return (
     <AppShell user={user} active="dashboard">
@@ -54,7 +56,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
         <header className="lh-welcome">
           <div><p className="lh-eyebrow">RUANG BELAJARMU</p><h1>Assalamu&apos;alaikum, {firstName(user.name)}.</h1><p>{hero ? "Sedikit demi sedikit, yang penting terus memahami." : "Perjalanan belajar yang baik dimulai dari satu kitab."}</p></div>
-          <span className="lh-date">{date}</span>
+          <span className="lh-date">{date}<span className="lh-hijri">{hijri}</span></span>
         </header>
 
         <div className="lh-top-grid">

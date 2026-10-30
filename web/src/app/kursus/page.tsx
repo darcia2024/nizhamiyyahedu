@@ -41,12 +41,17 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
 
   return (
     <PublicShell>
+      <section className="lv-band gutter" aria-labelledby="katalog-h">
+        <div className="lv-pattern" aria-hidden="true" />
+        <p className="lv-watermark" lang="ar" dir="rtl" aria-hidden="true">خزانة الكتب</p>
+        <div className="wrap lv-band-inner">
+          <p className="star-kicker">Khizanah kitab Nizhamiyyah</p>
+          <h1 id="katalog-h">Katalog kursus</h1>
+          <p role="status">{filtered.length} kursus · silabus dan pengajarnya bisa dilihat tanpa login</p>
+        </div>
+      </section>
       <div className="gutter">
         <div className="wrap">
-          <div className="page-head">
-            <h1>Katalog kursus</h1>
-            <p className="muted" role="status">{filtered.length} kursus · terbuka untuk semua pengunjung</p>
-          </div>
 
           <form className="filters" method="get" action={withBase("/kursus")} role="search">
             <div className="searchbox">
