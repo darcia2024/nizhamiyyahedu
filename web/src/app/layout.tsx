@@ -3,6 +3,7 @@ import { Amiri, Bricolage_Grotesque, Reem_Kufi } from "next/font/google";
 import "@/styles/globals.css";
 import "@/styles/living.css";
 import "@/styles/pwa.css";
+import "@/styles/kitab-card.css";
 import { PwaProvider } from "@/components/PwaProvider";
 
 const amiri = Amiri({ subsets: ["arabic", "latin"], weight: ["400", "700"], variable: "--f-amiri", display: "swap", preload: false });

@@ -108,7 +108,7 @@ export default async function HomePage() {
         <section id="katalog" className="catalog-showcase gutter" aria-labelledby="katalog-h">
           <div className="wrap">
             <div className="landing-section-head split" data-reveal><div><p className="landing-kicker">{copy.catalogKicker}</p><h2 id="katalog-h">{copy.catalogTitle}</h2></div><div><p>{copy.catalogText}</p></div></div>
-            {featured.length ? <div data-reveal><PlanShowcase courses={featured} includes={copy.courseIncludes} /><p className="plan-more"><Link className="landing-text-link" href="/kursus">{copy.catalogLink} <ArrowRight size={16} /></Link></p></div> : <div className="empty-state"><h3>{copy.catalogEmptyTitle}</h3><p className="muted">{copy.catalogEmptyText}</p></div>}
+            {featured.length ? <div data-reveal><PlanShowcase courses={featured} all={courses} /><p className="plan-more"><Link className="landing-text-link" href="/kursus">{copy.catalogLink} <ArrowRight size={16} /></Link></p></div> : <div className="empty-state"><h3>{copy.catalogEmptyTitle}</h3><p className="muted">{copy.catalogEmptyText}</p></div>}
           </div>
         </section>
 

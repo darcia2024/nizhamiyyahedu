@@ -2,7 +2,7 @@ import Link from "next/link";
 import { withBase } from "@/lib/base-path";
 import type { Metadata } from "next";
 import { PublicShell } from "@/components/PublicChrome";
-import { CourseCardView } from "@/components/CourseCard";
+import { KitabGrid } from "@/components/KitabCard";
 import { filterCourses, getPublishedCourses } from "@/lib/queries";
 import { FIELDS, FIELD_LABEL, LEVELS, LEVEL_LABEL } from "@/lib/constants";
 
@@ -83,7 +83,7 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
           </form>
 
           {shown.length ? (
-            <div className="grid-cards" style={{ paddingBottom: 72 }}>{shown.map((c) => <CourseCardView key={c.id} c={c} />)}</div>
+            <div style={{ paddingBottom: 72 }}><KitabGrid courses={shown} all={all} bundleFirst={!sp.urut} /></div>
           ) : (
             <div className="empty-state" style={{ marginBottom: 72 }}>
               <h2 className="serif" style={{ fontSize: 22 }}>{hasFilter ? "Tidak ada kursus yang cocok" : "Kursus sedang disiapkan"}</h2>

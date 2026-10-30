@@ -1,58 +1,24 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, CirclePlay, Clock, ListVideo } from "lucide-react";
-import { FIELD_LABEL, FIELD_TONE, LEVEL_LABEL } from "@/lib/constants";
-import { hoursLabel, rupiah } from "@/lib/format";
+import { FIELD_LABEL } from "@/lib/constants";
 import type { CourseCard } from "@/lib/queries";
+import { KitabGrid } from "@/components/KitabCard";
 
-/** Kartu kursus: thumbnail sampul, ringkasan isi, harga dan satu tombol utama. Tab menyaring per bidang ilmu. */
-export function PlanShowcase({ courses, includes = "Video pelajaran · Matan & terjemah · Catatan pengajar" }: { courses: CourseCard[]; includes?: string }) {
+/** Pilihan kelas di beranda. Tab bidang ilmu hanya muncul kalau kelasnya sudah banyak. */
+export function PlanShowcase({ courses, all = courses }: { courses: CourseCard[]; all?: CourseCard[] }) {
   const fields = Array.from(new Set(courses.map((c) => c.field)));
   const [active, setActive] = useState<string>("all");
   const shown = active === "all" ? courses : courses.filter((c) => c.field === active);
   return (
     <div>
-      <div className="plan-tabs" role="group" aria-label="Filter bidang ilmu">
-        {[["all", "Semua"], ...fields.map((f) => [f, FIELD_LABEL[f]])].map(([key, label]) => (
-          <button key={key} type="button" aria-pressed={active === key} onClick={() => setActive(key)}>{label}</button>
-        ))}
-      </div>
-      <div className="plan-grid">
-        {shown.map((c) => {
-          const free = c.priceRupiah === 0;
-          const tone = FIELD_TONE[c.field];
-          const bundle = c.bundleOf.length > 0;
-          return (
-            <article key={c.id} className="plan-card">
-              <Link className={`plan-thumb c-${tone}`} href={`/kursus/${c.slug}`} tabIndex={-1} aria-hidden="true">
-                <span className="plan-top"><span>{FIELD_LABEL[c.field]}</span><span>{bundle ? `${c.bundleOf.length} kelas` : LEVEL_LABEL[c.level]}</span></span>
-                <span className="plan-ar ar" lang="ar" dir="rtl">{c.titleAr ?? c.title}</span>
-                {(free || c.hasFreePreview) && <span className="plan-hot"><CirclePlay size={14} /> {free ? "Gratis" : "Pratinjau gratis"}</span>}
-                <span className={`kind${bundle ? " bundle" : ""}`}>{bundle ? "Bundling" : "Kelas Online"}</span>
-              </Link>
-
-              <div className="plan-body">
-                <h3><Link href={`/kursus/${c.slug}`}>{c.title}</Link></h3>
-                {c.teacherName && !c.teacherName.includes("[") && <p className="plan-by">Bersama {c.teacherName}</p>}
-                {c.description && <p className="plan-desc">{c.description}</p>}
-
-                <p className="plan-stats">
-                  <span><ListVideo size={15} aria-hidden="true" /> {bundle ? `${c.bundleOf.length} kelas · ` : ""}{c.lessonCount} pelajaran</span>
-                  {c.totalMin > 0 && <span><Clock size={15} aria-hidden="true" /> {hoursLabel(c.totalMin)}</span>}
-                </p>
-
-                <p className="plan-includes">{includes}</p>
-
-                <div className="plan-foot">
-                  <p className="plan-price"><b>{free ? "Gratis" : rupiah(c.priceRupiah)}</b><small>{free ? "tanpa biaya" : "sekali bayar"}</small></p>
-                  <Link className="plan-cta" href={`/kursus/${c.slug}`}>{free ? "Daftar gratis" : bundle ? "Lihat paket" : "Lihat kursus"} <ArrowRight size={16} aria-hidden="true" /></Link>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+      {courses.length > 4 && fields.length > 1 && (
+        <div className="plan-tabs" role="group" aria-label="Filter bidang ilmu">
+          {[["all", "Semua"], ...fields.map((f) => [f, FIELD_LABEL[f]])].map(([key, label]) => (
+            <button key={key} type="button" aria-pressed={active === key} onClick={() => setActive(key)}>{label}</button>
+          ))}
+        </div>
+      )}
+      <KitabGrid courses={shown} all={all} />
     </div>
   );
 }
