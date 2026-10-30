@@ -199,9 +199,9 @@ function InstallSheet({ kind, onInstall, onClose }: { kind: "android" | "ios"; o
           </div>
         ) : (
           <ol className="pwa-steps">
-            <li><span>1</span>Ketuk tombol Bagikan <Share size={17} aria-label="ikon Bagikan" /> di bilah Safari</li>
-            <li><span>2</span>Pilih <b>Tambah ke Layar Utama</b> <PlusSquare size={17} aria-hidden="true" /></li>
-            <li><span>3</span>Ketuk <b>Tambah</b> di pojok kanan atas</li>
+            <li><span>1</span><p>Ketuk tombol Bagikan <Share size={17} aria-label="ikon Bagikan" /> di bilah Safari</p></li>
+            <li><span>2</span><p>Pilih <b>Tambah ke Layar Utama</b> <PlusSquare size={17} aria-hidden="true" /></p></li>
+            <li><span>3</span><p>Ketuk <b>Tambah</b> di pojok kanan atas</p></li>
           </ol>
         )}
       </div>

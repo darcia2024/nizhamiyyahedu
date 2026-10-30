@@ -101,9 +101,10 @@ main#isi:not(.landing-page):not(.admin-content) { animation: pwa-fade-in .28s ea
 .pwa-sheet-actions { display: grid; gap: 8px; margin-top: 20px }
 .pwa-sheet-actions .btn { min-height: 50px; border-radius: 14px; gap: 8px }
 .pwa-steps { display: grid; gap: 4px; margin: 18px 0 0; padding: 0; list-style: none }
-.pwa-steps li { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-radius: 14px; background: #f4f7f5; font-size: 14.5px }
+.pwa-steps li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #f4f7f5; font-size: 14.5px }
 .pwa-steps li > span { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 999px; background: #1E715C; color: #fff; font-size: 12.5px; font-weight: 700 }
-.pwa-steps svg { color: #1E715C }
+.pwa-steps p { flex: 1; min-width: 0; margin: 0; line-height: 1.45 }
+.pwa-steps svg { color: #1E715C; vertical-align: -3px }
 
 /* ---------- Halaman offline ---------- */
 .offline-page { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 24px 20px; background: #143d29 }
