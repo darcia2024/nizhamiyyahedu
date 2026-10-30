@@ -15,7 +15,7 @@ export default async function NotesPage({ searchParams }: { searchParams: Promis
   const q = ((await searchParams).q ?? "").trim().slice(0, 80);
 
   const notes = await db.lessonNote.findMany({
-    where: { userId: user.id, ...(q.length >= 2 ? { body: { contains: q } } : {}) },
+    where: { userId: user.id, ...(q.length >= 2 ? { body: { contains: q, mode: "insensitive" as const } } : {}) },
     include: { lesson: { select: { id: true, title: true, position: true, course: { select: { slug: true, title: true, field: true } } } } },
     orderBy: { updatedAt: "desc" },
   });

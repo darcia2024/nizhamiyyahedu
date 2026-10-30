@@ -29,6 +29,8 @@ if (devLogin) {
   );
 }
 
+const adminEmails = () => (process.env.ADMIN_EMAILS ?? "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+
 export const googleEnabled = providers.some((p) => (typeof p === "function" ? false : p.id === "google"));
 export const devLoginEnabled = devLogin;
 
@@ -44,10 +46,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === "google" && profile?.email_verified !== true) return false;
       if (!user.email) return false;
       const email = user.email.toLowerCase();
+      // Email di ADMIN_EMAILS (dipisah koma) otomatis jadi superadmin saat login Google.
+      const admin = adminEmails().includes(email);
       await db.user.upsert({
         where: { email },
-        update: { name: user.name ?? undefined, image: user.image ?? undefined },
-        create: { email, name: user.name, image: user.image, role: "STUDENT" },
+        update: { name: user.name ?? undefined, image: user.image ?? undefined, ...(admin ? { role: "ADMIN" } : {}) },
+        create: { email, name: user.name, image: user.image, role: admin ? "ADMIN" : "STUDENT" },
       });
       return true;
     },

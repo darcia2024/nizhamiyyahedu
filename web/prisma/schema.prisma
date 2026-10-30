@@ -1,18 +1,18 @@
 // Skema ini dibangun ulang dari PRD (bagian 6.4), karena skema production asli tidak tersedia.
-// Provider sqlite dipakai untuk pengembangan lokal. Untuk production ganti provider ke
-// "mysql" atau "postgresql" dan ubah kolom String JSON ke tipe Json bila diinginkan.
+// Database: Postgres di Supabase. DATABASE_URL = koneksi pooler (port 6543, untuk aplikasi),
+// DIRECT_URL = koneksi langsung/sesi (port 5432, untuk migrasi).
 // Enum disimpan sebagai String; nilai sah didefinisikan di src/lib/constants.ts.
 
 generator client {
   provider      = "prisma-client-js"
-  // Tambahkan target server (mis. "debian-openssl-1.1.x") sesuai OpenSSL hosting.
-  // "rhel-openssl-3.0.x" dipakai fungsi Node.js di Vercel (deployment demo /web).
+  // "rhel-openssl-3.0.x" dipakai fungsi Node.js di Vercel.
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {

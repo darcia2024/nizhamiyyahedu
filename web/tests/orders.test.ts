@@ -1,12 +1,14 @@
 import { beforeAll, afterAll, describe, expect, it, vi } from "vitest";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
-import { rmSync, writeFileSync } from "node:fs";
-const testPath=resolve("prisma/integration-test.db");
-const testUrl=`file:${testPath.replace(/\\/g,"/")}`;
+import { loadEnvConfig } from "@next/env";
+// Tes integrasi memakai Postgres sungguhan dari TEST_DATABASE_URL (database khusus tes, bukan production).
+// Tanpa TEST_DATABASE_URL tes ini dilewati.
+loadEnvConfig(process.cwd());
+const testUrl=process.env.TEST_DATABASE_URL??"";
 vi.mock("@/lib/db",async()=>{
   const {PrismaClient}=await import("@prisma/client");
-  return {db:new PrismaClient({datasourceUrl:`file:${resolve("prisma/integration-test.db").replace(/\\/g,"/")}`})};
+  return {db:new PrismaClient({datasourceUrl:process.env.TEST_DATABASE_URL||"postgresql://skip@localhost:5432/skip"})};
 });
 vi.mock("@/lib/mayar",()=>({createInvoice:vi.fn(async(p:{orderId:string})=>({id:`test_${p.orderId}`,link:`http://localhost:3200/dev/mayar/${p.orderId}`}))}));
 import { db } from "@/lib/db";
@@ -15,14 +17,13 @@ import type { CurrentUser } from "@/lib/auth-guard";
 import { getUserProgress } from "@/lib/progress";
 let user:CurrentUser, courseId:string;
 beforeAll(async()=>{
-  writeFileSync(testPath, "");
-  execFileSync(process.execPath,[resolve("node_modules/prisma/build/index.js"),"db","push","--skip-generate"],{env:{...process.env,DATABASE_URL:testUrl},stdio:"pipe"});
-  await db.$executeRawUnsafe('CREATE UNIQUE INDEX IF NOT EXISTS "Order_one_pending" ON "Order" ("userId", "courseId") WHERE "status" = \'PENDING\'');
+  if(!testUrl)return;
+  execFileSync(process.execPath,[resolve("node_modules/prisma/build/index.js"),"migrate","deploy"],{env:{...process.env,DATABASE_URL:testUrl,DIRECT_URL:testUrl},stdio:"pipe"});
   user=await db.user.create({data:{email:`orders-${Date.now()}@test.local`,role:"STUDENT",name:"User uji"}}) as CurrentUser;
   const c=await db.course.create({data:{title:"Kursus bayar",slug:`test-${Date.now()}`,field:"NAHWU",level:"ULA",status:"PUBLISHED",priceRupiah:150000}});courseId=c.id;
 },30000);
-afterAll(async()=>{await db.$disconnect();for(const ext of ["","-journal","-wal","-shm"])try{rmSync(testPath+ext);}catch{}});
-describe("order lifecycle with real SQLite transactions",()=>{
+afterAll(async()=>{if(testUrl)await db.$disconnect();});
+describe.skipIf(!testUrl)("order lifecycle with real Postgres transactions",()=>{
   let id:string;
   it("reuses the pending invoice",async()=>{const a=await createOrder(user,courseId,"081234567890");expect(a.ok).toBe(true);if(!a.ok)throw new Error(a.error);id=a.orderId;const b=await createOrder(user,courseId,"081234567890");expect(b.ok&&b.orderId).toBe(id);expect(await db.order.count({where:{userId:user.id,courseId,status:"PENDING"}})).toBe(1);});
   it("database rejects duplicate pending orders",async()=>{await expect(db.order.create({data:{userId:user.id,courseId,amount:150000,whatsapp:"6281234567890",expiresAt:new Date(Date.now()+10000)}})).rejects.toMatchObject({code:"P2002"});});

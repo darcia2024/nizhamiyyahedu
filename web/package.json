@@ -5,15 +5,12 @@
   "scripts": {
     "dev": "next dev -p 3200",
     "build": "prisma generate && next build",
-    "build:demo": "prisma generate && tsx scripts/build-demo-db.ts && next build",
-    "vercel-build": "npm run build:demo",
+    "vercel-build": "prisma generate && prisma migrate deploy && tsx prisma/seed-production.ts && next build",
     "start": "next start -p 3200",
     "lint": "tsc --noEmit",
     "test": "vitest run",
-    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "prisma db push --force-reset && tsx prisma/seed.ts",
-    "db:prepare": "tsx scripts/prepare-db.ts",
     "admin:create": "tsx scripts/admin.ts"
   },
   "dependencies": {

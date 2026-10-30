@@ -8,8 +8,6 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "").split(",").map((s) =>
 const config: NextConfig = {
   basePath,
   experimental: { serverActions: { bodySizeLimit: "2mb", allowedOrigins } },
-  // Database contoh untuk deployment demo, disalin ke /tmp saat aplikasi berjalan.
-  outputFileTracingIncludes: { "/**/*": ["./prisma/demo.db"] },
   poweredByHeader: false,
   async headers() {
     return [

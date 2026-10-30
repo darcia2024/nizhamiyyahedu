@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 export function logWhere(query:Record<string,string|undefined>):Prisma.AuditLogWhereInput {
   const start=query.from && /^\d{4}-\d{2}-\d{2}$/.test(query.from)?new Date(`${query.from}T00:00:00+07:00`):undefined;
   const end=query.to && /^\d{4}-\d{2}-\d{2}$/.test(query.to)?new Date(`${query.to}T23:59:59+07:00`):undefined;
-  return {...(query.action?{action:query.action}:{}),...(query.q?{actorName:{contains:query.q.slice(0,80)}}:{}),...(start||end?{createdAt:{gte:start,lte:end}}:{})};
+  return {...(query.action?{action:query.action}:{}),...(query.q?{actorName:{ contains: query.q.slice(0,80), mode: "insensitive" as const }}:{}),...(start||end?{createdAt:{gte:start,lte:end}}:{})};
 }
 export async function AdminLog({query}: {query:Record<string,string|undefined>}) {
   const page=Math.max(1,Number(query.page)||1),where=logWhere(query);
