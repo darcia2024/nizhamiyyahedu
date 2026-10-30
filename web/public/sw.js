@@ -3,7 +3,7 @@
    - Halaman publik: ambil dari jaringan dulu, pakai salinan terakhir kalau offline.
    - Halaman pribadi (dashboard, admin, login, api) tidak pernah disimpan.
    - Tanpa jaringan dan tanpa salinan: tampilkan halaman /offline. */
-const VERSION = "nz-v1";
+const VERSION = "nz-v2";
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const IMAGE_CACHE = `${VERSION}-images`;
@@ -11,7 +11,7 @@ const IMAGE_CACHE = `${VERSION}-images`;
 // Scope = basePath aplikasi (mis. "/web/"), jadi semua jalur dihitung dari sini.
 const BASE = new URL(self.registration.scope).pathname.replace(/\/$/, "");
 const OFFLINE_URL = `${BASE}/offline`;
-const PRECACHE = [OFFLINE_URL, `${BASE}/icon-192.png`, `${BASE}/icon-512.png`, `${BASE}/icon-maskable.svg`];
+const PRECACHE = [OFFLINE_URL, `${BASE}/icon-192.png`, `${BASE}/icon-512.png`, `${BASE}/icon-maskable-512.png`];
 const PRIVATE = ["/dashboard", "/admin", "/api", "/masuk", "/dev"].map((p) => BASE + p);
 
 self.addEventListener("install", (event) => {
