@@ -6,6 +6,7 @@ import { FIELDS, FIELD_LABEL, LEVELS, LEVEL_LABEL } from "@/lib/constants";
 import { rupiah } from "@/lib/format";
 import { parseBundle } from "@/lib/bundle";
 import { db } from "@/lib/db";
+import { mediaSrc } from "@/lib/base-path";
 import { SlugField } from "./SlugField";
 import { LessonSort } from "./LessonSort";
 
@@ -82,6 +83,8 @@ export async function CourseEditor({ courseId, base, isAdmin, teachers }: { cour
             <p className="small muted full">Harga dan pengajar diatur oleh admin. Kursus baru dibuat sebagai draf.</p>
           )}
           <Field name="description" label="Deskripsi (maks 1.000 karakter, boleh Markdown)" type="textarea" rows={5} full defaultValue={course?.description} />
+          <label className="field full">Foto kitab untuk sampul kartu<input className="input" name="cover" type="file" accept="image/jpeg,image/png,image/webp"/><span className="hint">Foto sampul kitab yang dikaji, posisi tegak. Kosongkan untuk memakai foto sekarang. Untuk paket, sampulnya otomatis dari kitab kelas isinya.</span></label>
+          {course?.coverUrl && <img src={mediaSrc(course.coverUrl)} alt="Foto sampul sekarang" height={120} style={{ borderRadius: 2, boxShadow: "0 6px 16px -8px rgba(0,0,0,.4)" }} />}
         </ActionForm>
       </section>
 

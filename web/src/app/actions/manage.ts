@@ -71,8 +71,17 @@ export async function saveCourse(_p: ActionResult, fd: FormData): Promise<Action
     bundleCourseIds = valid.length ? JSON.stringify(valid) : null;
   }
 
+  let coverUrl: string | undefined;
+  const cover = fd.get("cover");
+  if (cover instanceof File && cover.size > 0) {
+    const saved = await saveSiteImage(cover);
+    if (!saved.ok) return fail(saved.error, { cover: saved.error });
+    coverUrl = saved.url;
+  }
+
   const data = {
     title: d.title, titleAr: d.titleAr || null, slug: d.slug, field: d.field, level: d.level, description: d.description,
+    ...(coverUrl ? { coverUrl } : {}),
     ...(isAdmin ? { priceRupiah: d.priceRupiah ?? 0, sortOrder: d.sortOrder ?? 0 } : {}),
     ...(bundleCourseIds !== undefined ? { bundleCourseIds } : {}),
     ...(teacherId !== undefined ? { teacherId } : {}),

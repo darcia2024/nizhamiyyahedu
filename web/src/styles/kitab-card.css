@@ -1,73 +1,90 @@
-/* Kartu kelas bergaya sampul kitab (beranda dan katalog).
-   Sampul: hijau tua, bingkai ganda emas, bintang di sudut, judul Arab di tengah seperti matan cetakan. */
+/* Kartu kelas (beranda dan katalog).
+   Sampul memakai foto asli dari poster resmi: kitab yang dikaji di kiri, pengajar di kanan.
+   Hijau latar #1f6f5c sama dengan latar foto pengajar supaya potongan foto menyatu. */
 
 .kb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px }
 .kb-card {
   position: relative; display: flex; flex-direction: column; min-width: 0; overflow: hidden;
-  background: #fffdf7; border: 1px solid #e3dcc6; border-radius: 6px;
-  box-shadow: 0 1px 0 rgba(20, 61, 41, .04);
+  background: #fffdf7; border: 1px solid #e3dcc6; border-radius: 8px;
   transition: border-color .2s, box-shadow .25s, transform .25s cubic-bezier(.2, .8, .2, 1);
 }
 .kb-card:hover { border-color: #b9a970; box-shadow: 0 16px 34px -18px rgba(20, 61, 41, .45); transform: translateY(-3px) }
 .kb-card.wide { grid-column: 1 / -1; flex-direction: row }
 
-/* ---------- Sampul ---------- */
-.kb-cover {
-  position: relative; flex: none; display: grid; place-items: center; height: 232px; padding: 22px;
-  background-color: #123f2e; background-image: var(--lv-tile-soft); background-size: 64px 64px;
+/* ---------- Foto ---------- */
+.kb-media {
+  position: relative; flex: none; height: 250px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background-color: #1f6f5c; background-image: var(--lv-tile-soft); background-size: 64px 64px;
 }
-.kb-card.wide .kb-cover { width: 44%; height: auto; min-height: 280px }
+.kb-card.wide .kb-media { width: 44%; height: auto; min-height: 300px }
+/* Tanpa pola di belakang foto pengajar supaya tidak ada batas kotak antara foto dan latar. */
+.kb-media.has-person { justify-content: flex-start; padding-left: 26px; background-image: none }
 
-.kb-book {
-  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; max-width: 300px; height: 100%; padding: 22px 18px; text-align: center; color: #f3e7bf;
-  outline: 1px solid rgba(232, 208, 140, .55); outline-offset: -1px;
-  box-shadow: inset 0 0 0 5px #123f2e, inset 0 0 0 6px rgba(232, 208, 140, .4);
+.kb-books { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; height: 100% }
+.kb-kitab {
+  display: block; height: 74%; width: auto; border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 22px 34px -14px rgba(0, 0, 0, .6), 0 3px 8px rgba(0, 0, 0, .25);
+  transform: rotate(-3deg); transition: transform .35s cubic-bezier(.2, .8, .2, 1);
 }
-.kb-corner { position: absolute; width: 11px; height: 11px; background: #d9bf73; -webkit-mask: var(--lv-star) center / contain no-repeat; mask: var(--lv-star) center / contain no-repeat }
-.kb-corner.tl { top: -5px; left: -5px } .kb-corner.tr { top: -5px; right: -5px }
-.kb-corner.bl { bottom: -5px; left: -5px } .kb-corner.br { bottom: -5px; right: -5px }
-.kb-book-label { font-size: 10.5px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: #cdbb85 }
-.kb-book-ar { font-family: var(--f-amiri), serif; font-weight: 700; font-size: 44px; line-height: 1.25; color: #f6e7b4 }
-.kb-rule { position: relative; width: 74px; height: 1px; background: rgba(232, 208, 140, .55) }
-.kb-rule::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; background: #d9bf73; transform: translate(-50%, -50%) rotate(45deg) }
-.kb-book-foot { font-size: 11px; letter-spacing: .08em; color: #bfd4c8 }
+.kb-card:hover .kb-kitab { transform: rotate(-1deg) translateY(-4px) }
+/* Paket: dua kitab berdampingan, saling menimpa sedikit seperti ditaruh di atas meja. */
+.is-bundle .kb-kitab { height: 70% }
+.is-bundle .kb-kitab:first-child { transform: rotate(-6deg) translateX(14px) }
+.is-bundle .kb-kitab:last-child { transform: rotate(5deg) translateX(-14px) translateY(10px) }
+.is-bundle:hover .kb-kitab:first-child { transform: rotate(-8deg) translateX(4px) }
+.is-bundle:hover .kb-kitab:last-child { transform: rotate(7deg) translateX(-4px) translateY(10px) }
 
-/* Paket: dua kitab berdiri berdampingan, sedikit miring seperti di atas meja. */
-.kb-stack { display: flex; align-items: center; justify-content: center; gap: 0; width: 100%; height: 100% }
-.kb-book.small { width: 46%; max-width: 168px; height: auto; aspect-ratio: 3 / 4; padding: 16px 10px; background: #164b37; box-shadow: inset 0 0 0 4px #164b37, inset 0 0 0 5px rgba(232, 208, 140, .4), 0 18px 30px -12px rgba(0, 0, 0, .55) }
-.kb-book.small:first-child { transform: rotate(-5deg) translateX(10px); z-index: 1 }
-.kb-book.small:last-child { transform: rotate(4deg) translateX(-10px) translateY(8px) }
-.kb-book.small .kb-book-ar { font-size: 30px }
-.kb-book.small .kb-book-label { font-size: 9px; letter-spacing: .16em }
+/* Foto pengajar menempel di dasar kanan; tepi kirinya dipudarkan ke hijau latar. */
+.kb-person {
+  position: absolute; right: 0; bottom: 0; height: 100%; width: auto; max-width: 62%; object-fit: cover; object-position: top center;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 26%); mask-image: linear-gradient(to right, transparent 0, #000 26%);
+}
+
 .kb-ribbon {
-  position: absolute; top: 18px; left: 0; padding: 6px 14px 6px 12px; background: #f6e7b4; color: #5c4306;
+  position: absolute; top: 18px; left: 0; z-index: 2; padding: 6px 14px 6px 12px; background: #f6e7b4; color: #5c4306;
   font-size: 12px; font-weight: 700; letter-spacing: .02em; clip-path: polygon(0 0, 100% 0, calc(100% - 9px) 50%, 100% 100%, 0 100%);
 }
+
+/* Sampul cadangan tanpa foto. */
+.kb-book {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  width: calc(100% - 44px); max-width: 300px; height: calc(100% - 44px); padding: 18px; text-align: center; color: #f3e7bf;
+  outline: 1px solid rgba(232, 208, 140, .55); outline-offset: -1px;
+  box-shadow: inset 0 0 0 5px #1f6f5c, inset 0 0 0 6px rgba(232, 208, 140, .4);
+}
+.kb-book-label { font-size: 10.5px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: #cdbb85 }
+.kb-book-ar { font-family: var(--f-amiri), serif; font-weight: 700; font-size: 40px; line-height: 1.25; color: #f6e7b4 }
+.kb-rule { width: 74px; height: 1px; background: rgba(232, 208, 140, .55) }
+.kb-book-foot { font-size: 11px; letter-spacing: .08em; color: #bfd4c8 }
 
 /* ---------- Isi ---------- */
 .kb-body { display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 20px 22px 18px }
 .kb-card.wide .kb-body { padding: 30px 32px 26px; justify-content: center }
-.kb-kicker { margin: 0; font-size: 12.5px; color: #7a6a3a; font-weight: 600 }
-.kb-kicker span { font-weight: 500 }
-.kb-body h3 { margin: 8px 0 0; font-family: var(--font-app); font-size: 22px; line-height: 1.2; letter-spacing: -.02em; font-weight: 600 }
+.kb-kicker { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8a7433 }
+.kb-body h3 { margin: 6px 0 0; font-family: var(--font-app); font-size: 22px; line-height: 1.2; letter-spacing: -.02em; font-weight: 600 }
 .kb-card.wide .kb-body h3 { font-size: clamp(26px, 2.6vw, 32px) }
 .kb-body h3 a { color: #10231c; text-decoration: none }
 .kb-body h3 a::after { content: ""; position: absolute; inset: 0; z-index: 1 }
-.kb-teacher { margin: 6px 0 0; font-size: 13.5px; color: #3f5a4b }
-.kb-desc { margin: 12px 0 0; font-size: 14px; line-height: 1.6; color: #55635a; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden }
-.kb-card.wide .kb-desc { -webkit-line-clamp: 3; max-width: 34em }
+.kb-meta { margin: 6px 0 0; font-size: 13.5px; color: #66705f }
+.kb-teacher { margin: 10px 0 0; font-size: 14px; font-weight: 600; color: #2c4a3c }
+
+.kb-people { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px }
+.kb-people li { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: #2c4a3c }
+.kb-people img, .kb-noface { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; object-position: 50% 12%; background: #1f6f5c; box-shadow: 0 0 0 2px #fffdf7, 0 0 0 3px #d9cfae }
+
+.kb-desc { margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: #55635a; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; max-width: 34em }
 .kb-free {
-  position: relative; z-index: 2; align-self: flex-start; display: inline-flex; align-items: center; gap: 7px; margin-top: 14px;
+  position: relative; z-index: 2; align-self: flex-start; display: inline-flex; align-items: center; gap: 7px; margin-top: 12px;
   font-size: 13.5px; font-weight: 600; color: #1e715c; text-decoration: none; border-bottom: 1px dashed rgba(30, 113, 92, .5); padding-bottom: 1px;
 }
 .kb-free:hover { color: #0f4736; border-bottom-style: solid }
 
-.kb-foot { margin-top: auto; padding-top: 18px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px }
+.kb-foot { margin-top: auto; padding-top: 16px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px }
 /* Garis harga selalu di dasar kartu supaya dua kartu berdampingan sejajar. */
-.kb-card:not(.wide) .kb-desc, .kb-card:not(.wide) .kb-free { margin-bottom: 18px }
+.kb-card:not(.wide) .kb-body > :nth-last-child(2) { margin-bottom: 18px }
 .kb-card:not(.wide) .kb-foot { border-top: 1px solid #ece4cd }
-.kb-card.wide .kb-foot { margin-top: 22px; padding-top: 0 }
+.kb-card.wide .kb-foot { margin-top: 24px; padding-top: 0 }
 .kb-price { margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; line-height: 1.1 }
 .kb-price b { font-family: var(--font-app); font-size: 24px; font-weight: 600; letter-spacing: -.02em; color: #10231c; font-variant-numeric: tabular-nums }
 .kb-price s { flex-basis: 100%; font-size: 13px; color: #8b8670 }
@@ -79,13 +96,12 @@
 
 @media (max-width: 860px) {
   .kb-card.wide { flex-direction: column }
-  .kb-card.wide .kb-cover { width: auto; min-height: 0; height: 250px }
+  .kb-card.wide .kb-media { width: auto; min-height: 0; height: 250px }
   .kb-card.wide .kb-body { padding: 22px 22px 20px }
 }
 @media (max-width: 640px) {
   .kb-grid { grid-template-columns: 1fr; gap: 16px }
-  .kb-cover { height: 210px }
-  .kb-book-ar { font-size: 38px }
-  .kb-book.small .kb-book-ar { font-size: 26px }
+  .kb-media, .kb-card.wide .kb-media { height: 220px }
+  .kb-book-ar { font-size: 34px }
 }
-@media (prefers-reduced-motion: reduce) { .kb-card, .kb-go svg { transition: none } .kb-card:hover { transform: none } }
+@media (prefers-reduced-motion: reduce) { .kb-card, .kb-kitab, .kb-go svg { transition: none } .kb-card:hover, .kb-card:hover .kb-kitab { transform: none } }

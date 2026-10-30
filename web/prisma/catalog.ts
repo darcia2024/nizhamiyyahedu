@@ -8,6 +8,8 @@ import type { PrismaClient } from "@prisma/client";
 type CourseSeed = {
   slug: string; title: string; titleAr: string; field: string; price: number; sort: number; desc: string; sessions: number;
   teacher?: "afrozul" | "reza"; bundle?: string[];
+  /** Foto kitab untuk sampul kartu, dipotong dari poster resmi (public/kelas). */
+  image?: string;
   /** Rekaman YouTube (tidak publik) per pertemuan: [id video, durasi menit]. */
   videos?: [string, number][];
 };
@@ -18,12 +20,14 @@ export const TEACHERS = {
     displayName: "Ust. Afrozul Mukhoiyirin, Lc., Dipl.",
     alumni: "Mahasiswa pascasarjana Kuliah Ulum Islamiyyah, jurusan Fikih Am",
     bio: "Mengampu dars Ushul Fiqh dengan Matan Waraqat di Dar Nizhamiyyah, Gamaliya, Kairo.",
+    photoUrl: "/kelas/afrozul.jpg",
   },
   reza: {
     id: "teacher-reza",
     displayName: "Ust. M. Reza Pahlevi, Lc., Dipl.",
     alumni: "Mahasiswa S2 jurusan Aqidah, Universitas Al-Azhar Kairo",
     bio: "Mengampu dars Ilmu Mantiq dengan Matan Isaghuji di Dar Nizhamiyyah, Gamaliya, Kairo.",
+    photoUrl: "/kelas/reza.jpg",
   },
 };
 
@@ -31,13 +35,13 @@ export const COURSES: CourseSeed[] = [
   {
     slug: "dauroh-ushul-fiqh", title: "Dauroh Ushul Fiqh Nizhamiyyah", titleAr: "الورقات", field: "USHUL_FIQH", price: 70000, sort: 1, teacher: "afrozul",
     desc: "Dars ilmu ushul fiqh dengan Matan al-Waraqat karya Imam al-Haramain al-Juwaini, dalam 8 pertemuan. Bagian dari Daurah Aqliyah Dar Nizhamiyyah.",
-    sessions: 8,
+    sessions: 8, image: "/kelas/waraqat.jpg",
     videos: [["AeVUzyzxDaM", 61], ["imYDWt7k_1I", 116], ["RvkYATLEVSU", 97], ["Uf2G5X9KTGk", 100]],
   },
   {
     slug: "dauroh-mantiq", title: "Dauroh Mantiq Nizhamiyyah", titleAr: "إيساغوجي", field: "MANTIQ", price: 70000, sort: 2, teacher: "reza",
     desc: "Dars ilmu mantiq dengan Matan Isaghuji karya Imam Atsiruddin al-Abhari, dalam 5 pertemuan. Bagian dari Daurah Aqliyah Dar Nizhamiyyah.",
-    sessions: 5,
+    sessions: 5, image: "/kelas/isaghuji.jpg",
     videos: [["97lvSGc_Rp4", 112], ["umo8GS8TZ4E", 123], ["kSAVzow9dw8", 91], ["jStHUpZr21s", 91]],
   },
   {
@@ -54,6 +58,8 @@ export async function seedCatalog(db: PrismaClient, opts: { createdById?: string
     const userId = opts.teacherUserIds?.[key];
     const existing = userId ? await db.teacherProfile.findUnique({ where: { userId } }) : await db.teacherProfile.findUnique({ where: { id: t.id } });
     const profile = existing ?? (await db.teacherProfile.create({ data: { ...t, userId: userId ?? null } }));
+    // Foto hanya diisi bila masih kosong; foto yang diunggah admin tidak ditimpa.
+    if (!profile.photoUrl) await db.teacherProfile.update({ where: { id: profile.id }, data: { photoUrl: t.photoUrl } });
     teacherIds[key] = profile.id;
   }
 
@@ -70,6 +76,7 @@ export async function seedCatalog(db: PrismaClient, opts: { createdById?: string
       },
     });
     ids[c.slug] = course.id;
+    if (c.image && !course.coverUrl) await db.course.update({ where: { id: course.id }, data: { coverUrl: c.image } });
     if (c.sessions && (await db.lesson.count({ where: { courseId: course.id } })) === 0) {
       for (let p = 1; p <= c.sessions; p++) {
         // Pertemuan yang belum ada rekamannya tampil "video menyusul"; diisi admin saat rekaman diupload.

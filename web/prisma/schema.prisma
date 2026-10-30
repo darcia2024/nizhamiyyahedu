@@ -57,6 +57,7 @@ model Course {
   priceRupiah Int      @default(0)
   sortOrder   Int      @default(0)
   bundleCourseIds String? // JSON: [courseId]; terisi = paket bundling yang membuka kursus-kursus ini
+  coverUrl    String? // foto kitab untuk sampul kartu
   archivedAt  DateTime?
   teacherId   String?
   teacher     TeacherProfile? @relation(fields: [teacherId], references: [id])
