@@ -1,0 +1,120 @@
+/* Beranda "hidup": diambil dari kehidupan nyata Nizhamiyyah (poster kegiatan, Kairo, matan),
+   bukan template landing generik. Semua aturan di-scope ke beranda (.landing-page / .lv-*). */
+
+:root {
+  --lv-green: #1e715c;
+  --lv-deep: #143d29;
+  --lv-ink: #10231c;
+  --lv-cream: #f6e7b4;
+  --lv-mist: #e3efea;
+  /* Bintang delapan (rub el hizb) untuk ornamen. */
+  --lv-star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1l3.2 4.8L21 5l-.8 5.8L23 12l-2.8 1.2L21 19l-5.8-.8L12 23l-3.2-4.8L3 19l.8-5.8L1 12l2.8-1.2L3 5l5.8.8z'/%3E%3C/svg%3E");
+}
+
+/* ---------- Hero ---------- */
+.lv-hero { position: relative; overflow: hidden; background: var(--lv-green); color: #fff; padding-block: 64px 104px }
+.lv-pattern {
+  position: absolute; inset: 0; pointer-events: none; opacity: .09;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88' fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Cpath d='M44 14l8.5 12.8L68 24.6l-2.2 15.3L74 44l-8.2 4.1L68 63.4l-15.5-2.2L44 74l-8.5-12.8L20 63.4l2.2-15.3L14 44l8.2-4.1L20 24.6l15.5 2.2z'/%3E%3Ccircle cx='44' cy='44' r='9'/%3E%3C/svg%3E");
+  background-size: 88px 88px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 78% 40%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 80% at 78% 40%, #000 20%, transparent 75%);
+}
+.lv-watermark {
+  position: absolute; right: -3%; bottom: -5%; margin: 0; pointer-events: none; user-select: none;
+  font-family: var(--f-kufi), var(--f-amiri), serif; font-weight: 700; font-size: clamp(120px, 19vw, 280px); line-height: 1;
+  color: rgba(255, 255, 255, .055); white-space: nowrap;
+}
+.lv-hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 56px; align-items: center }
+.lv-hero-copy { text-align: left; display: flex; flex-direction: column; align-items: flex-start }
+.lv-place { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; padding: 7px 14px; border: 1px solid rgba(255, 255, 255, .28); border-radius: 999px; font-size: 13.5px; color: #e8f2ed }
+.lv-place span { margin-left: 4px; padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, .3); color: #bcd8cb }
+.lv-hero-copy h1 { margin: 22px 0 0; font-family: var(--font-app); font-size: clamp(44px, 6vw, 80px); line-height: .98; letter-spacing: -.035em; font-weight: 500; text-wrap: balance }
+.lv-hero-copy h1 span { color: var(--lv-cream) }
+.lv-lead { max-width: 34em; margin: 22px 0 0; color: var(--lv-mist); font-size: clamp(16px, 1.4vw, 19px); line-height: 1.6 }
+.lv-hero .landing-actions { justify-content: flex-start; margin-top: 30px }
+.lv-note { margin: 18px 0 0; font-size: 13px; color: #bcd8cb }
+
+/* Papan poster kegiatan: poster asli dari Instagram, ditumpuk seperti di papan pengumuman. */
+.lv-board { position: relative; height: 540px; margin: 0 }
+.lv-board-label {
+  position: absolute; z-index: 8; top: -4px; left: 2%; display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 13px; border-radius: 999px; background: var(--lv-cream); color: var(--lv-deep); font-size: 12.5px; font-weight: 600;
+  transform: rotate(-2.5deg); box-shadow: 0 10px 24px rgba(4, 30, 22, .25)
+}
+.lv-live { width: 8px; height: 8px; border-radius: 50%; background: var(--lv-green); box-shadow: 0 0 0 0 rgba(30, 113, 92, .6); animation: lv-pulse 2.2s ease-out infinite }
+@keyframes lv-pulse { 0% { box-shadow: 0 0 0 0 rgba(30, 113, 92, .55) } 70%, 100% { box-shadow: 0 0 0 9px rgba(30, 113, 92, 0) } }
+.lv-poster {
+  position: absolute; display: block; width: 56%; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 12px; border: 6px solid #fff; background: #fff;
+  box-shadow: 0 28px 60px rgba(4, 30, 22, .42); transition: transform .45s cubic-bezier(.2, .8, .2, 1), box-shadow .45s;
+}
+.lv-poster img { display: block; width: 100%; height: 100%; object-fit: cover }
+.lv-poster.p0 { left: 6%; top: 20%; z-index: 4; transform: rotate(-5deg) }
+.lv-poster.p1 { right: 0; top: 2%; z-index: 3; transform: rotate(6deg) }
+.lv-poster.p2 { left: 32%; top: 44%; z-index: 5; transform: rotate(1.5deg); width: 48% }
+.lv-poster:hover, .lv-poster:focus-visible { z-index: 9; transform: rotate(0) translateY(-10px) scale(1.03); box-shadow: 0 36px 70px rgba(4, 30, 22, .5) }
+.lv-poster-date { position: absolute; left: 8px; bottom: 8px; padding: 4px 9px; border-radius: 999px; background: rgba(16, 35, 28, .84); color: #fff; font-size: 11.5px; font-weight: 500 }
+
+/* ---------- Pita berjalan ---------- */
+.lv-ticker { overflow: hidden; background: var(--lv-cream); color: var(--lv-deep); border-bottom: 1px solid rgba(20, 61, 41, .14) }
+.lv-ticker-track { display: flex; width: max-content; animation: lv-marquee 42s linear infinite }
+.lv-ticker:hover .lv-ticker-track { animation-play-state: paused }
+.lv-ticker ul { display: flex; margin: 0; padding: 0; list-style: none }
+.lv-ticker li { display: inline-flex; align-items: center; gap: 14px; padding: 15px 30px 15px 0; font-size: 15px; font-weight: 500; white-space: nowrap }
+.lv-star { flex: none; width: 13px; height: 13px; background: var(--lv-green); -webkit-mask: var(--lv-star) center / contain no-repeat; mask: var(--lv-star) center / contain no-repeat }
+@keyframes lv-marquee { to { transform: translateX(-50%) } }
+
+/* ---------- Label bagian: bintang kecil, bukan huruf kapital berjarak ---------- */
+.landing-page .landing-kicker { display: inline-flex; align-items: center; gap: 9px; text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 600; color: var(--lv-green) }
+.landing-page .landing-kicker::before { content: ""; flex: none; width: 13px; height: 13px; background: currentColor; -webkit-mask: var(--lv-star) center / contain no-repeat; mask: var(--lv-star) center / contain no-repeat }
+
+/* ---------- Kabar dari majelis (Instagram) di pita gelap ---------- */
+.landing-page .social-section { background: var(--lv-deep); color: #fff; padding-block: 92px }
+.landing-page .social-section h2 { color: #fff }
+.landing-page .social-section .landing-section-head p { color: #cfe1d7 }
+.landing-page .social-section .landing-kicker { color: var(--lv-cream) }
+.landing-page .social-section .social-follow { background: var(--lv-cream); color: var(--lv-deep) }
+.landing-page .social-grid { display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 18px 4px 22px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .3) transparent }
+.landing-page .social-grid > li { flex: 0 0 clamp(210px, 23vw, 280px); scroll-snap-align: start }
+.landing-page .social-grid > li:nth-child(odd) .social-card { transform: rotate(-1.4deg) }
+.landing-page .social-grid > li:nth-child(even) .social-card { transform: rotate(1.2deg) translateY(10px) }
+.landing-page .social-card { border: 5px solid #fff; border-radius: 12px; background: #fff; box-shadow: 0 18px 40px rgba(0, 0, 0, .3) }
+.landing-page .social-grid > li .social-card:hover, .landing-page .social-grid > li .social-card:focus-visible { transform: rotate(0) translateY(-6px) }
+
+/* ---------- Cara belajar + contoh tampilan berdampingan ---------- */
+.lv-journey-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 64px; align-items: center }
+.lv-journey .landing-section-head { margin-bottom: 26px }
+.lv-journey .learning-steps { grid-template-columns: minmax(0, 1fr); gap: 0 }
+.lv-journey .learning-steps li { display: grid; grid-template-columns: 58px minmax(0, 1fr); column-gap: 8px; padding: 20px 0; border-top: 1px solid #c6cfc4 }
+.lv-journey .learning-steps li > * { grid-column: 2 }
+.lv-journey .learning-step-number { grid-column: 1 !important; grid-row: 1 / span 3; font-size: 30px; line-height: 1; font-weight: 500; color: var(--lv-green); letter-spacing: -.03em }
+.lv-journey .learning-steps h3 { margin-top: 0 }
+.lv-journey-shot { margin: 0 }
+.lv-journey-shot figcaption { margin-top: 18px; font-size: 12.5px; color: #5b6b60; text-align: right }
+
+/* ---------- Peta jenjang: kepala di tengah ---------- */
+.lv-path .landing-section-head.center p { max-width: 38em }
+.lv-center-link { margin-top: 36px; text-align: center }
+
+/* ---------- Responsif ---------- */
+@media (max-width: 960px) {
+  .lv-hero { padding-block: 44px 72px }
+  .lv-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 40px }
+  .lv-board { height: 460px; max-width: 560px; width: 100%; margin-inline: auto }
+  .lv-journey-grid { grid-template-columns: minmax(0, 1fr); gap: 44px }
+}
+@media (max-width: 560px) {
+  .lv-board { height: 380px }
+  .lv-poster { width: 60%; border-width: 4px }
+  .lv-poster.p2 { width: 52%; left: 26% }
+  .lv-place span { display: none }
+  .lv-ticker li { font-size: 14px; padding-block: 12px }
+  .landing-page .social-grid > li { flex-basis: 70vw }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lv-ticker-track { animation: none; width: auto }
+  .lv-ticker ul[aria-hidden] { display: none }
+  .lv-ticker ul { flex-wrap: wrap; padding-inline: 16px }
+  .lv-live { animation: none }
+  .lv-poster, .landing-page .social-card { transition: none }
+}

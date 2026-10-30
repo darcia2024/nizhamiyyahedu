@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Amiri, Bricolage_Grotesque } from "next/font/google";
+import { Amiri, Bricolage_Grotesque, Reem_Kufi } from "next/font/google";
 import "@/styles/globals.css";
 
 const amiri = Amiri({ subsets: ["arabic", "latin"], weight: ["400", "700"], variable: "--f-amiri", display: "swap", preload: false });
 const bricolage = Bricolage_Grotesque({ subsets: ["latin"], axes: ["opsz"], variable: "--f-bricolage", display: "swap" });
+// Kufi untuk judul Arab dekoratif, senada dengan poster kegiatan Nizhamiyyah.
+const kufi = Reem_Kufi({ subsets: ["arabic"], weight: ["500", "700"], variable: "--f-kufi", display: "swap", preload: false });
 
 const siteUrl = process.env.APP_URL ?? "http://localhost:3200";
 
@@ -19,7 +21,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${amiri.variable} ${bricolage.variable}`}>
+    <html lang="id" className={`${amiri.variable} ${bricolage.variable} ${kufi.variable}`}>
       <body>
         <a className="skip" href="#isi">Lewati ke konten</a>
         {children}

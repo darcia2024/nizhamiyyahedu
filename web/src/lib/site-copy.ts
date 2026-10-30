@@ -47,9 +47,13 @@ export const SITE_COPY_DEFAULTS = {
   lessonLabel: "Cuplikan matan",
   lessonButton: "Buka pelajaran gratis",
   ctaButton: "Lihat katalog",
+  heroPlace: "Dar Nizhamiyyah · Gamaliya, Kairo",
+  boardLabel: "Kegiatan terbaru di majelis",
+  tickerItems: "Dars Ushul Fiqh · Matan Waraqat | Ilmu Mantiq · Matan Isaghuji | Nadwah ilmiah, siaran langsung di YouTube | Kelas tatap muka di Dar Nizhamiyyah, Gamaliya | Pengajar mahasiswa pascasarjana Al-Azhar, Kairo",
 };
 export type SiteCopy = typeof SITE_COPY_DEFAULTS;
 export const COPY_GROUPS: { title: string; fields: { key: keyof SiteCopy; label: string }[] }[] = [
+  { title: "Suasana beranda", fields: [{key:"heroPlace",label:"Lokasi di atas judul"},{key:"boardLabel",label:"Label poster kegiatan"},{key:"tickerItems",label:"Teks berjalan (pisahkan tiap kalimat dengan |)"}] },
   { title: "Menu atas", fields: [{key:"navCatalog",label:"Menu katalog"},{key:"navPath",label:"Menu jenjang belajar"},{key:"navTeacher",label:"Menu pengajar"},{key:"navFaq",label:"Menu tanya jawab"}] },
   { title: "Tombol beranda", fields: [{key:"heroAccent",label:"Judul baris kedua"},{key:"heroPrimary",label:"Tombol katalog"},{key:"heroPreview",label:"Tombol pratinjau"},{key:"heroPath",label:"Tombol jenjang (bila belum ada pratinjau)"},{key:"heroCaption",label:"Keterangan gambar"}] },
   { title: "Pencarian", fields: [{key:"searchKicker",label:"Label"},{key:"searchTitle",label:"Judul"},{key:"searchPlaceholder",label:"Petunjuk pencarian"}] },
