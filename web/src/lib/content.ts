@@ -24,7 +24,7 @@ export const DEFAULTS = {
   "social.posts": SOCIAL_POSTS,
   "home.main": {
     eyebrow: "Kelas kitab daring",
-    title: "Pahami kitabnya.",
+    title: "Selamat datang",
     sub: "Daurah Aqliyah: Ilmu Mantiq dengan Matan Isaghuji dan Ushul Fiqh dengan Matan Waraqat, bersama pengajar dari Al-Azhar, Kairo. Belajar lewat video, ulang kapan saja.",
     note: "Ambil satu kelas, atau paket bundling biar lebih hemat.",
     steps: [

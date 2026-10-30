@@ -1,6 +1,6 @@
 /** Public copy managed by superadmin. Keys stay stable for stored content versions. */
 export const SITE_COPY_DEFAULTS = {
-  heroAccent: "Tumbuh ilmunya.",
+  heroAccent: "di Nizhamiyyah",
   heroPrimary: "Jelajahi kursus",
   heroPreview: "Coba pelajaran",
   searchKicker: "Mulai dari yang kamu butuhkan",
