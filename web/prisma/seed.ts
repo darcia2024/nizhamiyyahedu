@@ -47,11 +47,14 @@ async function main() {
     slug: "dauroh-ushul-fiqh", title: "Dauroh Ushul Fiqh Nizhamiyyah", titleAr: "الورقات", field: "USHUL_FIQH", price: 70000, sort: 1, teacherId: afrozul.id,
     desc: "Dars ilmu ushul fiqh dengan Matan al-Waraqat karya Imam al-Haramain al-Juwaini, dalam 8 pertemuan. Bagian dari Daurah Aqliyah Dar Nizhamiyyah.",
     sessions: 8,
+    // Rekaman dari channel YouTube Nizhamiyyah (tidak publik). [id video, durasi menit]
+    videos: [["AeVUzyzxDaM", 61], ["imYDWt7k_1I", 116], ["RvkYATLEVSU", 97], ["Uf2G5X9KTGk", 100]],
   });
   const mantiq = await upsertCourse({
     slug: "dauroh-mantiq", title: "Dauroh Mantiq Nizhamiyyah", titleAr: "إيساغوجي", field: "MANTIQ", price: 70000, sort: 2, teacherId: reza.id,
     desc: "Dars ilmu mantiq dengan Matan Isaghuji karya Imam Atsiruddin al-Abhari, dalam 5 pertemuan. Bagian dari Daurah Aqliyah Dar Nizhamiyyah.",
     sessions: 5,
+    videos: [["97lvSGc_Rp4", 112], ["umo8GS8TZ4E", 123], ["kSAVzow9dw8", 91], ["jStHUpZr21s", 91]],
   });
   await upsertCourse({
     slug: "dauroh-aqliyat", title: "Dauroh Aqliyat", titleAr: "الدورة العقلية", field: "AQLIYAT", price: 100000, sort: 0, teacherId: null,
@@ -59,7 +62,7 @@ async function main() {
     sessions: 0, bundle: [ushul.id, mantiq.id],
   });
 
-  async function upsertCourse(c: { slug: string; title: string; titleAr: string; field: string; price: number; sort: number; teacherId: string | null; desc: string; sessions: number; bundle?: string[] }) {
+  async function upsertCourse(c: { slug: string; title: string; titleAr: string; field: string; price: number; sort: number; teacherId: string | null; desc: string; sessions: number; bundle?: string[]; videos?: [string, number][] }) {
     const course = await db.course.upsert({
       where: { slug: c.slug },
       update: {},
@@ -71,8 +74,14 @@ async function main() {
     });
     if (c.sessions && (await db.lesson.count({ where: { courseId: course.id } })) === 0) {
       for (let p = 1; p <= c.sessions; p++) {
-        // Video YouTube menyusul; diisi admin per pertemuan.
-        await db.lesson.create({ data: { courseId: course.id, title: `Pertemuan ${p}`, position: p, status: "PUBLISHED", videoUrl: null } });
+        // Pertemuan yang belum ada rekamannya tampil "video menyusul"; diisi admin saat rekaman diupload.
+        const [videoId, durationMin] = c.videos?.[p - 1] ?? [];
+        await db.lesson.create({
+          data: {
+            courseId: course.id, title: `Pertemuan ${p}`, position: p, status: "PUBLISHED",
+            videoUrl: videoId ? `https://www.youtube.com/watch?v=${videoId}` : null, durationMin: durationMin ?? null,
+          },
+        });
       }
     }
     return course;
