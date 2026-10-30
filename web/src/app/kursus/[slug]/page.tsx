@@ -48,13 +48,17 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
   const bundle = bundleIds.length
     ? (await db.course.findMany({
         where: { id: { in: bundleIds }, archivedAt: null },
-        select: { id: true, slug: true, title: true, titleAr: true, field: true, priceRupiah: true, status: true, lessons: { where: { status: "PUBLISHED" }, select: { durationMin: true } } },
+        select: { id: true, slug: true, title: true, titleAr: true, field: true, priceRupiah: true, status: true, teacher: true, lessons: { where: { status: "PUBLISHED" }, select: { durationMin: true } } },
       })).sort((a, b) => bundleIds.indexOf(a.id) - bundleIds.indexOf(b.id))
     : [];
   const isBundle = bundle.length > 0;
   const lessonCount = isBundle ? bundle.reduce((a, b) => a + b.lessons.length, 0) : course.lessons.length;
   const totalMin = (isBundle ? bundle.flatMap((b) => b.lessons) : course.lessons).reduce((a, l) => a + (l.durationMin ?? 0), 0);
   const normalPrice = bundle.reduce((a, b) => a + b.priceRupiah, 0);
+  // Pengajar paket = pengajar kursus itu sendiri, atau semua pengajar dari kursus isinya.
+  const teachers = [course.teacher, ...bundle.map((b) => b.teacher)]
+    .filter((t): t is NonNullable<typeof t> => !!t && !isPlaceholder(t.displayName))
+    .filter((t, i, all) => all.findIndex((x) => x.id === t.id) === i);
   const isFree = course.priceRupiah === 0;
   const contact = await getContent("contact.main");
 
@@ -182,15 +186,19 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
 
               <section className="block" id="pengajar" aria-labelledby="pengajar-h">
                 <h2 id="pengajar-h">Pengajar</h2>
-                {course.teacher && !isPlaceholder(course.teacher.displayName) ? (
-                  <div className="teacher" style={{ border: 0, padding: 0 }}>
-                    <div className="av" aria-hidden="true">{initials(course.teacher.displayName)}</div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                      <h3>{course.teacher.displayName}</h3>
-                      {!isPlaceholder(course.teacher.alumni) && <p className="small muted">{course.teacher.alumni}</p>}
-                      {!isPlaceholder(course.teacher.sanad) && <p className="small">{course.teacher.sanad}</p>}
-                      {!isPlaceholder(course.teacher.bio) && <p className="small">{course.teacher.bio}</p>}
-                    </div>
+                {teachers.length ? (
+                  <div style={{ display: "grid", gap: 20 }}>
+                    {teachers.map((t) => (
+                      <div key={t.id} className="teacher" style={{ border: 0, padding: 0 }}>
+                        <div className="av" aria-hidden="true">{initials(t.displayName)}</div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                          <h3>{t.displayName}</h3>
+                          {!isPlaceholder(t.alumni) && <p className="small muted">{t.alumni}</p>}
+                          {!isPlaceholder(t.sanad) && <p className="small">{t.sanad}</p>}
+                          {!isPlaceholder(t.bio) && <p className="small">{t.bio}</p>}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ) : <p className="muted">Profil pengajar akan segera ditambahkan.</p>}
               </section>

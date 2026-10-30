@@ -67,7 +67,7 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
               {usedFields.map((f) => (
                 <Link key={f} className="chip" href={href(base, { bidang: f, hal: undefined })} aria-current={sp.bidang === f ? "true" : undefined}>{FIELD_LABEL[f]}</Link>
               ))}
-              <Link className="chip" href={href(base, { gratis: sp.gratis ? undefined : "1", hal: undefined })} aria-current={sp.gratis ? "true" : undefined}>Gratis</Link>
+              {(sp.gratis || all.some((c) => c.priceRupiah === 0)) && <Link className="chip" href={href(base, { gratis: sp.gratis ? undefined : "1", hal: undefined })} aria-current={sp.gratis ? "true" : undefined}>Gratis</Link>}
             </div>
             <div className="filter-row" role="group" aria-label="Saring jenjang">
               <span className="small muted">Jenjang:</span>
