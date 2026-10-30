@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { withBase } from "@/lib/base-path";
 import { Award, BookOpen, CreditCard, LifeBuoy, LineChart, LogOut, PencilRuler, Settings2, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -8,9 +9,10 @@ import { requireUser } from "@/lib/auth-guard";
 
 export const metadata = { title: "Menu" };
 
-/** Menu lengkap untuk layar kecil, karena sidebar disembunyikan di HP dan tab bar hanya memuat lima pintasan. */
+/** Menu lengkap untuk layar kecil, karena sidebar disembunyikan di HP dan tab bar hanya memuat empat pintasan. */
 export default async function MenuPage() {
   const user = await requireUser("/dashboard/menu");
+  if (user.role === "ADMIN") redirect("/admin");
   const icon = { size: 20, strokeWidth: 1.8, "aria-hidden": true } as const;
   const links = [
     { href: "/dashboard/progres", label: "Progres", icon: <LineChart {...icon} /> },
@@ -20,8 +22,7 @@ export default async function MenuPage() {
     { href: "/dashboard/profil", label: "Pengaturan", icon: <Settings2 {...icon} /> },
     { href: "/kontak", label: "Bantuan", icon: <LifeBuoy {...icon} /> },
   ];
-  if (user.role === "TEACHER" || user.role === "ADMIN") links.push({ href: "/dashboard/kelola", label: "Kelola kursus", icon: <PencilRuler {...icon} /> });
-  if (user.role === "ADMIN") links.push({ href: "/admin", label: "Panel admin", icon: <ShieldCheck {...icon} /> });
+  if (user.role === "TEACHER") links.push({ href: "/dashboard/kelola", label: "Kelola kursus", icon: <PencilRuler {...icon} /> });
 
   async function logout() {
     "use server";

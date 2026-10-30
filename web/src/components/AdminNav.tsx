@@ -5,9 +5,9 @@ import { LayoutDashboard, BookOpen, Users, GraduationCap, CreditCard, FileText, 
 
 const items = [
   ["/admin", "Ringkasan", LayoutDashboard], ["/admin/kursus", "Kursus", BookOpen],
-  ["/admin/pengajar", "Pengajar", GraduationCap], ["/admin/pengguna", "User", Users],
-  ["/admin/pembayaran", "Pembayaran", CreditCard], ["/admin/konten", "Isi website", FileText],
-  ["/admin/log", "Catatan aktivitas", History], ["/admin/bantuan", "Bantuan", CircleHelp],
+  ["/admin/pengajar", "Pengajar", GraduationCap], ["/admin/pengguna", "Pengguna", Users],
+  ["/admin/pembayaran", "Pembayaran", CreditCard], ["/admin/konten", "Konten website", FileText],
+  ["/admin/log", "Aktivitas website", History], ["/admin/bantuan", "Bantuan", CircleHelp],
 ] as const;
 export function AdminNav() {
   const path = usePathname();

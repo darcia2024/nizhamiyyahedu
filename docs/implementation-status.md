@@ -46,3 +46,8 @@ Menu LMS tambahan (27 Oktober 2026, di luar PRD awal atas permintaan klien): **C
 | Staging/production, cron, monitor, backup dan serah terima | Belum dilakukan pada hosting klien |
 
 Tidak ada deployment aplikasi baru ke domain penawaran atau website production pada tahap ini.
+
+
+### Perubahan 30 Oktober 2026
+
+Menu dan fitur Matan/hafalan dihapus atas permintaan pengguna: rute `/dashboard/matan`, komponen latihan, dan pintasan navigasi dihapus. Teks matan sebagai materi di halaman pelajaran tetap tersedia. Navigasi bawah sekarang berisi Belajar, Kursus, Catatan, dan Menu.

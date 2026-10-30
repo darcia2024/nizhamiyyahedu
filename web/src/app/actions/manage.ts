@@ -8,8 +8,9 @@ import { canManageCourse, getCurrentUser, type CurrentUser } from "@/lib/auth-gu
 import { courseSchema, lessonSchema, roleSchema, teacherSchema } from "@/lib/validators";
 import { fetchTransaction, mayarSimulated } from "@/lib/mayar";
 import { settleOrder } from "@/lib/orders";
-import { saveContent, DEFAULTS, type ContentKey } from "@/lib/content";
-import { saveTeacherPhoto } from "@/lib/media";
+import { getContent, saveContent, DEFAULTS, type ContentKey } from "@/lib/content";
+import { validateSiteCopy } from "@/lib/site-copy";
+import { saveSiteImage, saveTeacherPhoto } from "@/lib/media";
 
 type Guard = { ok: true; user: CurrentUser } | { ok: false; result: ActionResult };
 
@@ -446,7 +447,11 @@ export async function saveSiteContent(_p: ActionResult, fd: FormData): Promise<A
   if (!g.ok) return g.result;
   const key = String(fd.get("key") ?? "") as ContentKey;
   const s = (k: string, max = 500) => String(fd.get(k) ?? "").trim().slice(0, max);
-  if (key === "home.main") {
+  if (key === "site.copy") {
+    const result = validateSiteCopy(fd);
+    if (!result.ok) return fail(result.error, { [result.field]: result.error });
+    await saveContent(key, result.value, g.user.id);
+  } else if (key === "home.main") {
     const steps = [1, 2, 3].map((n) => ({ title: s(`s${n}t`, 80), text: s(`s${n}d`, 300) }));
     if (!s("title")) return fail("Judul beranda wajib diisi.", { title: "Wajib diisi." });
     await saveContent(key, { eyebrow: s("eyebrow", 120), title: s("title", 160), sub: s("sub", 400), note: s("note", 300), steps,
@@ -460,6 +465,8 @@ export async function saveSiteContent(_p: ActionResult, fd: FormData): Promise<A
     const items = qs.map((q, i) => ({ q, a: as[i] ?? "" })).filter((x) => x.q && x.a);
     await saveContent(key, items, g.user.id);
   } else return fail("Bagian tidak dikenal.");
+  revalidatePath("/");
+  revalidatePath("/admin/konten");
   await audit(g.user, "CONTENT_SAVE", "SiteContent", key);
   return { ok: true, message: "Tersimpan. Halaman publik diperbarui." };
 }
@@ -492,4 +499,61 @@ export async function publishLegal(_p: ActionResult, fd: FormData): Promise<Acti
   await audit(g.user, "LEGAL_PUBLISH", "LegalDocument", slug, { after: { version: (last._max.version ?? 0) + 1 } });
   revalidatePath(`/${slug}`);
   return { ok: true, message: `Versi ${(last._max.version ?? 0) + 1} diterbitkan.` };
+}
+
+
+/** Superadmin controls public gallery content, including images. */
+export async function saveSocialPost(_p: ActionResult, fd: FormData): Promise<ActionResult> {
+  const g = await asAdmin();
+  if (!g.ok) return g.result;
+  const code = String(fd.get("code") ?? "").trim();
+  const date = String(fd.get("date") ?? "").trim();
+  const alt = String(fd.get("alt") ?? "").trim();
+  if (!/^[a-zA-Z0-9_-]{4,80}$/.test(code)) return fail("Kode postingan Instagram tidak valid.", { code: "Masukkan kode dari alamat /p/kode/." });
+  if (!date || date.length > 80 || !alt || alt.length > 250) return fail("Tanggal dan deskripsi gambar wajib diisi (maksimal 80 dan 250 karakter).");
+  const posts = await getContent("social.posts");
+  const previous = posts.find(p => p.code === code);
+  let image = previous?.image;
+  const file = fd.get("image");
+  if (file instanceof File && file.size > 0) {
+    const uploaded = await saveSiteImage(file);
+    if (!uploaded.ok) return fail(uploaded.error);
+    image = uploaded.url;
+  } else if (!previous) return fail("Unggah gambar untuk postingan baru.");
+  const item = { code, date, alt, ...(image ? { image } : {}) };
+  const next = previous ? posts.map(p => p.code === code ? item : p) : [item, ...posts];
+  if (next.length > 24) return fail("Maksimal 24 postingan. Hapus salah satu sebelum menambah.");
+  await saveContent("social.posts", next, g.user.id);
+  await audit(g.user, "CONTENT_SAVE", "SiteContent", "social.posts", { after: { code } });
+  revalidatePath("/"); revalidatePath("/admin/konten");
+  return { ok: true, message: "Galeri diperbarui." };
+}
+export async function removeSocialPost(_p: ActionResult, fd: FormData): Promise<ActionResult> {
+  const g = await asAdmin(); if (!g.ok) return g.result;
+  const code = String(fd.get("code") ?? "");
+  const posts = await getContent("social.posts");
+  if (!posts.some(p => p.code === code)) return fail("Postingan tidak ditemukan.");
+  await saveContent("social.posts", posts.filter(p => p.code !== code), g.user.id);
+  await audit(g.user, "CONTENT_SAVE", "SiteContent", "social.posts", { after: { removed: code } });
+  revalidatePath("/"); revalidatePath("/admin/konten");
+  return { ok: true, message: "Postingan dihapus dari galeri. Bisa dipulihkan lewat riwayat versi." };
+}
+export async function saveHeroImage(_p: ActionResult, fd: FormData): Promise<ActionResult> {
+  const g = await asAdmin(); if (!g.ok) return g.result;
+  const slot = String(fd.get("slot") ?? "");
+  if (slot !== "desktop" && slot !== "mobile") return fail("Bagian gambar tidak dikenal.");
+  const alt = String(fd.get("alt") ?? "").trim();
+  if (!alt || alt.length > 250) return fail("Deskripsi gambar wajib diisi, maksimal 250 karakter.");
+  const current = await getContent("home.media");
+  const file = fd.get("image");
+  let image = current[slot === "desktop" ? "desktopImage" : "mobileImage"];
+  if (file instanceof File && file.size > 0) {
+    const uploaded = await saveSiteImage(file);
+    if (!uploaded.ok) return fail(uploaded.error);
+    image = uploaded.url;
+  }
+  await saveContent("home.media", { ...current, [`${slot}Image`]: image, [`${slot}Alt`]: alt }, g.user.id);
+  await audit(g.user, "CONTENT_SAVE", "SiteContent", "home.media", { after: { slot } });
+  revalidatePath("/"); revalidatePath("/admin/konten");
+  return { ok: true, message: "Gambar beranda diperbarui." };
 }

@@ -3,7 +3,6 @@ import { Menu } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { HeaderAuth } from "@/components/HeaderAuth";
 import { getContent } from "@/lib/content";
-import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "@/lib/social";
 
 const NAV = [
   { href: "/kursus", label: "Katalog" },
@@ -12,25 +11,9 @@ const NAV = [
   { href: "/#faq", label: "Tanya jawab" },
 ];
 
-const TICKER = [
-  "Katalog dan silabus terbuka tanpa login",
-  "Pelajaran pratinjau gratis",
-  "Bayar lewat QRIS, virtual account, atau e-wallet",
-  "Akses selamanya",
-  "Bantuan lewat WhatsApp",
-];
-
-function Ticker() {
-  const items = (hidden: boolean) => (
-    <ul aria-hidden={hidden || undefined}>{TICKER.map((t) => <li key={t}>{t}<i aria-hidden="true">✦</i></li>)}</ul>
-  );
-  return <div className="ticker" aria-label="Keunggulan Nizhamiyyah Edu"><div className="ticker-track">{items(false)}{items(true)}</div></div>;
-}
-
 export function PublicHeader({ landing = false }: { landing?: boolean }) {
   return (
     <>
-    {landing && <Ticker />}
     <header className={`pub-header gutter${landing ? " landing-header" : ""}`}>
       <div className="wrap">
         <Link href="/" aria-label="Nizhamiyyah Edu, ke beranda"><Logo /></Link>
@@ -53,16 +36,16 @@ export function PublicHeader({ landing = false }: { landing?: boolean }) {
 }
 
 export async function PublicFooter() {
-  const contact = await getContent("contact.main");
+  const [contact, copy] = await Promise.all([getContent("contact.main"), getContent("site.copy")]);
   return (
     <footer className="pub-footer gutter">
       <div className="wrap">
         <div className="foot-grid">
           <div style={{ flex: "1 1 280px", display: "flex", flexDirection: "column", gap: 10, minWidth: 0 }}>
             <span className="serif" style={{ fontWeight: 600, fontSize: 22, color: "#fff" }}>Nizhamiyyah Edu</span>
-            <p style={{ maxWidth: "32em" }}>Kelas kitab daring dengan kurikulum berjenjang ala pesantren dan universitas di Timur Tengah.</p>
+            <p style={{ maxWidth: "32em" }}>{copy.footerDescription}</p>
             <p>WhatsApp admin: <span style={{ color: "#fff" }}>{contact.whatsapp}</span></p>
-            <p>Instagram: <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" style={{ color: "#fff" }}>@{INSTAGRAM_HANDLE}</a></p>
+            <p>Instagram: <a href={`https://www.instagram.com/${copy.instagramHandle}/`} target="_blank" rel="noopener noreferrer" style={{ color: "#fff" }}>@{copy.instagramHandle}</a></p>
           </div>
           <nav aria-label="Belajar">
             <b>Belajar</b>
@@ -79,7 +62,7 @@ export async function PublicFooter() {
             <Link href="/kontak">Kontak</Link>
           </nav>
         </div>
-        <p className="foot-bottom">© 2026 Nizhamiyyah Edu · belajarditimurtengah.com</p>
+        <p className="foot-bottom">© {new Date().getFullYear()} {copy.footerCopyright}</p>
       </div>
     </footer>
   );
@@ -89,7 +72,7 @@ export function PublicShell({ children, landing = false }: { children: React.Rea
   return (
     <>
       <PublicHeader landing={landing} />
-      <main id="isi">{children}</main>
+      <main id="isi" className={landing ? "landing-page" : undefined}>{children}</main>
       <PublicFooter />
     </>
   );

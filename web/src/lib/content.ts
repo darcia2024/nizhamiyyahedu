@@ -1,5 +1,7 @@
 import { unstable_cache, revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
+import { SITE_COPY_DEFAULTS } from "@/lib/site-copy";
+import { SOCIAL_POSTS } from "@/lib/social";
 
 export type HomeContent = {
   eyebrow: string;
@@ -17,11 +19,14 @@ export type FaqItem = { q: string; a: string };
 export type ContactContent = { whatsapp: string; email: string; hours: string; address: string };
 
 export const DEFAULTS = {
+  "site.copy": SITE_COPY_DEFAULTS,
+  "home.media": { desktopImage: "/hero/lms-desktop.jpg?v=20261030", desktopAlt: "Dashboard ruang belajar", mobileImage: "/hero/lms-mobile.jpg?v=20261030", mobileAlt: "Halaman pelajaran di HP" },
+  "social.posts": SOCIAL_POSTS,
   "home.main": {
-    eyebrow: "Kelas kitab daring · kurikulum pesantren Timur Tengah",
-    title: "Belajar kitab, satu marhalah demi satu marhalah.",
-    sub: "Satu kursus, satu kitab rujukan, diajar pengajar yang sanadnya jelas. Mulai dari matan dasar, lalu naik ke jenjang berikutnya kalau kamu sudah siap.",
-    note: "Katalog dan silabus bisa dilihat tanpa login. Bayar pakai QRIS atau virtual account, kelas langsung aktif begitu lunas.",
+    eyebrow: "Kelas kitab daring",
+    title: "Pahami kitabnya.",
+    sub: "Dari matan dasar ke pembahasan yang lebih dalam. Belajar lewat video, baca teks kitab, dan lanjutkan sesuai ritme kamu.",
+    note: "Baca silabus dan coba pelajarannya sebelum daftar.",
     steps: [
       { title: "Pilih kursus", text: "Baca silabusnya, kenalan sama pengajarnya, dan tonton satu pelajaran pratinjau gratis." },
       { title: "Masuk dan bayar", text: "Masuk pakai akun Google, lalu bayar lewat QRIS atau virtual account. Kalau kursusnya gratis, langsung terbuka." },

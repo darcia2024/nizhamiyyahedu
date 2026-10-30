@@ -4,6 +4,7 @@ export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}/`;
 export type SocialPost = {
   /** Kode postingan Instagram, dipakai untuk tautan dan nama berkas di public/sosmed. */
   code: string;
+  image?: string;
   /** Tanggal unggah (WIB), untuk label. */
   date: string;
   /** Deskripsi gambar untuk pembaca layar. */

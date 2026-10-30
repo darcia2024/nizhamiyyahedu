@@ -1,2 +1,2 @@
 import { redirect } from "next/navigation";
-export default function LegacyAdmin(){redirect("/admin/pengguna");}
+export default function LegacyAdmin(){redirect("/admin");}

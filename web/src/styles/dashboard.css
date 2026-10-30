@@ -1,0 +1,142 @@
+/* Personal learning dashboard. Kept separate from the shared LMS shell. */
+.learn-home { display: flex; flex-direction: column; gap: 28px; color: #18352a; }
+.lh-welcome { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.lh-eyebrow { margin: 0; font-size: 10px; font-weight: 600; letter-spacing: .13em; line-height: 1.5; color: #4d6a5a; }
+.learn-home .lh-welcome h1 { margin-top: 9px; font-weight: 500; font-size: clamp(25px, 2.25vw, 33px); line-height: 1.2; letter-spacing: -.035em; }
+.lh-welcome h1 + p { margin-top: 8px; color: #56665b; font-size: 14px; line-height: 1.6; }
+.lh-date { flex: none; font-size: 12px; color: #596b60; padding: 9px 13px; border: 1px solid #dce2d9; border-radius: 7px; }
+.lh-top-grid { display: grid; grid-template-columns: minmax(0, 1fr) 284px; gap: 20px; align-items: stretch; }
+.lh-feature { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, .56fr); gap: 16px; border: 1px solid #1e715c; border-radius: 14px; background: #1e715c; color: #fff; overflow: hidden; }
+.lh-feature-copy { min-width: 0; padding: 28px 0 28px 28px; display: flex; flex-direction: column; align-items: flex-start; }
+.lh-feature .lh-eyebrow { color: #f6e7b4; }
+.lh-course-meta { display: flex; align-items: center; gap: 10px; margin-top: 24px; font-size: 12px; color: #e5f0e8; }
+.lh-course-meta span { color: #c3dcce; }
+.learn-home .lh-feature h2 { margin-top: 9px; font-weight: 500; font-size: clamp(25px, 2.3vw, 34px); line-height: 1.16; letter-spacing: -.035em; color: #fff; overflow-wrap: anywhere; }
+.lh-next { max-width: 38em; margin-top: 12px; color: #e3f0e8; font-size: 13px; line-height: 1.7; }
+.lh-teacher { margin-top: 6px; color: #e3f0e8; font-size: 12px; }
+.lh-feature-progress { width: 100%; margin-top: auto; padding-top: 26px; }
+.lh-feature-progress > div:first-child { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 9px; font-size: 11px; color: #e5f0e8; }
+.lh-feature-progress b { color: #f6e7b4; font-weight: 600; font-variant-numeric: tabular-nums; }
+.lh-meter { height: 5px; overflow: hidden; background: #dbe5dc; border-radius: 6px; }
+.lh-meter > span { display: block; height: 100%; border-radius: inherit; background: #1e715c; transform-origin: left; animation: lh-fill .7s cubic-bezier(.2,.6,.2,1) both; }
+.lh-feature .lh-meter { background: #4e927d; }
+.lh-feature .lh-meter > span { background: #f6e7b4; }
+.lh-feature-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 22px; }
+.lh-feature-actions > span { display: inline-flex; align-items: center; gap: 5px; color: #e5f0e8; font-size: 11px; }
+.lh-primary { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 0 16px; border-radius: 7px; background: #f6e7b4; color: #164a37; text-decoration: none; font-size: 13px; font-weight: 600; transition: background .2s, box-shadow .2s; }
+.lh-primary:hover { background: #fff1c7; color: #164a37; box-shadow: 0 3px 10px #0c3a2826; }
+.lh-book-scene { margin: 16px 16px 16px 0; min-width: 0; background: #ecebdf; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 26px 16px; }
+.lh-book { position: relative; width: 100%; max-width: 166px; aspect-ratio: 2 / 3; display: flex; flex-direction: column; justify-content: space-between; padding: 18px 15px 16px 22px; border: 1px solid #ffffff3b; border-radius: 3px 7px 7px 3px; box-shadow: inset 5px 0 0 #00000024, inset 7px 0 0 #ffffff1c, 7px 9px 0 -5px #faf8ed, 12px 18px 18px -7px #233b373b; color: #f6e7b4; transform: rotate(-7deg); }
+.lh-book-label { font-size: 9px; text-transform: uppercase; letter-spacing: .14em; color: #fff; }
+.lh-book .ar { font-size: clamp(24px, 2.4vw, 34px); line-height: 1.6; text-align: center; font-weight: 400; overflow-wrap: anywhere; }
+.lh-book-latin { font-size: 20px; line-height: 1.2; }
+.lh-book-base { display: flex; flex-direction: column; gap: 4px; padding-top: 11px; border-top: 1px solid #ffffff3d; font-size: 7px; font-weight: 500; letter-spacing: .11em; color: #fff; }
+.lh-book-base small { font-size: 9px; letter-spacing: 0; color: #f6e7b4; }
+.lh-week { padding: 22px 22px 16px; border: 1px solid #e0e4da; border-radius: 14px; background: #f5f3e9; display: flex; flex-direction: column; min-width: 0; }
+.lh-section-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+.learn-home .lh-section-head h2 { font-size: 16px; font-weight: 500; letter-spacing: -.02em; line-height: 1.3; color: #1a392c; }
+.lh-section-head > svg { flex: none; color: #725424; }
+.lh-section-head a { display: inline-flex; align-items: center; gap: 6px; flex: none; color: #38604c; font-size: 11px; text-decoration: none; }
+.lh-section-head a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.lh-week-count { display: flex; align-items: center; gap: 13px; margin: 4px 0 18px; }
+.lh-week-count > b { font-size: 46px; font-weight: 500; letter-spacing: -.05em; line-height: 1; color: #1b4935; }
+.lh-week-count > span { font-size: 12px; line-height: 1.6; color: #546357; }
+.lh-week-chart { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); align-items: end; gap: 9px; padding: 0; margin: auto 0 18px; list-style: none; min-height: 90px; }
+.lh-week-chart li { display: flex; flex-direction: column; align-items: center; gap: 11px; font-size: 10px; color: #526353; }
+.lh-day-bar { display: block; width: 100%; max-width: 23px; border-radius: 5px; background: #d6dfd0; }
+.lh-day-bar.filled { background: #1e715c; }
+.lh-streak { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding-top: 13px; border-top: 1px solid #d7ddce; color: #4c623c; }
+.lh-streak > span { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; line-height: 1.6; }
+.lh-streak svg { flex: none; }
+.lh-streak > a { width: 30px; height: 30px; flex: none; display: grid; place-items: center; color: #1e715c; border-radius: 6px; }
+.lh-streak > a:hover { background: #e6e9d9; }
+.lh-stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); margin: 0; border: 1px solid #e0e4da; border-radius: 10px; background: #fff; }
+.lh-stats > div { display: grid; grid-template-columns: 18px 1fr; align-content: center; gap: 7px 10px; padding: 17px 20px; }
+.lh-stats > div + div { border-left: 1px solid #e6e9e0; }
+.lh-stats svg { grid-row: 1 / 3; margin-top: 3px; color: #52745a; }
+.lh-stats dt { font-size: 11px; color: #58685d; }
+.lh-stats dd { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -.03em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.lh-bottom-grid { display: grid; grid-template-columns: minmax(0, 1fr) 284px; gap: 28px; align-items: start; }
+.lh-main-stack { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+.lh-course-list { display: flex; flex-direction: column; border: 1px solid #e0e4da; background: #fff; border-radius: 10px; overflow: hidden; }
+.lh-course-row { display: flex; align-items: center; gap: 16px; min-width: 0; padding: 14px 18px; text-decoration: none; color: #18352a; transition: background .2s; }
+.lh-course-row + .lh-course-row { border-top: 1px solid #e8ebe3; }
+.lh-course-row:hover { background: #f4f7f0; color: #18352a; }
+.lh-mini-cover { width: 65px; height: 78px; flex: none; border-radius: 3px 5px 5px 3px; padding: 8px 9px 8px 12px; box-shadow: inset 3px 0 0 #0000001a; display: grid; place-items: center; color: #f6e7b4; }
+.lh-mini-cover .ar { font-size: 19px; line-height: 1.5; text-align: center; }
+.lh-row-copy { flex: 1; min-width: 0; }
+.lh-row-copy > span { font-size: 10px; color: #556f5c; }
+.lh-row-copy h3 { font-size: 16px; font-weight: 500; letter-spacing: -.02em; line-height: 1.3; margin-top: 4px; }
+.lh-row-progress { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.lh-row-progress .lh-meter { width: 110px; max-width: 40%; height: 4px; }
+.lh-row-progress small { font-size: 10px; color: #576c5d; }
+.lh-course-row > svg { flex: none; color: #577361; }
+.lh-tools { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.lh-tools > a { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 17px 14px; border: 1px solid #e0e4da; background: #edf2e9; border-radius: 10px; color: #234c37; text-decoration: none; transition: border-color .2s, background .2s; }
+.lh-tools > a:nth-child(2) { background: #f6f0e2; color: #6c4b24; }
+.lh-tools > a:hover { border-color: #93a58d; background: #e7efdf; }
+.lh-tools > a:nth-child(2):hover { background: #eee6d5; }
+.lh-tool-icon { flex: none; }
+.lh-tools > a > div { flex: 1; min-width: 0; }
+.learn-home .lh-tools h2 { font-size: 13px; font-weight: 500; letter-spacing: -.015em; line-height: 1.3; }
+.lh-tools p { margin-top: 4px; font-size: 10px; line-height: 1.6; color: #526856; }
+.lh-tools > a:nth-child(2) p { color: #6c5941; }
+.lh-tools > a > svg { flex: none; width: 15px; }
+.lh-journal { padding: 22px; background: #fff; border: 1px solid #e0e4da; border-radius: 12px; min-width: 0; }
+.lh-journal .lh-section-head > svg { color: #62735b; }
+.lh-journal-empty { padding-block: 10px 2px; }
+.lh-journal-empty > svg { color: #6b7f64; }
+.lh-journal-empty h3 { font-size: 20px; font-weight: 500; line-height: 1.3; letter-spacing: -.025em; margin-top: 14px; }
+.lh-journal-empty > p { font-size: 12px; line-height: 1.8; color: #59685b; margin-top: 12px; }
+.lh-text-link { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; font-size: 12px; color: #1e715c; font-weight: 500; text-decoration: none; margin-top: 14px; }
+.lh-text-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.lh-note-list { display: flex; flex-direction: column; gap: 12px; }
+.lh-note-list a { padding: 13px; border: 1px solid #e8dfca; background: #fbf7eb; border-radius: 7px; color: #324c38; text-decoration: none; }
+.lh-note-list p { font-size: 13px; line-height: 1.7; margin-block: 7px 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.lh-note-list small { font-size: 10px; line-height: 1.6; color: #5b6d57; }
+.lh-note-list small svg { vertical-align: middle; }
+.lh-recent { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 17px; }
+.lh-recent li { display: flex; gap: 10px; }
+.lh-recent-check { flex: none; display: grid; place-items: center; width: 22px; height: 22px; background: #e5eee1; border-radius: 50%; color: #376244; }
+.lh-recent a { color: #244733; font-size: 12px; line-height: 1.5; text-decoration: none; }
+.lh-recent a:hover { text-decoration: underline; }
+.lh-recent small { display: block; margin-top: 4px; font-size: 10px; color: #5b6d60; }
+.lh-onboarding h2 { margin-block: 27px 4px; }
+.lh-onboarding .lh-primary { margin-top: 26px; }
+.lh-welcome-note { font-size: 11px; color: #e3f0e8; margin-top: 13px; }
+.lh-start-steps { display: flex; flex-direction: column; gap: 21px; padding: 8px 0 0; margin: 0; list-style: none; }
+.lh-start-steps li { display: flex; gap: 13px; }
+.lh-start-steps li > span { padding-top: 1px; color: #586345; font-size: 11px; font-variant-numeric: tabular-nums; }
+.lh-start-steps b { font-size: 13px; font-weight: 500; }
+.lh-start-steps p { font-size: 11px; color: #566650; line-height: 1.6; margin-top: 4px; }
+.lh-recommendations { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.lh-recommendation { display: flex; flex-direction: column; border: 1px solid #e0e4da; border-radius: 10px; overflow: hidden; background: #fff; color: #18352a; text-decoration: none; transition: border-color .2s; }
+.lh-recommendation:hover { border-color: #7e9a84; color: #18352a; }
+.lh-recommendation > .cover { min-height: 136px; }
+.lh-recommendation > .cover .top { font-size: 10px; color: #fff; }
+.lh-recommendation > .cover .ar { font-size: 29px; font-weight: 400; }
+.lh-recommendation > div:last-child { padding: 16px; display: flex; flex: 1; flex-direction: column; }
+.lh-rec-label { color: #536952; font-size: 10px; }
+.lh-recommendation h3 { font-size: 18px; font-weight: 500; line-height: 1.3; letter-spacing: -.02em; margin-top: 6px; }
+.lh-recommendation p { margin-top: 8px; color: #596b5d; font-size: 12px; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.lh-recommendation footer { margin-top: auto; padding-top: 17px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11px; color: #596b5d; }
+.lh-recommendation footer b { font-size: 13px; font-weight: 500; color: #234932; }
+@keyframes lh-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media(prefers-reduced-motion:reduce) { .lh-meter > span { animation: none; } }
+@media(min-width:1500px) { .learn-home { max-width: 1280px; width: 100%; margin-inline: auto; } .lh-feature-copy { padding: 34px 6px 34px 34px; } .lh-book { max-width: 190px; } }
+@media(max-width:1250px) { .lh-top-grid { grid-template-columns: minmax(0,1fr) 252px; gap: 16px; } .lh-bottom-grid { grid-template-columns: minmax(0,1fr) 252px; gap: 20px; } .lh-feature { grid-template-columns: minmax(0,1fr) 128px; gap: 10px; } .lh-feature-copy { padding: 24px 0 24px 22px; } .lh-book-scene { padding: 18px 12px; margin: 12px 12px 12px 0; } .lh-book { padding: 14px 10px 12px 16px; } .lh-book .ar { font-size: 24px; } .lh-stats > div { padding: 15px 12px; gap: 6px 8px; } .lh-date { display: none; } .lh-tools { grid-template-columns: 1fr; } }
+@media(min-width:961px) and (max-width:1080px) { .lh-top-grid, .lh-bottom-grid { grid-template-columns: 1fr; } .lh-feature { grid-template-columns: minmax(0,1fr) 170px; } .lh-week-chart { margin-top: 0; } .lh-week { max-width: none; } }
+@media(max-width:700px) { .learn-home { gap: 23px; } .lh-top-grid, .lh-bottom-grid { grid-template-columns: 1fr; gap: 20px; } .lh-feature { grid-template-columns: minmax(0,1fr) 130px; min-height: 300px; } .lh-feature-copy { padding: 24px 0 24px 22px; } .lh-book-scene { margin: 14px 14px 14px 0; padding: 16px 12px; } .lh-book { max-width: 110px; } .lh-course-meta { margin-top: 20px; } .lh-feature h2 { font-size: 27px; } .lh-stats { grid-template-columns: repeat(2,minmax(0,1fr)); } .lh-stats > div { padding: 17px; } .lh-stats > div:nth-child(3) { border-left: 0; } .lh-stats > div:nth-child(n+3) { border-top: 1px solid #e6e9e0; } .lh-week-chart { margin-top: 0; } .lh-week { padding: 20px; } .lh-tools { grid-template-columns: repeat(2,minmax(0,1fr)); } .lh-tools > a { flex-wrap: wrap; } .lh-tools > a > div { flex-basis: calc(100% - 40px); } .lh-tools > a > svg { display: none; } }
+@media(max-width:450px) { .learn-home .lh-welcome h1 { font-size: 27px; } .lh-welcome h1 + p { font-size: 13px; } .lh-feature { position: relative; display: flex; flex-direction: column; } .lh-feature-copy { position: relative; padding: 24px 22px; z-index: 1; } .lh-feature .lh-eyebrow { max-width: 100%; } .lh-course-meta { max-width: 58%; margin-top: 26px; } .learn-home .lh-feature h2 { font-size: 28px; max-width: 62%; min-height: 66px; } .lh-book-scene { position: absolute; right: 18px; top: 60px; width: 76px; height: 125px; margin: 0; padding: 0; background: transparent; } .lh-book { width: 76px; aspect-ratio: 2 / 3; padding: 10px 8px 9px 13px; } .lh-book .ar { font-size: 20px; } .lh-book-label { font-size: 7px; } .lh-book-base { font-size: 5px; letter-spacing: .05em; padding-top: 6px; } .lh-book-base small { font-size: 7px; } .lh-next { margin-top: 18px; font-size: 12px; } .lh-feature-progress { padding-top: 22px; } .lh-feature-actions { margin-top: 19px; } .lh-primary { min-height: 46px; } .lh-stats dd { font-size: 21px; } .lh-stats > div { padding: 14px 12px; } .lh-stats dt { font-size: 10px; } .lh-section-head { gap: 8px; } .learn-home .lh-section-head h2 { font-size: 16px; } .lh-section-head a { font-size: 10px; gap: 4px; } .lh-course-row { padding: 13px; gap: 12px; } .lh-mini-cover { width: 54px; height: 70px; padding: 7px 7px 7px 10px; } .lh-row-copy h3 { font-size: 15px; } .lh-row-progress { gap: 8px; } .lh-tools { grid-template-columns: 1fr; } .lh-tools > a { padding: 18px 16px; flex-wrap: nowrap; } .lh-tools > a > svg { display: block; } .lh-recommendations { grid-template-columns: 1fr; } .lh-recommendation { flex-direction: row; } .lh-recommendation > .cover { width: 92px; min-height: 180px; flex: none; padding: 13px 10px; } .lh-recommendation > .cover .top { flex-direction: column; gap: 3px; font-size: 8px; } .lh-recommendation > .cover .ar { font-size: 22px; } .lh-recommendation > div:last-child { min-width: 0; padding: 14px; } .lh-recommendation h3 { font-size: 17px; } .lh-recommendation footer { font-size: 10px; flex-wrap: wrap; } .lh-recommendation footer b { font-size: 12px; } .lh-onboarding h2 { margin-top: 24px; } }
+
+/* Keep complete course names readable on narrow phones. */
+@media(max-width:450px) {
+  .lh-feature .lh-eyebrow { max-width: calc(100% - 78px); }
+  .lh-course-meta { max-width: calc(100% - 76px); }
+  .learn-home .lh-feature h2 { max-width: 100%; min-height: 0; margin-top: 40px; overflow-wrap: normal; font-size: 27px; }
+  .lh-book-scene { width: 62px; height: 94px; top: 24px; right: 22px; }
+  .lh-book { width: 62px; padding: 8px 7px 7px 11px; }
+  .lh-book .ar { font-size: 17px; }
+  .lh-book-base { font-size: 4px; }
+  .lh-book-base small { font-size: 6px; }
+}

@@ -22,9 +22,9 @@ export function HeaderAuth() {
 
   if (me) {
     return (
-      <Link className="btn btn-ghost sm" href="/dashboard" data-testid="hdr-dashboard">
+      <Link className="btn btn-ghost sm" href={me.role === "ADMIN" ? "/admin" : "/dashboard"} data-testid="hdr-dashboard">
         <span className="avatar sm" aria-hidden="true">{initials(me.name)}</span>
-        Dashboard
+        {me.role === "ADMIN" ? "Superadmin" : "Ruang belajar"}
       </Link>
     );
   }

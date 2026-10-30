@@ -301,8 +301,7 @@ dialog.sheet::backdrop { background: rgba(16,35,28,.55) }
 .landing-hero::before { content:""; position:absolute; width:760px; height:760px; border-radius:50%; top:75px; left:50%; transform:translateX(-50%); background:radial-gradient(circle,rgba(92,158,89,.19),transparent 66%); pointer-events:none }
 .landing-hero-inner { position:relative; z-index:1; padding-top:50px; text-align:center }
 .landing-copy { max-width:900px; margin:0 auto; display:flex; flex-direction:column; align-items:center }
-.landing-pill { min-height:30px; padding:4px 10px 4px 5px; border:1px solid rgba(255,255,255,.38); border-radius:999px; display:inline-flex; align-items:center; gap:8px; color:#EEF5F2; font-size:12px; font-weight:500 }
-.landing-pill span { background:#F6E7B4; color:#0F4736; border-radius:999px; padding:2px 9px; font-weight:700 }
+
 .landing-copy h1 { margin-top:24px; font-family:var(--font-app); font-size:clamp(48px,7.2vw,84px); line-height:.98; letter-spacing:-.035em; font-weight:500; text-wrap:balance }
 .landing-copy h1 span { color:#F6E7B4 }
 .landing-lead { max-width:670px; margin-top:22px; color:#E3EFEA; font-size:clamp(16px,1.5vw,19px); line-height:1.55 }
@@ -313,8 +312,7 @@ dialog.sheet::backdrop { background: rgba(16,35,28,.55) }
 .landing-btn.primary:hover { background:#FBF1CE; color:#0F4736 }
 .landing-btn.secondary { border:1px solid rgba(255,255,255,.38); color:#fff; background:rgba(255,255,255,.02) }
 .landing-btn.secondary:hover { background:rgba(255,255,255,.08); color:#fff }
-.landing-proof { margin-top:22px; display:flex; justify-content:center; flex-wrap:wrap; gap:10px 24px; color:#D6E7DF; font-size:12px }
-.landing-proof span { display:inline-flex; align-items:center; gap:6px }
+
 .mockup-enter { margin-top:50px }
 .hm-scene { position: relative; width: min(1000px, 96%); aspect-ratio: 1000 / 430; margin: 0 auto; text-align: left }
 .hm-laptop { position: absolute; left: 0; top: 0; width: 77%; padding: 0 0 0; border: 7px solid #1d2a24; border-bottom: 0; border-radius: 20px 20px 0 0; background: #f3f3f1; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 40px 90px rgba(0,0,0,.45) }
@@ -325,16 +323,7 @@ dialog.sheet::backdrop { background: rgba(16,35,28,.55) }
 .hm-phone { position: absolute; z-index: 3; right: 0; top: 1%; width: 20%; border: 7px solid #111916; border-radius: 34px; background: #111916; overflow: hidden; transform: rotate(3deg); box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 34px 70px rgba(0,0,0,.5) }
 .hm-phone img { border-radius: 26px }
 .hm-notch { position: absolute; z-index: 2; top: 0; left: 50%; width: 34%; height: 13px; border-radius: 0 0 11px 11px; background: #111916; transform: translateX(-50%) }
-.hm-chip { position: absolute; z-index: 4; display: flex; align-items: center; gap: 10px; padding: 10px 14px 10px 10px; border-radius: 14px; background: rgba(255,255,255,.96); color: #141414; box-shadow: 0 18px 40px rgba(0,0,0,.28); font-size: 13px; line-height: 1.25 }
-.hm-chip b { display: block; font-size: 13px; font-weight: 700 }
-.hm-chip small { font-size: 11.5px; color: #66665f }
-.hm-ico { width: 34px; height: 34px; flex: none; border-radius: 10px; display: grid; place-items: center; color: #fff }
-.hm-ico.ok { background: #1E715C; color: #F6E7B4 }
-.hm-ico.fire { background: #f6ebd3; color: #8a5c0a }
-.hm-chip-a { left: -2.5%; top: 74% }
-.hm-chip-b { left: 47%; top: 80% }
-.hm-chip-a { animation: mock-float 4.8s ease-in-out infinite }
-.hm-chip-b { animation: mock-float 5.6s ease-in-out .6s infinite }
+
 .hm-phone { animation: phone-float 6s ease-in-out infinite }
 @media (prefers-reduced-motion: reduce) { .hm-chip-a, .hm-chip-b, .hm-phone { animation: none } }
 @media (max-width: 980px) { .hm-chip-a { left: -1% } }
@@ -354,47 +343,10 @@ dialog.sheet::backdrop { background: rgba(16,35,28,.55) }
   .hm-chip-b { display: none }
 }
 .landing-surface { position:relative; margin-top:-24px; background:#fff; border-radius:26px 26px 0 0; z-index:5; overflow:hidden }
-.trust-strip { min-height:114px; display:flex; align-items:center; justify-content:space-between; gap:28px; padding:30px max(16px,4vw); border-bottom:1px solid #e6eae7; color:#5f6f66 }.trust-strip p{font-size:12px}.trust-strip>div{display:flex;align-items:center;justify-content:flex-end;gap:18px 25px;flex-wrap:wrap;color:#173c29;font-size:13px;font-weight:700}.trust-strip i{width:4px;height:4px;border-radius:50%;background:#9db1a4}
+.trust-strip p{font-size:12px}.trust-strip>div{display:flex;align-items:center;justify-content:flex-end;gap:18px 25px;flex-wrap:wrap;color:#173c29;font-size:13px;font-weight:700}.trust-strip i{width:4px;height:4px;border-radius:50%;background:#9db1a4}
 .journey-section,.catalog-showcase,.teacher-section { padding-block:110px }
 .landing-section-head { max-width:760px; display:flex; flex-direction:column; gap:12px; margin-bottom:48px }.landing-kicker{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:#1E715C}.landing-section-head h2,.path-copy h2,.lesson-copy h2,.faq-layout h2{font-size:clamp(34px,4.6vw,58px);line-height:1.03;letter-spacing:-.03em;font-weight:500;text-wrap:balance}.landing-section-head>p:last-child,.path-copy>p,.lesson-copy>p,.faq-layout>div:first-child>p:last-child{font-size:16px;line-height:1.65;color:#66746c;max-width:600px}.landing-section-head.split{max-width:none;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.6fr);gap:60px;align-items:end}.landing-section-head.split>div:last-child{display:flex;flex-direction:column;align-items:flex-start;gap:16px}.landing-section-head.split>div:last-child p{color:#66746c;line-height:1.65}
-.steps3 { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px }
-.steps3 > li { position:relative; display:flex; flex-direction:column; padding:8px; border:1px solid #dbe3dd; border-radius:24px; background:#fff }
-.steps3 > li:not(:last-child)::after { content:""; position:absolute; z-index:2; top:132px; right:-28px; width:36px; height:36px; border-radius:50%; border:1px solid #dbe3dd; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23143d29' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center/16px no-repeat }
-.s3-visual { position:relative; height:264px; padding:44px 18px 18px; border-radius:18px; background:#f2f5f1; display:flex; flex-direction:column; justify-content:flex-start; gap:10px; overflow:hidden }
-.s3-tag { position:absolute; top:14px; left:18px; font-size:11px; font-weight:600; letter-spacing:.04em; color:#6d786f }
-.s3-card { background:#fff; border:1px solid #e1e7e2; border-radius:14px; box-shadow:0 1px 2px rgba(16,35,28,.05) }
-.s3-search { display:flex; align-items:center; gap:10px; height:44px; padding:0 14px; color:#10231c; font-size:14px }
-.s3-search svg { flex:none; color:#6d786f }
-.s3-search i { width:1.5px; height:18px; margin-left:-6px; background:#1E715C }
-.s3-row { display:grid; grid-template-columns:44px minmax(0,1fr) auto; align-items:center; gap:12px; padding:10px 12px 10px 10px }
-.s3-row.on { border:1.5px solid #1E715C; padding:9.5px 11.5px 9.5px 9.5px }
-.s3-cover { width:44px; height:44px; border-radius:10px; display:grid; place-items:center; overflow:hidden; color:#f2e6c4; font-size:12px; line-height:1.25; text-align:center; padding:3px }
-.s3-info { display:flex; flex-direction:column; min-width:0; gap:2px }
-.s3-info b { font-size:14px; font-weight:600; color:#10231c; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-.s3-info small { font-size:12px; color:#66746c; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-.s3-price { font-size:13px; font-weight:700; color:#10231c; font-variant-numeric:tabular-nums }
-.s3-pay, .s3-lesson { padding:16px; display:flex; flex-direction:column; gap:12px }
-.s3-line { display:flex; align-items:baseline; justify-content:space-between; gap:12px; font-size:13px; color:#31463a }
-.s3-line span { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-.s3-line b { flex:none; font-variant-numeric:tabular-nums; color:#10231c }
-.s3-line.total { padding-top:12px; border-top:1px dashed #d4ddd6; font-size:15px; font-weight:700; color:#10231c }
-.s3-chips { display:flex; gap:6px }
-.s3-chips span { flex:1 1 0; min-width:0; height:32px; display:grid; place-items:center; border:1px solid #d4ddd6; border-radius:999px; font-size:12px; font-weight:600; color:#31463a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 6px }
-.s3-chips span.on { background:#1E715C; border-color:#1E715C; color:#F6E7B4 }
-.s3-btn { height:42px; display:grid; place-items:center; border-radius:999px; background:#F6E7B4; color:#0F4736; font-size:14px; font-weight:700 }
-.s3-btn.dark { background:#1E715C; color:#F6E7B4 }
-.s3-matan { margin:0; padding:10px 14px; border-radius:10px; background:#f2f5f1; color:#173127; font-size:20px; line-height:1.7; text-align:right; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
-.s3-bar { height:6px; border-radius:99px; background:#e1e7e2; overflow:hidden }
-.s3-bar i { display:block; width:60%; height:100%; border-radius:inherit; background:#1E715C }
-.s3-text { display:flex; flex-direction:column; flex:1; padding:24px 18px 18px }
-.s3-step { display:flex; align-items:center; gap:10px; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1E715C }
-.s3-step b { width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:#1E715C; color:#F6E7B4; font-size:12px; letter-spacing:0 }
-.s3-text h3 { margin-top:16px; font-size:24px; line-height:1.2; letter-spacing:-.035em; font-weight:600 }
-.s3-text > p:not(.s3-step) { margin-top:8px; font-size:15px; line-height:1.6; color:#5a6a61 }
-.s3-link { margin-top:auto; padding-top:18px; font-size:14px; font-weight:700; color:#173c29; text-decoration:none; border-bottom:0 }
-.s3-link::after { content:" →" }
-.s3-link:hover { color:#1E715C }
-@media(max-width:900px){ .steps3 { grid-template-columns:1fr; gap:16px } .steps3 > li::after { display:none } .s3-visual { height:auto; min-height:250px } }
+
 .plan-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; align-items:stretch }
 .plan-card { position:relative; display:flex; flex-direction:column; min-width:0; padding:8px; border-radius:26px; border:1px solid #dbe3dd; background:#fff; transition:transform .25s, box-shadow .25s, border-color .25s }
 .plan-card:hover { transform:translateY(-5px); box-shadow:0 22px 50px rgba(20,61,41,.13); border-color:#a9bbb0 }
@@ -460,21 +412,9 @@ a.lv-row:hover b { text-decoration: underline; text-underline-offset: 3px }
 @media(max-width:420px){.landing-pill{font-size:10px}.landing-actions{width:100%}.landing-btn{flex:1;padding-inline:14px}.trust-strip>div span{padding:4px 8px;border:1px solid #d8dfda;border-radius:999px}.journey-section,.catalog-showcase,.teacher-section{padding-block:68px}.landing-section-head{margin-bottom:34px}}
 
 /* ---------- beranda: bilah berjalan, pencarian hero, kartu paket, ajakan akhir ---------- */
-.ticker { background:#F6E7B4; color:#0F4736; overflow:hidden; height:38px; display:flex; align-items:center; font-size:13px; font-weight:700 }
-.ticker-track { display:flex; width:max-content; animation:ticker-run 38s linear infinite }
-.ticker:hover .ticker-track { animation-play-state:paused }
-.ticker ul { display:flex; flex:none; margin:0; padding:0; list-style:none }
-.ticker li { display:inline-flex; align-items:center; gap:28px; padding-right:28px; white-space:nowrap }
-.ticker i { font-style:normal; font-size:11px }
-@keyframes ticker-run { to { transform:translateX(-50%) } }
+
 .landing-copy h1 .hl { display:inline; padding:.02em .22em .08em; border-radius:16px; background:#F6E7B4; color:#0F4736; line-height:1.3; box-decoration-break:clone; -webkit-box-decoration-break:clone }
 .landing-copy h1 .hl-line { display:block; margin-top:10px }
-.hero-search { width:min(640px,100%); margin-top:30px; display:flex; align-items:center; gap:10px; padding:6px 6px 6px 20px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.08); color:#E3EFEA; backdrop-filter:blur(10px); transition:border-color .2s, background .2s }
-.hero-search:focus-within { border-color:#F6E7B4; background:rgba(255,255,255,.12) }
-.hero-search input { flex:1; min-width:0; min-height:46px; border:0; outline:0; background:transparent; color:#fff; font:inherit; font-size:16px }
-.hero-search input::placeholder { color:#D2E3DB }
-.hero-search button { min-height:46px; padding:0 28px; border:0; border-radius:999px; background:#fff; color:#0F4736; font-weight:700; font-size:15px; cursor:pointer; transition:background .2s }
-.hero-search button:hover { background:#F6E7B4 }
 .hero-search-note { margin-top:12px; font-size:13px; color:#E3EFEA }
 .landing-section-head.center { margin-inline:auto; text-align:center; align-items:center }
 .plan-tabs { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:36px }
@@ -487,8 +427,7 @@ a.lv-row:hover b { text-decoration: underline; text-underline-offset: 3px }
 .cta-inner h2 { font-size:clamp(34px,5vw,60px); line-height:1.04; letter-spacing:-.03em; font-weight:500; text-wrap:balance }
 .cta-inner h2 span { color:#F6E7B4 }
 .cta-inner > p { color:#E3EFEA; font-size:17px }
-@media(max-width:760px){ .ticker { font-size:12px; height:34px } .hero-search { padding-left:16px } .hero-search button { padding:0 20px } .plan-card { padding:30px 22px 24px } .cta-band { padding-bottom:76px } .cta-inner { padding:56px 22px; border-radius:22px } }
-@media(prefers-reduced-motion:reduce){ .ticker-track { animation:none } .ticker { overflow-x:auto } }
+@media(max-width:760px){ .plan-card { padding:30px 22px 24px } .cta-band { padding-bottom:76px } .cta-inner { padding:56px 22px; border-radius:22px } }
 
 /* ---------- aplikasi (dashboard, pelajaran, admin) ---------- */
 .app { --brand: #1E715C; --brand-dark: #0F4736; --brand-soft: #e4ebe6; --ink: #141414; --ink-2: #4b4b48; --muted-text: #66665f; --line: #e5e5e1; --line-2: #ececE8; --shell: #f3f3f1; font-family: var(--font-app); font-size: 14.5px; color: var(--ink); min-height: 100vh; background: #f3f3f1 }
@@ -586,23 +525,6 @@ a.matan-card:hover { border-color: #1E715C; transform: translateY(-2px) }
 .matan-card-go { margin-top: 4px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #0F4736 }
 .matan-card.locked { background: #f6f6f4 }
 .matan-card .progress { align-self: stretch }
-.mt-bar { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; position: sticky; top: 8px; z-index: 5 }
-.mt-modes { display: inline-flex; align-self: flex-start; padding: 4px; border-radius: 12px; background: #efefec; gap: 2px; flex-wrap: wrap }
-.mt-modes button { min-height: 38px; padding: 0 16px; border: 0; border-radius: 9px; background: none; font: inherit; font-weight: 600; font-size: 14px; color: #4b4b48; cursor: pointer }
-.mt-modes button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08) }
-.mt-tools { display: flex; flex-wrap: wrap; gap: 8px }
-.mt-hint { margin: 0 }
-.mt-progress { display: flex; flex-direction: column; gap: 6px }
-.mt-item { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px }
-.mt-item.known { border-color: #b9d3c3; background: #f7fbf8 }
-.mt-label { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--muted-text) }
-.mt-body { display: flex; flex-direction: column; gap: 10px }
-.mt-ar { margin: 0; font-size: clamp(26px, 3vw, 34px); line-height: 1.9; text-align: right; color: #173127 }
-.mt-tr { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--ink-2) }
-.mt-cover { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 76px; width: 100%; border: 1.5px dashed #c4cdc7; border-radius: 12px; background: #f6f7f5; font: inherit; font-size: 14px; font-weight: 600; color: #4b4b48; cursor: pointer }
-.mt-cover:hover { border-color: #1E715C; color: var(--ink) }
-.mt-cover.tr { min-height: 52px }
-.mt-actions { display: flex; flex-wrap: wrap; gap: 8px }
 
 /* progres */
 .act-chart { margin-top: 14px; display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: 6px; align-items: end; min-height: 110px }
@@ -747,3 +669,156 @@ table.t tbody tr:last-child td { border-bottom: 0 }
 @media (max-width: 1100px) { .social-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
 @media (max-width: 760px) { .social-section { padding-block: 76px } .social-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px } .social-card { border-radius: 14px } }
 @media (hover: none), (max-width: 760px) { .social-over { inset: 8px 8px auto auto; width: 30px; height: 30px; padding: 0; justify-content: center; border-radius: 50%; background: rgba(11,44,27,.78); opacity: 1 } .social-over small { display: none } }
+/* Beranda: hierarki editorial, permukaan polos, dan ritme yang lebih tenang. */
+.landing-header .wrap { max-width: 1240px; height: 88px }
+.landing-header .brand { color: #fff }
+.landing-header .hdr-right .btn { border-radius: 8px; font-weight: 500 }
+.landing-page { background: #faf9f5 }
+.landing-page .wrap { max-width: 1240px }
+.landing-page .landing-hero { min-height: 0; padding-block: 88px 76px }
+.landing-page .landing-hero-inner { padding-top: 0; display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); align-items: center; gap: 64px; text-align: left }
+.landing-page .landing-copy { margin: 0; max-width: none; align-items: flex-start }
+.hero-eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; color: #e4efe9; font-size: 13px; letter-spacing: .025em }
+.hero-eyebrow span { color: #a9cbbc }
+.landing-page .landing-copy h1 { margin-top: 28px; font-size: clamp(44px, 4.5vw, 66px); line-height: 1.07; letter-spacing: -.035em; font-weight: 500; text-wrap: initial }
+.landing-page .landing-copy h1 span { color: #f6e7b4 }
+.landing-page .landing-lead { max-width: 420px; margin-top: 24px; font-size: 17px; line-height: 1.75; font-weight: 400 }
+.landing-page .landing-actions { justify-content: flex-start; margin-top: 30px; gap: 12px }
+.landing-page .landing-btn { border-radius: 8px; min-height: 50px; padding-inline: 21px; font-size: 14px; font-weight: 600; transition: background .2s, border-color .2s }
+.landing-page .landing-btn:hover { transform: none }
+.landing-page .landing-hero .landing-btn.secondary { border-color: transparent; background: transparent; padding-inline: 8px }
+.landing-page .landing-hero .landing-btn.secondary:hover { color: #f6e7b4; text-decoration: underline; text-underline-offset: 5px }
+.landing-page .hero-search-note { margin-top: 18px; color: #e3efe9; font-size: 12px; line-height: 1.6 }
+.landing-page .mockup-enter { margin-top: 0; min-width: 0; animation: none }
+.landing-page .hm-scene { width: 100%; aspect-ratio: 1.48 }
+.landing-page .hm-laptop { width: 100%; border: 1px solid rgba(255,255,255,.35); border-radius: 10px; box-shadow: 0 16px 40px rgba(4,35,25,.14) }
+.landing-page .hm-bar { height: 24px; background: #f1f0eb }
+.landing-page .hm-bar i { width: 60%; font-size: 7px; color: #53685b }
+.landing-page .hm-phone { width: 24%; right: -12px; top: 38%; transform: none; animation: none; border-width: 3px; border-radius: 16px; box-shadow: 0 12px 24px rgba(4,35,25,.2) }
+.landing-page .hm-phone img { border-radius: 12px }
+.landing-page .hm-notch { height: 7px; border-radius: 0 0 7px 7px }
+.hero-preview-caption { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; color: #e3efe9; font-size: 11px; letter-spacing: .015em }
+.landing-page .landing-surface { margin-top: 0; border-radius: 0; background: #faf9f5 }
+.discovery-strip { border-bottom: 1px solid #dedfd6; background: #f0efe8; padding-block: 27px }
+.discovery-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px }
+.discovery-inner p { margin-top: 4px; font-size: 20px; font-weight: 500; letter-spacing: -.02em }
+.landing-page .landing-kicker { font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #37624f }
+.discovery-search { display: flex; align-items: center; gap: 12px; width: min(420px, 100%); border-bottom: 1px solid #778c7e; color: #37624f }
+.discovery-search input { flex: 1; width: 0; min-height: 48px; border: 0; outline: 0; background: transparent; color: #10231c; font: inherit; font-size: 14px }
+.discovery-search input::placeholder { color: #57665b; opacity: 1 }
+.discovery-search:focus-within { border-bottom-color: #10231c; box-shadow: 0 1px 0 #10231c }
+.discovery-search button { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border: 0; background: transparent; color: #1e715c; cursor: pointer }
+.landing-page .journey-section, .landing-page .catalog-showcase, .landing-page .teacher-section, .landing-page .social-section { padding-block: 88px }
+.landing-page .landing-section-head { margin-bottom: 36px }
+.landing-page .landing-section-head.split { grid-template-columns: minmax(0, 1fr) minmax(0, .65fr); gap: 70px; align-items: end }
+.landing-page .landing-section-head h2, .landing-page .lesson-copy h2, .landing-page .faq-layout h2 { font-size: clamp(30px, 3.2vw, 44px); line-height: 1.16; letter-spacing: -.025em; font-weight: 500 }
+.landing-page .landing-section-head.split > div:last-child p { font-size: 15px; line-height: 1.75; color: #546359 }
+.landing-page .landing-section-head.split > div:first-child { display: flex; flex-direction: column; gap: 14px }
+.landing-text-link { display: inline-flex; align-items: center; gap: 10px; color: #1e715c; font-size: 14px; font-weight: 500; text-decoration: underline; text-underline-offset: 5px }
+.learning-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 42px }
+.learning-steps li { padding-top: 20px; border-top: 1px solid #c6cfc4 }
+.learning-step-number { font-size: 12px; font-variant-numeric: tabular-nums; color: #627667 }
+.learning-steps h3 { margin-top: 22px; font-size: 22px; letter-spacing: -.02em; font-weight: 500 }
+.learning-steps p { max-width: 33em; margin-top: 12px; color: #546359; font-size: 15px; line-height: 1.75 }
+.learning-steps a { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; min-height: 24px; font-size: 13px; font-weight: 500; color: #1e715c; text-underline-offset: 4px }
+.landing-page .path-section { padding-block: 72px; background: #eeefe7 }
+.landing-page .lv-head { border-bottom: 1px solid #93a493 }
+.landing-page .lv-head h3 { font-size: 23px; font-weight: 500 }
+.landing-page .lv-ar { font-size: 19px; max-width: 40%; overflow-wrap: anywhere }
+.landing-page .lv-txt b { font-size: 14px; font-weight: 500 }
+.landing-page .lv-row.empty { padding-block: 14px; color: #596c5e }
+.landing-page .plan-tabs { justify-content: flex-start; gap: 24px; border-bottom: 1px solid #d9dfd4; margin-bottom: 28px }
+.landing-page .plan-tabs button { padding: 0 0 12px; min-height: 44px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; font-size: 14px; font-weight: 500; color: #546359 }
+.landing-page .plan-tabs button[aria-pressed="true"] { border-bottom-color: #1e715c; color: #133e2f; background: transparent }
+.landing-page .plan-card { padding: 0; border: 1px solid #dfe2d8; border-radius: 10px; overflow: hidden; background: #fff; transition: border-color .2s }
+.landing-page .plan-card:hover { transform: none; box-shadow: none; border-color: #8aa18f }
+.landing-page .plan-thumb { min-height: 172px; border-radius: 0; padding: 18px 22px }
+.landing-page .plan-top { color: #fff; font-size: 10px; font-weight: 500; letter-spacing: .1em }
+.landing-page .plan-ar { font-size: 36px; font-weight: 400; text-shadow: none }
+.landing-page .plan-hot { height: 24px; padding-inline: 8px; border-radius: 3px; font-size: 10px; font-weight: 500 }
+.landing-page .plan-body { padding: 22px; gap: 0 }
+.landing-page .plan-body h3 { font-size: 22px; font-weight: 500; letter-spacing: -.02em; text-wrap: initial }
+.landing-page .plan-desc { margin-top: 10px; line-height: 1.7; color: #546359 }
+.landing-page .plan-stats { margin-top: 18px; color: #516658; font-size: 12px; font-weight: 400 }
+.plan-includes { margin-top: 14px; margin-bottom: 22px; color: #546359; font-size: 12px; line-height: 1.7 }
+.landing-page .plan-foot { gap: 12px; padding-top: 18px; border-top: 1px solid #e5e7df; flex-wrap: nowrap }
+.landing-page .plan-price b { font-size: 22px; font-weight: 500 }
+.landing-page .plan-price small { font-size: 11px }
+.landing-page .plan-cta { flex: none; min-height: 42px; padding-inline: 14px; border-radius: 6px; font-size: 12px; background: #1e715c; color: #fff; font-weight: 500 }
+.landing-page .plan-cta:hover { transform: none; background: #0f4736 }
+.landing-page .plan-more { margin-top: 32px; text-align: left }
+.landing-page .lesson-feature { padding-bottom: 0 }
+.landing-page .lesson-panel { min-height: 0; padding: 54px; gap: 64px; border-radius: 10px }
+.landing-page .lesson-copy .landing-kicker { color: #f6e7b4 }
+.landing-page .new-matan-card { transform: none; box-shadow: none; border-radius: 3px; padding: 40px 30px 28px; background: #f6f3e9; min-height: 280px }
+.landing-page .new-matan-card > span { color: #536258 }
+.landing-page .new-matan-card .ar { font-size: 32px; font-weight: 400 }
+.landing-page .new-teachers .teacher { border-radius: 8px; box-shadow: none }
+.landing-page .social-section { background: #faf9f5; border-top: 1px solid #e5e7df }
+.landing-page .social-card { border-radius: 4px }
+.landing-page .social-card:hover { transform: none; box-shadow: none }
+.landing-page .faq-section { background: #f0efe8; padding-block: 80px }
+.landing-page .faq-layout { gap: 100px }
+.landing-page .faq-layout > div:first-child > p:last-child { color: #546359 }
+.landing-page .faq-layout .faq summary { font-size: 16px; font-weight: 500; padding-block: 22px }
+.landing-page .cta-band { padding: 0; background: #1e715c }
+.landing-page .cta-inner { border-radius: 0; padding: 64px 32px; display: grid; grid-template-columns: 1fr auto; text-align: left; gap: 14px 70px }
+.landing-page .cta-inner h2 { font-size: 38px; line-height: 1.2; grid-column: 1; font-weight: 500 }
+.landing-page .cta-inner > p { grid-column: 1; font-size: 15px }
+.landing-page .cta-inner .landing-actions { grid-column: 2; grid-row: 1 / 3; margin: 0 }
+.landing-page [data-reveal] { opacity: 1; transform: none; transition: none }
+.landing-page .hero-enter { animation: none }
+@media(max-width:1100px) {
+  .landing-page .landing-hero-inner { gap: 36px }
+  .landing-page .landing-copy h1 { font-size: 49px }
+  .landing-page .hm-scene { aspect-ratio: 1.35 }
+  .landing-page .landing-lead { font-size: 16px }
+  .landing-page .landing-section-head.split { gap: 40px }
+}
+@media(max-width:900px) {
+  .landing-page .landing-hero { padding-block: 44px 54px }
+  .landing-page .landing-hero-inner { grid-template-columns: 1fr; gap: 44px }
+  .landing-page .landing-copy { max-width: 580px }
+  .landing-page .landing-copy h1 { font-size: clamp(42px, 7vw, 60px) }
+  .landing-page .hm-scene { width: 100%; aspect-ratio: 1.47 }
+  .landing-page .hm-laptop { left: 0; transform: none }
+  .landing-page .hm-phone { right: 0; top: 33%; width: 22% }
+  .hero-preview-caption { margin-top: 16px }
+  .landing-page .landing-section-head.split, .landing-page .faq-layout { grid-template-columns: 1fr; gap: 24px }
+  .landing-page .cta-inner { display: flex; align-items: flex-start; padding-inline: 4vw }
+  .landing-page .cta-inner .landing-actions { margin-top: 12px }
+  .learning-steps { gap: 24px }
+  .landing-page .plan-grid { grid-template-columns: repeat(2,minmax(0,1fr)) }
+}
+@media(max-width:640px) {
+  .landing-header .wrap { height: 72px }
+  .hero-eyebrow { font-size: 11px; gap: 8px }
+  .landing-page .landing-copy h1 { font-size: clamp(37px, 9.3vw, 52px); margin-top: 22px }
+  .landing-page .landing-lead { font-size: 15px; line-height: 1.75; margin-top: 18px }
+  .landing-page .landing-actions { width: auto; gap: 14px; flex-wrap: wrap; margin-top: 24px }
+  .landing-page .landing-btn { flex: none; padding-inline: 16px; font-size: 13px }
+  .landing-page .landing-hero .landing-btn.secondary { padding-inline: 0 }
+  .landing-page .hm-bar i { font-size: 5px }
+  .hero-preview-caption { font-size: 10px }
+  .discovery-inner { align-items: stretch; flex-direction: column; gap: 18px }
+  .discovery-search { width: 100% }
+  .discovery-inner p { font-size: 19px }
+  .landing-page .journey-section, .landing-page .catalog-showcase, .landing-page .teacher-section, .landing-page .social-section { padding-block: 56px }
+  .landing-page .landing-section-head h2, .landing-page .lesson-copy h2, .landing-page .faq-layout h2 { font-size: 32px }
+  .learning-steps { grid-template-columns: 1fr; gap: 28px }
+  .learning-steps li { padding-top: 16px }
+  .learning-steps h3 { margin-top: 10px; font-size: 21px }
+  .learning-steps p { margin-top: 8px }
+  .landing-page .path-section, .landing-page .faq-section { padding-block: 56px }
+  .landing-page .plan-grid { grid-template-columns: 1fr; gap: 24px }
+  .landing-page .plan-card { padding: 0 }
+  .landing-page .plan-tabs { gap: 20px }
+  .landing-page .plan-body { padding: 20px }
+  .landing-page .plan-thumb { min-height: 164px }
+  .landing-page .plan-foot { flex-wrap: wrap }
+  .landing-page .lesson-panel { padding: 32px 22px; gap: 32px; grid-template-columns: 1fr }
+  .landing-page .new-matan-card { padding: 40px 22px 24px }
+  .landing-page .new-matan-card .ar { font-size: 28px }
+  .landing-page .cta-inner { padding-block: 48px }
+  .landing-page .cta-inner h2 { font-size: 32px }
+}
