@@ -78,7 +78,8 @@ async function main() {
         const [videoId, durationMin] = c.videos?.[p - 1] ?? [];
         await db.lesson.create({
           data: {
-            courseId: course.id, title: `Pertemuan ${p}`, position: p, status: "PUBLISHED",
+            // Pertemuan 1 bisa ditonton gratis tanpa beli, supaya calon user bisa mencoba dulu.
+            courseId: course.id, title: `Pertemuan ${p}`, position: p, status: "PUBLISHED", isFreePreview: p === 1 && !!videoId,
             videoUrl: videoId ? `https://www.youtube.com/watch?v=${videoId}` : null, durationMin: durationMin ?? null,
           },
         });
