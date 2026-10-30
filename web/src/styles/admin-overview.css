@@ -45,6 +45,18 @@
 .ops-chart span {display:block;width:100%;max-width:24px;border-radius:4px;background:#1e715c}
 .ops-chart small {font-size:10px;color:#596d5a}
 .ops-card summary {font-size:12px;color:#1e715c}
+/* Tren dibanding periode sebelumnya */
+.ops-trend {display:inline-flex;align-items:center;gap:4px;font-weight:500}
+.ops-stats small.ops-trend.up {color:#1e715c}
+.ops-stats small.ops-trend.down {color:#a3271c}
+.ops-stats small.ops-trend.flat {color:#596c5d}
+/* Grafik dua seri: user baru dan detail kursus dibuka */
+.ops-legend {display:inline-flex;align-items:center;gap:6px 12px;flex-wrap:wrap;font-size:12px;color:#45604c}
+.ops-legend i {display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:-6px}
+.ops-legend i.u, .ops-chart-duo .u {background:#1e715c}
+.ops-legend i.v, .ops-chart-duo .v {background:#b9d6c6}
+.ops-chart-duo .pair {display:flex;align-items:flex-end;justify-content:center;gap:2px;width:100%;max-width:28px;background:none}
+.ops-chart-duo .pair>span {flex:1;max-width:12px;border-radius:3px}
 .ops-updates {display:flex;flex-direction:column}
 .ops-updates>a {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #e8ebe3;text-decoration:none;color:#264c34}
 .ops-updates span {display:flex;flex-direction:column;gap:4px;min-width:0}

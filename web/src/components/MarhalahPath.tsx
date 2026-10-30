@@ -1,17 +1,17 @@
 import Link from "next/link";
-import { FIELD_LABEL, FIELD_TONE, LEVEL_LABEL, LEVEL_NOTE } from "@/lib/constants";
+import { FIELD_LABEL, FIELD_TONE, LEVEL_LABEL, LEVEL_NOTE, type Level } from "@/lib/constants";
 import { rupiah } from "@/lib/format";
 import type { buildMarhalahMap } from "@/lib/queries";
 
 type MapData = ReturnType<typeof buildMarhalahMap>;
 
 /** Peta belajar: tiga jenjang berurutan, tiap jenjang berisi satu kursus per bidang ilmu (atau "Segera hadir"). */
-export function MarhalahPath({ map }: { map: MapData }) {
+export function MarhalahPath({ map, notes = LEVEL_NOTE }: { map: MapData; notes?: Record<Level, string> }) {
   return (
     <div className="lv-grid">
       {map.levels.map((level, i) => (
         <section key={level} className="lv" data-reveal style={{ ["--delay" as string]: `${i * 90}ms` }} aria-label={`Jenjang ${LEVEL_LABEL[level]}`}>
-          <header className="lv-head"><h3>{LEVEL_LABEL[level]}</h3><p>{LEVEL_NOTE[level]}</p></header>
+          <header className="lv-head"><h3>{LEVEL_LABEL[level]}</h3><p>{notes[level]}</p></header>
           <ul className="lv-list">
             {map.fields.map((field) => {
               const c = map.cell(field, level);

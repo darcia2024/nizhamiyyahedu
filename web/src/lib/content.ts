@@ -56,21 +56,26 @@ export const DEFAULTS = {
 export type ContentKey = keyof typeof DEFAULTS;
 
 export async function getContent<K extends ContentKey>(key: K): Promise<(typeof DEFAULTS)[K]> {
+  // Cache hanya menyimpan nilai mentah dari database. Penggabungan dengan DEFAULTS dilakukan di luar cache,
+  // supaya kolom baru (mis. label menu) langsung punya teks bawaan setelah update tanpa menunggu cache kedaluwarsa.
   const load = unstable_cache(
     async () => {
       const row = await db.siteContent.findUnique({ where: { key } });
-      if (!row) return DEFAULTS[key];
+      if (!row) return null;
       try {
-        const v = JSON.parse(row.value);
-        return Array.isArray(DEFAULTS[key]) ? v : { ...(DEFAULTS[key] as object), ...v };
+        return JSON.parse(row.value) as unknown;
       } catch {
-        return DEFAULTS[key];
+        return null;
       }
     },
-    ["content", key],
+    ["content-raw", key],
     { tags: ["content", `content:${key}`, "home"], revalidate: 300 },
   );
-  return (await load()) as (typeof DEFAULTS)[K];
+  const stored = await load();
+  const fallback = DEFAULTS[key];
+  if (stored === null) return fallback;
+  if (Array.isArray(fallback)) return (Array.isArray(stored) ? stored : fallback) as (typeof DEFAULTS)[K];
+  return { ...(fallback as object), ...(stored as object) } as (typeof DEFAULTS)[K];
 }
 
 export async function saveContent(key: ContentKey, value: unknown, by: string) {

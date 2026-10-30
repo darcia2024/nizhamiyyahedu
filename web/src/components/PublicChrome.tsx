@@ -4,14 +4,15 @@ import { Logo } from "@/components/Logo";
 import { HeaderAuth } from "@/components/HeaderAuth";
 import { getContent } from "@/lib/content";
 
-const NAV = [
-  { href: "/kursus", label: "Katalog" },
-  { href: "/#jenjang", label: "Jenjang belajar" },
-  { href: "/#pengajar", label: "Pengajar" },
-  { href: "/#faq", label: "Tanya jawab" },
-];
-
-export function PublicHeader({ landing = false }: { landing?: boolean }) {
+export async function PublicHeader({ landing = false }: { landing?: boolean }) {
+  // Label menu diatur superadmin lewat Konten > Teks website.
+  const copy = await getContent("site.copy");
+  const NAV = [
+    { href: "/kursus", label: copy.navCatalog },
+    { href: "/#jenjang", label: copy.navPath },
+    { href: "/#pengajar", label: copy.navTeacher },
+    { href: "/#faq", label: copy.navFaq },
+  ];
   return (
     <>
     <header className={`pub-header gutter${landing ? " landing-header" : ""}`}>
@@ -50,8 +51,8 @@ export async function PublicFooter() {
           <nav aria-label="Belajar">
             <b>Belajar</b>
             <Link href="/kursus">Katalog kursus</Link>
-            <Link href="/#jenjang">Jenjang belajar</Link>
-            <Link href="/#pengajar">Pengajar</Link>
+            <Link href="/#jenjang">{copy.navPath}</Link>
+            <Link href="/#pengajar">{copy.navTeacher}</Link>
             <Link href="/masuk">Masuk</Link>
           </nav>
           <nav aria-label="Informasi">

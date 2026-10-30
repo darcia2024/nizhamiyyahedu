@@ -7,7 +7,7 @@ import { hoursLabel, rupiah } from "@/lib/format";
 import type { CourseCard } from "@/lib/queries";
 
 /** Kartu kursus: thumbnail sampul, ringkasan isi, harga dan satu tombol utama. Tab menyaring per bidang ilmu. */
-export function PlanShowcase({ courses }: { courses: CourseCard[] }) {
+export function PlanShowcase({ courses, includes = "Video pelajaran · Matan & terjemah · Catatan pengajar" }: { courses: CourseCard[]; includes?: string }) {
   const fields = Array.from(new Set(courses.map((c) => c.field)));
   const [active, setActive] = useState<string>("all");
   const shown = active === "all" ? courses : courses.filter((c) => c.field === active);
@@ -40,7 +40,7 @@ export function PlanShowcase({ courses }: { courses: CourseCard[] }) {
                   {c.totalMin > 0 && <span><Clock size={15} aria-hidden="true" /> {hoursLabel(c.totalMin)}</span>}
                 </p>
 
-                <p className="plan-includes">Video pelajaran · Matan &amp; terjemah · Catatan pengajar</p>
+                <p className="plan-includes">{includes}</p>
 
                 <div className="plan-foot">
                   <p className="plan-price"><b>{free ? "Gratis" : rupiah(c.priceRupiah)}</b><small>{free ? "tanpa biaya" : "sekali bayar"}</small></p>
