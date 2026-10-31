@@ -37,6 +37,8 @@ export type CourseCard = {
   lessonCount: number;
   totalMin: number;
   hasFreePreview:boolean;
+  /** Durasi (menit) pertemuan pratinjau gratis pertama; null bila tidak ada atau belum diisi. */
+  previewMin: number | null;
   /** Id kursus isi paket; kosong untuk kursus biasa. */
   bundleOf: string[];
 };
@@ -59,6 +61,7 @@ function toCard(c: Raw): CourseCard {
     lessonCount: c.lessons.length,
     totalMin: c.lessons.reduce((a, l) => a + (l.durationMin ?? 0), 0),
     hasFreePreview:c.lessons.some(l=>l.isFreePreview),
+    previewMin: c.lessons.find((l) => l.isFreePreview)?.durationMin ?? null,
     bundleOf: parseBundle(c.bundleCourseIds),
   };
 }

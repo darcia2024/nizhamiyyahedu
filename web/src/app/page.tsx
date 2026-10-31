@@ -13,6 +13,7 @@ import { socialImage, socialPostUrl } from "@/lib/social";
 import { buildMarhalahMap, getPublishedCourses, getTeachersForHome } from "@/lib/queries";
 import { initials } from "@/lib/format";
 import "@/styles/landing-live.css";
+import "@/styles/lesson-band.css";
 
 export const revalidate = 300;
 
@@ -26,6 +27,8 @@ export default async function HomePage() {
   const map = buildMarhalahMap(courses);
   const featured = courses.slice(0, 6);
   const previewCourse = courses.find((course) => course.hasFreePreview);
+  // Kelas satuan yang punya pertemuan gratis; paket tidak punya pratinjau sendiri.
+  const freeRows = courses.filter((course) => course.hasFreePreview && !course.bundleOf.length);
   const board = posts.slice(0, 3);
   const ticker = copy.tickerItems.split("|").map((s) => s.trim()).filter(Boolean);
   const realTeachers = teachers.filter((t) => !isPlaceholder(t.displayName));
@@ -112,7 +115,29 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="lesson-feature gutter" aria-labelledby="contoh-h"><div className="wrap lesson-panel" data-reveal><div className="lesson-copy"><p className="landing-kicker">{home.bandEyebrow}</p><h2 id="contoh-h">{home.bandTitle}</h2><p>{home.bandText}</p>{previewCourse && <Link className="landing-btn primary" href={`/kursus/${previewCourse.slug}/pratinjau`}>{copy.lessonButton} <ArrowRight size={17} /></Link>}</div><figure className="new-matan-card"><span>{copy.lessonLabel}</span><p className="ar" lang="ar" dir="rtl">{home.bandAr}</p><figcaption>{home.bandCaption}</figcaption></figure></div></section>
+        <section className="lf gutter" aria-labelledby="contoh-h">
+          <div className="wrap lf-grid" data-reveal>
+            <div className="lf-copy">
+              <p className="landing-kicker">{home.bandEyebrow}</p>
+              <h2 id="contoh-h">{home.bandTitle}</h2>
+              <p>{home.bandText}</p>
+              {freeRows.length > 0 && (
+                <ul className="lf-rows" aria-label="Pertemuan yang bisa ditonton gratis">
+                  {freeRows.map((c) => (
+                    <li key={c.id}>
+                      <Link href={`/kursus/${c.slug}/pratinjau`}>
+                        <span className="lf-name">{c.title}</span>
+                        <span className="lf-meta">Pertemuan 1{c.previewMin ? ` · ${c.previewMin} menit` : ""}</span>
+                        <span className="lf-go">{copy.lessonButton} <ArrowRight size={16} aria-hidden="true" /></span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <figure className="lf-matan"><span>{copy.lessonLabel}</span><p className="ar" lang="ar" dir="rtl">{home.bandAr}</p><figcaption>{home.bandCaption}</figcaption></figure>
+          </div>
+        </section>
 
         {realTeachers.length > 0 && <section id="pengajar" className="teacher-section gutter" aria-labelledby="pengajar-h"><div className="wrap"><div className="landing-section-head" data-reveal><p className="landing-kicker">{copy.teacherKicker}</p><h2 id="pengajar-h">{copy.teacherTitle}</h2></div><div className="teachers new-teachers">{realTeachers.map((teacher) => <article key={teacher.id} className="teacher" data-reveal><div className="av" aria-hidden="true">{initials(teacher.displayName)}</div><div><h3>{teacher.displayName}</h3>{teacher.alumni && !isPlaceholder(teacher.alumni) && <p className="small muted">{teacher.alumni}</p>}{teacher.sanad && !isPlaceholder(teacher.sanad) && <p className="small">{teacher.sanad}</p>}{!isPlaceholder(teacher.bio) && <p className="small bio">{teacher.bio}</p>}</div></article>)}</div></div></section>}
 

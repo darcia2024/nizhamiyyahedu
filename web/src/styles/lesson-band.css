@@ -1,0 +1,42 @@
+/* Band "coba dulu" di beranda: kutipan matan di kiri sebagai kertas kitab, daftar pertemuan gratis yang benar-benar ada di kanan.
+   Terang dan krem supaya berirama dengan bagian hijau di atas dan bawahnya. */
+
+.lf { padding-block: 24px 96px }
+.lf-grid {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(36px, 6vw, 80px); align-items: center;
+  padding: clamp(32px, 5vw, 64px); border: 1px solid #e3dcc6; border-radius: 8px; background: #f6f0dc;
+}
+.lf-copy { min-width: 0 }
+.lf-copy .landing-kicker { margin: 0 0 18px }
+.lf-copy h2 { margin: 0; max-width: 13ch; font-family: var(--font-app); font-size: clamp(32px, 4vw, 48px); font-weight: 500; line-height: 1.05; letter-spacing: -.035em; color: #10231c; text-wrap: balance }
+.lf-copy > p { margin: 16px 0 0; max-width: 34em; font-size: 15.5px; line-height: 1.7; color: #4a5a50 }
+
+.lf-rows { list-style: none; margin: 28px 0 0; padding: 0; border-top: 1px solid #d9cfae }
+.lf-rows a {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: center; padding: 15px 4px;
+  border-bottom: 1px solid #d9cfae; color: #10231c; text-decoration: none; transition: background .2s, padding .2s;
+}
+.lf-rows a:hover, .lf-rows a:focus-visible { background: rgba(31, 111, 92, .07); padding-inline: 12px }
+.lf-name { font-size: 16.5px; font-weight: 600; letter-spacing: -.01em }
+.lf-meta { grid-column: 1; font-size: 13.5px; color: #66705f }
+.lf-go { grid-column: 2; grid-row: 1 / span 2; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #1e715c; white-space: nowrap }
+.lf-go svg { transition: transform .2s }
+.lf-rows a:hover .lf-go svg { transform: translateX(3px) }
+
+/* Kutipan matan: selembar kertas kitab. */
+.lf-matan { margin: 0; padding: clamp(26px, 3.4vw, 40px); background: #fffdf7; border-radius: 3px; box-shadow: 0 26px 40px -26px rgba(20, 61, 41, .55), 0 2px 6px rgba(20, 61, 41, .12) }
+.lf-matan > span { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #8a7433 }
+.lf-matan .ar { margin: 18px 0 0; font-family: var(--f-amiri), serif; font-size: clamp(26px, 3vw, 36px); line-height: 1.9; color: #10231c; text-align: right }
+.lf-matan figcaption { margin-top: 18px; padding-top: 16px; border-top: 1px solid #e7e1cd; font-size: 14px; line-height: 1.65; color: #55635a }
+
+@media (max-width: 900px) {
+  .lf-grid { grid-template-columns: 1fr }
+  .lf-copy h2 { max-width: 16ch }
+}
+@media (max-width: 520px) {
+  .lf { padding-bottom: 64px }
+  .lf-grid { padding: 24px 18px }
+  .lf-rows a { grid-template-columns: 1fr }
+  .lf-go { grid-column: 1; grid-row: auto; margin-top: 4px }
+}
+@media (prefers-reduced-motion: reduce) { .lf-rows a, .lf-go svg { transition: none } }
