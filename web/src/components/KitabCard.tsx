@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Check, Play } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import type { CourseCard } from "@/lib/queries";
 import { FIELD_LABEL, LEVEL_LABEL } from "@/lib/constants";
 import { hoursLabel, isPlaceholder, rupiah } from "@/lib/format";
@@ -65,9 +65,6 @@ export function KitabCard({ c, all, wide = false, state, partial = 0, dashboard 
         {bundle && c.description && <p className="kb-desc">{c.description}</p>}
         {bundle && !owned && partial > 0 && <p className="kb-note">{partial} dari {items.length} kelas di paket ini sudah kamu miliki.</p>}
 
-        {c.hasFreePreview && !bundle && !owned && (
-          <Link className="kb-free" href={dashboard ? detailHref : `/kursus/${c.slug}/pratinjau`}><Play size={12} fill="currentColor" aria-hidden="true" /> Tonton pertemuan 1 gratis</Link>
-        )}
 
         <div className="kb-foot">
           {owned ? (

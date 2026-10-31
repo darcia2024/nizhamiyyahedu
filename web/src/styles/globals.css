@@ -563,6 +563,7 @@ a.matan-card:hover { border-color: #1E715C; transform: translateY(-2px) }
 .cert-foot > div { display: flex; flex-direction: column; gap: 3px }
 .cert-foot span { color: #66746c }
 .cert-foot b { font-size: max(13px, 1.4cqw); font-weight: 700 }
+.cert-verify { margin: 1.4cqw 0 0; font-size: max(10px, 1cqw); color: #66746c; letter-spacing: .01em }
 .cert-sign .cert-line { height: 1px; background: #10231c; margin-bottom: 4px }
 @page { size: A4 landscape; margin: 0 }
 @media print {

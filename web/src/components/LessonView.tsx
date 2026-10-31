@@ -13,7 +13,7 @@ import { hoursLabel, initials } from "@/lib/format";
 export type LessonLite = { id: string; title: string; position: number; durationMin: number | null };
 
 export type LessonViewProps = {
-  mode: "student" | "preview" | "guest";
+  mode: "student" | "preview";
   course: { slug: string; title: string; field: string; teacherName: string | null };
   lesson: { id: string; title: string; position: number; durationMin: number | null; videoUrl: string | null; matan: string | null; notesMd: string | null };
   lessons: LessonLite[];
@@ -83,12 +83,6 @@ export function LessonView({ mode, course, lesson, lessons, completed, note = ""
     <div className="cols">
       <div className="center">
         {mode === "preview" && <div className="preview-banner" role="status">Mode pratinjau pengajar. Progres tidak dicatat.</div>}
-        {mode === "guest" && (
-          <div className="alert info-box" role="status" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
-            <span>Ini pelajaran pratinjau gratis. Daftar untuk membuka semua pelajaran.</span>
-            <Link className="btn btn-primary sm" href={`/kursus/${course.slug}`}>Lihat kursus dan daftar</Link>
-          </div>
-        )}
 
         <VideoBox url={lesson.videoUrl} />
 
@@ -167,26 +161,24 @@ export function LessonView({ mode, course, lesson, lessons, completed, note = ""
         </details>
       </div>
 
-      {mode !== "guest" && (
-        <aside className="right syl-desktop" aria-label="Progres dan silabus">
-          {mode === "student" && (
-            <>
-              <h2 style={{ fontWeight: 700 }}>Progres kursus</h2>
-              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <div className="ring" style={{ ["--deg" as string]: `${Math.round(pct * 3.6)}deg`, width: 96, height: 96 }} role="img" aria-label={`${pct} persen selesai`}>
-                  <div style={{ width: 80, height: 80, fontSize: 20, fontWeight: 700 }} className="num"><span>{pct}%</span></div>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  <b style={{ fontSize: 16 }}>{doneCount} dari {lessons.length} selesai</b>
-                  {leftMin > 0 && <span className="small muted">Sisa sekitar {hoursLabel(leftMin).replace("± ", "")} belajar</span>}
-                </div>
+      <aside className="right syl-desktop" aria-label="Progres dan silabus">
+        {mode === "student" && (
+          <>
+            <h2 style={{ fontWeight: 700 }}>Progres kursus</h2>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div className="ring" style={{ ["--deg" as string]: `${Math.round(pct * 3.6)}deg`, width: 96, height: 96 }} role="img" aria-label={`${pct} persen selesai`}>
+                <div style={{ width: 80, height: 80, fontSize: 20, fontWeight: 700 }} className="num"><span>{pct}%</span></div>
               </div>
-            </>
-          )}
-          <div className="sec-hd"><h2 style={{ fontSize: 17 }}>Silabus</h2><span className="small muted">{lessons.length} pelajaran</span></div>
-          {syllabus}
-        </aside>
-      )}
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <b style={{ fontSize: 16 }}>{doneCount} dari {lessons.length} selesai</b>
+                {leftMin > 0 && <span className="small muted">Sisa sekitar {hoursLabel(leftMin).replace("± ", "")} belajar</span>}
+              </div>
+            </div>
+          </>
+        )}
+        <div className="sec-hd"><h2 style={{ fontSize: 17 }}>Silabus</h2><span className="small muted">{lessons.length} pelajaran</span></div>
+        {syllabus}
+      </aside>
     </div>
   );
 }

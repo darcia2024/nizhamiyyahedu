@@ -211,18 +211,9 @@ export async function setLessonFlags(_p: ActionResult, fd: FormData): Promise<Ac
   if (!l) return fail("Pelajaran tidak ditemukan.");
   const course = await db.course.findUnique({ where: { id: courseId }, select: { slug: true } });
   const status = fd.get("status");
-  const preview = fd.get("preview");
   if (status === "PUBLISHED" || status === "DRAFT") {
     if (status === "PUBLISHED" && !l.title) return fail("Judul pelajaran kosong.");
     await db.lesson.update({ where: { id: lessonId }, data: { status } });
-  }
-  if (preview === "1") {
-    await db.$transaction([
-      db.lesson.updateMany({ where: { courseId }, data: { isFreePreview: false } }),
-      db.lesson.update({ where: { id: lessonId }, data: { isFreePreview: true } }),
-    ]);
-  } else if (preview === "0") {
-    await db.lesson.update({ where: { id: lessonId }, data: { isFreePreview: false } });
   }
   refreshCourse(course?.slug);
   return { ok: true };

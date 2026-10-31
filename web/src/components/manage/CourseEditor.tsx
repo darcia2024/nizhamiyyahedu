@@ -100,7 +100,7 @@ export async function CourseEditor({ courseId, base, isAdmin, teachers }: { cour
           ) : (
             <div className="table-box">
               <table className="t">
-                <thead><tr><th>No</th><th>Judul</th><th>Status</th><th>Pratinjau gratis</th><th><span className="sr-only">Aksi</span></th></tr></thead>
+                <thead><tr><th>No</th><th>Judul</th><th>Status</th><th><span className="sr-only">Aksi</span></th></tr></thead>
                 <tbody>
                   {course.lessons.map((l, i) => (
                     <tr key={l.id}>
@@ -109,10 +109,6 @@ export async function CourseEditor({ courseId, base, isAdmin, teachers }: { cour
                       <td>
                         <InlineAction action={setLessonFlags} fields={{ courseId: course.id, lessonId: l.id, status: l.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED" }}
                           label={<span className={`badge ${l.status === "PUBLISHED" ? "ok" : "wait"}`}>{l.status === "PUBLISHED" ? "Tayang" : "Draf"}</span>} className="btn btn-ghost sm" />
-                      </td>
-                      <td>
-                        <InlineAction action={setLessonFlags} fields={{ courseId: course.id, lessonId: l.id, preview: l.isFreePreview ? "0" : "1" }}
-                          label={l.isFreePreview ? "Ya (klik untuk cabut)" : "Jadikan pratinjau"} className="btn btn-ghost sm" />
                       </td>
                       <td>
                         <div className="row-actions" style={{ alignItems: "flex-start" }}>

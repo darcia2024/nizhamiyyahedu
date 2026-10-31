@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { withBase } from "@/lib/base-path";
-import { ArrowRight, CirclePlay, Compass, MapPin, Search } from "lucide-react";
+import { ArrowRight, Compass, MapPin, Search } from "lucide-react";
 import { PlanShowcase } from "@/components/PlanShowcase";
 import { StepsShowcase } from "@/components/StepsShowcase";
 import { SocialGallery } from "@/components/SocialGallery";
@@ -26,9 +26,6 @@ export default async function HomePage() {
   ]);
   const map = buildMarhalahMap(courses);
   const featured = courses.slice(0, 6);
-  const previewCourse = courses.find((course) => course.hasFreePreview);
-  // Kelas satuan yang punya pertemuan gratis; paket tidak punya pratinjau sendiri.
-  const freeRows = courses.filter((course) => course.hasFreePreview && !course.bundleOf.length);
   const board = posts.slice(0, 3);
   const ticker = copy.tickerItems.split("|").map((s) => s.trim()).filter(Boolean);
   const realTeachers = teachers.filter((t) => !isPlaceholder(t.displayName));
@@ -45,7 +42,7 @@ export default async function HomePage() {
             <p className="lv-lead">{home.sub}</p>
             <div className="landing-actions">
               <Link className="landing-btn primary" href="/kursus">{copy.heroPrimary} <ArrowRight size={17} /></Link>
-              {previewCourse ? <Link className="landing-btn secondary" href={`/kursus/${previewCourse.slug}/pratinjau`}><CirclePlay size={17} /> {copy.heroPreview}</Link> : <Link className="landing-btn secondary" href="/#jenjang"><Compass size={17} /> {copy.heroPath}</Link>}
+              <Link className="landing-btn secondary" href="/#jenjang"><Compass size={17} /> {copy.heroPath}</Link>
             </div>
             <p className="lv-note">{home.note}</p>
           </div>
@@ -121,19 +118,6 @@ export default async function HomePage() {
               <p className="landing-kicker">{home.bandEyebrow}</p>
               <h2 id="contoh-h">{home.bandTitle}</h2>
               <p>{home.bandText}</p>
-              {freeRows.length > 0 && (
-                <ul className="lf-rows" aria-label="Pertemuan yang bisa ditonton gratis">
-                  {freeRows.map((c) => (
-                    <li key={c.id}>
-                      <Link href={`/kursus/${c.slug}/pratinjau`}>
-                        <span className="lf-name">{c.title}</span>
-                        <span className="lf-meta">Pertemuan 1{c.previewMin ? ` · ${c.previewMin} menit` : ""}</span>
-                        <span className="lf-go">{copy.lessonButton} <ArrowRight size={16} aria-hidden="true" /></span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
             </div>
             <figure className="lf-matan"><span>{copy.lessonLabel}</span><p className="ar" lang="ar" dir="rtl">{home.bandAr}</p><figcaption>{home.bandCaption}</figcaption></figure>
           </div>
@@ -142,7 +126,7 @@ export default async function HomePage() {
         {realTeachers.length > 0 && <section id="pengajar" className="teacher-section gutter" aria-labelledby="pengajar-h"><div className="wrap"><div className="landing-section-head" data-reveal><p className="landing-kicker">{copy.teacherKicker}</p><h2 id="pengajar-h">{copy.teacherTitle}</h2></div><div className="teachers new-teachers">{realTeachers.map((teacher) => <article key={teacher.id} className="teacher" data-reveal><div className="av" aria-hidden="true">{initials(teacher.displayName)}</div><div><h3>{teacher.displayName}</h3>{teacher.alumni && !isPlaceholder(teacher.alumni) && <p className="small muted">{teacher.alumni}</p>}{teacher.sanad && !isPlaceholder(teacher.sanad) && <p className="small">{teacher.sanad}</p>}{!isPlaceholder(teacher.bio) && <p className="small bio">{teacher.bio}</p>}</div></article>)}</div></div></section>}
 
         <section id="faq" className="faq-section gutter" aria-labelledby="faq-h"><div className="wrap faq-layout"><div data-reveal><p className="landing-kicker">{copy.faqKicker}</p><h2 id="faq-h">{copy.faqTitle}</h2><p>{copy.faqText}</p></div><div className="faq" data-reveal>{faq.map((item, index) => <details key={item.q} open={index === 0}><summary>{item.q}<span className="plus" aria-hidden="true">+</span></summary><p>{item.a}</p></details>)}</div></div></section>
-        <section className="cta-band gutter" aria-labelledby="cta-h"><div className="wrap cta-inner" data-reveal><h2 id="cta-h">{copy.ctaTitle}<br /><span>{copy.ctaAccent}</span></h2><p>{copy.ctaText}</p><div className="landing-actions"><Link className="landing-btn primary" href="/kursus">{copy.ctaButton} <ArrowRight size={17} /></Link>{previewCourse && <Link className="landing-btn secondary" href={`/kursus/${previewCourse.slug}/pratinjau`}><CirclePlay size={17} /> {copy.heroPreview}</Link>}</div></div></section>
+        <section className="cta-band gutter" aria-labelledby="cta-h"><div className="wrap cta-inner" data-reveal><h2 id="cta-h">{copy.ctaTitle}<br /><span>{copy.ctaAccent}</span></h2><p>{copy.ctaText}</p><div className="landing-actions"><Link className="landing-btn primary" href="/kursus">{copy.ctaButton} <ArrowRight size={17} /></Link></div></div></section>
       </section>
     </PublicShell>
   );

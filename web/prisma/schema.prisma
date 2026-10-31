@@ -29,6 +29,7 @@ model User {
   orders         Order[]
   progress       LessonProgress[]
   lessonNotes    LessonNote[]
+  certificates   Certificate[]
   notes          Note[]
 }
 
@@ -66,10 +67,11 @@ model Course {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
-  lessons     Lesson[]
-  enrollments Enrollment[]
-  orders      Order[]
-  userNotes   Note[]
+  lessons      Lesson[]
+  enrollments  Enrollment[]
+  orders       Order[]
+  userNotes    Note[]
+  certificates Certificate[]
 
   @@index([status, archivedAt])
 }
@@ -230,4 +232,26 @@ model RateLimit {
   key     String   @id
   count   Int
   resetAt DateTime
+}
+
+/// Sertifikat penyelesaian kelas: terbit sekali per siswa per kelas saat semua pelajaran selesai.
+/// Nama dan judul disalin (snapshot) supaya sertifikat tetap sama walau profil atau judul kelas berubah.
+model Certificate {
+  id            String    @id @default(cuid())
+  code          String    @unique // mis. NZ-2026-3F9A12CC, dicetak di sertifikat dan dipakai di tautan verifikasi
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId      String
+  course        Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  holderName    String
+  courseTitle   String
+  courseTitleAr String?
+  teacherName   String?
+  lessonCount   Int
+  totalMin      Int       @default(0)
+  finishedAt    DateTime
+  issuedAt      DateTime  @default(now())
+  revokedAt     DateTime? // dicabut admin bila perlu; halaman verifikasi lalu menolak
+
+  @@unique([userId, courseId])
 }

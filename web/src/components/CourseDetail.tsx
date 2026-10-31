@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Lock, PlayCircle } from "lucide-react";
+import { Lock } from "lucide-react";
 import { Markdown } from "@/components/Markdown";
-import { PreviewDialog } from "@/components/PreviewDialog";
 import { Thumb } from "@/components/Thumb";
 import { TrackCourseView } from "@/components/TrackCourseView";
 import { BuyPanel, type BuyState } from "@/app/kursus/[slug]/BuyPanel";
@@ -13,7 +12,6 @@ import { FIELD_LABEL, LEVEL_LABEL, type Field, type Level } from "@/lib/constant
 import { dateTimeWib, hoursLabel, isPlaceholder, rupiah } from "@/lib/format";
 import { getContent } from "@/lib/content";
 import { parseBundle, unlockedCourseIds } from "@/lib/bundle";
-import { parseVideoUrl, type VideoSource } from "@/lib/video";
 import "@/styles/kursus-detail.css";
 
 // "Ust. Afrozul Mukhoiyirin, Lc., Dipl." -> "Ust. Afrozul Mukhoiyirin" untuk paket yang memuat beberapa pengajar.
@@ -21,9 +19,9 @@ const shortName = (n: string) => n.split(",")[0].trim();
 
 /**
  * Isi halaman kelas, dipakai di dua tempat:
- * - "public": halaman /kursus/[slug] untuk pengunjung (pratinjau membuka halaman sendiri).
- * - "dashboard": di dalam dashboard (pop-up atau halaman penuh). Semuanya tetap di dashboard: tautan ke katalog dashboard,
- *   pratinjau gratis diputar di pop-up, dan pembayaran lewat pop-up.
+ * - "public": halaman /kursus/[slug] untuk pengunjung.
+ * - "dashboard": di dalam dashboard (pop-up atau halaman penuh). Semuanya tetap di dashboard: tautan ke katalog dashboard
+ *   dan pembayaran lewat pop-up. Semua pelajaran berbayar, jadi silabus selalu bergembok bagi yang belum punya.
  */
 export async function CourseDetail({ slug, variant, lanjut = false, managerPreview = false }: {
   slug: string;
@@ -61,19 +59,7 @@ export async function CourseDetail({ slug, variant, lanjut = false, managerPrevi
   const isFree = course.priceRupiah === 0;
   // Paket yang punya thumbnail sendiri memakainya; kalau belum, thumbnail kelas-kelas isinya ditumpuk.
   const thumbs = course.coverUrl ? [course] : (isBundle ? bundle : []).filter((b) => b.coverUrl);
-  const hasPreview = !isBundle && course.lessons.some((l) => l.isFreePreview);
   const contact = await getContent("contact.main");
-
-  // Di dashboard pratinjau diputar di pop-up, jadi sumber videonya disiapkan di sini (hanya pelajaran gratis).
-  const previews = new Map<string, { title: string; src: VideoSource }>();
-  if (inDash && hasPreview) {
-    const free = await db.lesson.findMany({ where: { courseId: course.id, isFreePreview: true, status: "PUBLISHED" }, select: { id: true, title: true, videoUrl: true } });
-    for (const l of free) {
-      const src = parseVideoUrl(l.videoUrl);
-      if (src) previews.set(l.id, { title: `${course.title} · ${l.title}`, src });
-    }
-  }
-  const firstPreview = course.lessons.map((l) => previews.get(l.id)).find(Boolean);
 
   const bundleHref = (s: string) => (inDash ? `/dashboard/katalog/${s}` : `/kursus/${s}`);
 
@@ -145,8 +131,6 @@ export async function CourseDetail({ slug, variant, lanjut = false, managerPrevi
                 </p>
               )}
               <p className="kd-facts">{isBundle ? `${bundle.length} kelas · ` : ""}{lessonCount} pertemuan{totalMin ? ` · ${hoursLabel(totalMin)?.replace("± ", "±")} rekaman` : ""}</p>
-              {hasPreview && !inDash && <Link className="kd-hero-link" href={`/kursus/${course.slug}/pratinjau`}><PlayCircle size={16} aria-hidden="true" /> Tonton pertemuan 1 gratis</Link>}
-              {firstPreview && <PreviewDialog className="kd-hero-link" label="Tonton pertemuan 1 gratis" title={firstPreview.title} src={firstPreview.src} />}
             </div>
 
             <div className="kd-media" aria-hidden="true">
@@ -198,19 +182,12 @@ export async function CourseDetail({ slug, variant, lanjut = false, managerPrevi
                 {course.lessons.length ? (
                   <ol className="kd-syl">
                     {course.lessons.map((l) => {
-                      const preview = previews.get(l.id);
                       return (
                         <li key={l.id}>
                           <span className="no">{String(l.position).padStart(2, "0")}</span>
                           <span className="tt">{l.title}</span>
                           <span className="kd-meta">
-                            {l.isFreePreview && inDash && preview ? (
-                              <PreviewDialog className="free" label="Tonton gratis" title={preview.title} src={preview.src} />
-                            ) : l.isFreePreview && !inDash ? (
-                              <Link className="free" href={`/kursus/${course.slug}/pratinjau`}><PlayCircle size={14} aria-hidden="true" /> Tonton gratis</Link>
-                            ) : (
-                              <Lock size={14} aria-label="Terkunci" />
-                            )}
+                            <Lock size={14} aria-label="Terkunci" />
                             {l.durationMin ? <span className="num">{l.durationMin} mnt</span> : null}
                           </span>
                         </li>
