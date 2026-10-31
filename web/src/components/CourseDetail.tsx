@@ -125,7 +125,7 @@ export async function CourseDetail({ slug, variant, lanjut = false, managerPrevi
     <div className={`kd-root${inDash ? " in-dash" : ""}`}>
       {visible && <TrackCourseView courseId={course.id} />}
       {!inDash && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />}
-      <section className="kd-hero gutter">
+      <section className={`kd-hero gutter${thumbs.length > 1 ? " two" : ""}`}>
         <div className="wrap">
           {!inDash && (
             <nav className="breadcrumb" aria-label="Jejak halaman">
@@ -150,7 +150,7 @@ export async function CourseDetail({ slug, variant, lanjut = false, managerPrevi
 
             <div className="kd-media" aria-hidden="true">
               {thumbs.length > 0
-                ? <span className={`kd-thumbs${thumbs.length > 1 ? " two" : ""}`}>{thumbs.slice(0, 2).map((b, i) => <Thumb key={b.id} className="kd-thumb" src={b.coverUrl as string} priority={i === 0} sizes={thumbs.length > 1 ? "(max-width: 860px) 70vw, 360px" : "(max-width: 860px) 92vw, 560px"} />)}</span>
+                ? <span className={`kd-thumbs${thumbs.length > 1 ? " two" : ""}`}>{thumbs.slice(0, 2).map((b, i) => <Thumb key={b.id} className="kd-thumb" src={b.coverUrl as string} priority={i === 0} sizes={thumbs.length > 1 ? "(max-width: 860px) 100vw, 440px" : "(max-width: 860px) 100vw, 920px"} />)}</span>
                 : course.titleAr && <p className="kd-ar" lang="ar" dir="rtl">{course.titleAr}</p>}
             </div>
           </div>

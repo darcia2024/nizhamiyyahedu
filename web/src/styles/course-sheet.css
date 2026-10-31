@@ -19,7 +19,7 @@
 
 /* Isi kelas di dalam dashboard: tanpa kerangka situs, hero tanpa jarak atas. */
 .kd-root.in-dash .kd-hero { border-radius: 12px 12px 0 0 }
-.kd-root.in-dash .kd-hero-grid { min-height: 440px }
+.kd-root.in-dash .kd-hero-grid { min-height: var(--kd-h) }
 .kd-root.in-dash .kd-copy { padding-block: 48px 32px }
 .kd-root.in-dash .kd-layout { padding-block: 0 40px; gap: 40px }
 .kd-root.in-dash .buy-card { top: 12px }
