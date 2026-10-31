@@ -1,17 +1,8 @@
 import { createHash } from "node:crypto";
 import { normalizePhone } from "@/lib/phone";
 
-export const NOTE_MAX = 5000;
-
-/** Rapikan catatan: NFC, buang karakter kontrol (kecuali baris baru dan tab), potong spasi di ujung. */
-export function normalizeNote(raw: string): string {
-  return (raw ?? "")
-    .normalize("NFC")
-    // eslint-disable-next-line no-control-regex
-    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
-    .replace(/\r\n?/g, "\n")
-    .trim();
-}
+// Aturan teks catatan dipindah ke note-text.ts (murni, tanpa modul server) dan diekspor ulang di sini supaya impor lama tetap jalan.
+export { NOTE_MAX, normalizeNote } from "@/lib/note-text";
 
 const WIB_OFFSET_MS = 7 * 3600 * 1000;
 

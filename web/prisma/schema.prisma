@@ -16,19 +16,20 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  name       String?
-  image      String?
-  role       String   @default("STUDENT") // STUDENT | TEACHER | ADMIN
-  whatsapp   String?
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  image     String?
+  role      String   @default("STUDENT") // STUDENT | TEACHER | ADMIN
+  whatsapp  String?
+  createdAt DateTime @default(now())
 
   teacherProfile TeacherProfile?
   enrollments    Enrollment[]
   orders         Order[]
   progress       LessonProgress[]
   lessonNotes    LessonNote[]
+  notes          Note[]
 }
 
 model TeacherProfile {
@@ -46,40 +47,41 @@ model TeacherProfile {
 }
 
 model Course {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  titleAr     String?
-  description String   @default("")
-  field       String   // NAHWU | SHARAF | FIQIH | AQIDAH | HADITS | TAFSIR | LAINNYA
-  level       String   // ULA | WUSTHA | ULYA
-  status      String   @default("DRAFT") // DRAFT | PUBLISHED
-  priceRupiah Int      @default(0)
-  sortOrder   Int      @default(0)
+  id              String          @id @default(cuid())
+  slug            String          @unique
+  title           String
+  titleAr         String?
+  description     String          @default("")
+  field           String // NAHWU | SHARAF | FIQIH | AQIDAH | HADITS | TAFSIR | LAINNYA
+  level           String // ULA | WUSTHA | ULYA
+  status          String          @default("DRAFT") // DRAFT | PUBLISHED
+  priceRupiah     Int             @default(0)
+  sortOrder       Int             @default(0)
   bundleCourseIds String? // JSON: [courseId]; terisi = paket bundling yang membuka kursus-kursus ini
-  coverUrl    String? // foto kitab untuk sampul kartu
-  archivedAt  DateTime?
-  teacherId   String?
-  teacher     TeacherProfile? @relation(fields: [teacherId], references: [id])
-  createdById String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  coverUrl        String? // foto kitab untuk sampul kartu
+  archivedAt      DateTime?
+  teacherId       String?
+  teacher         TeacherProfile? @relation(fields: [teacherId], references: [id])
+  createdById     String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   lessons     Lesson[]
   enrollments Enrollment[]
   orders      Order[]
+  userNotes   Note[]
 
   @@index([status, archivedAt])
 }
 
 model Lesson {
-  id            String  @id @default(cuid())
+  id            String   @id @default(cuid())
   courseId      String
-  course        Course  @relation(fields: [courseId], references: [id])
+  course        Course   @relation(fields: [courseId], references: [id])
   title         String
   position      Int
-  status        String  @default("DRAFT") // DRAFT | PUBLISHED
-  isFreePreview Boolean @default(false)
+  status        String   @default("DRAFT") // DRAFT | PUBLISHED
+  isFreePreview Boolean  @default(false)
   durationMin   Int?
   videoUrl      String?
   matan         String? // JSON: [{ ar: string, id: string }]
@@ -99,7 +101,7 @@ model Enrollment {
   courseId  String
   course    Course   @relation(fields: [courseId], references: [id])
   status    String   @default("ACTIVE") // ACTIVE | REVOKED
-  source    String   @default("FREE")   // FREE | PAID | MANUAL
+  source    String   @default("FREE") // FREE | PAID | MANUAL
   createdAt DateTime @default(now())
 
   @@unique([userId, courseId])
@@ -107,11 +109,11 @@ model Enrollment {
 
 model LessonProgress {
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
   lessonId     String
-  lesson       Lesson   @relation(fields: [lessonId], references: [id])
+  lesson       Lesson    @relation(fields: [lessonId], references: [id])
   completedAt  DateTime?
-  lastOpenedAt DateTime @default(now())
+  lastOpenedAt DateTime  @default(now())
 
   @@id([userId, lessonId])
 }
@@ -123,27 +125,45 @@ model LessonNote {
   lessonId  String
   lesson    Lesson   @relation(fields: [lessonId], references: [id])
   body      String
+  pinned    Boolean  @default(false)
   updatedAt DateTime @updatedAt
 
   @@id([userId, lessonId])
   @@index([userId, updatedAt])
 }
 
+/// Catatan bebas milik pengguna (aplikasi catatan di dashboard). Catatan per pelajaran tetap di LessonNote;
+/// keduanya tampil bersama di satu daftar. courseId opsional untuk mengelompokkan per kelas.
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String   @default("")
+  body      String   @default("")
+  pinned    Boolean  @default(false)
+  courseId  String?
+  course    Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, pinned, updatedAt])
+}
+
 model Order {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  courseId      String
-  course        Course   @relation(fields: [courseId], references: [id])
-  amount        Int
-  status        String   @default("PENDING") // PENDING | PAID | FAILED | EXPIRED | CANCELLED
-  whatsapp      String
-  mayarId       String?
-  payUrl        String?
-  expiresAt     DateTime
-  paidAt        DateTime?
-  note          String?
-  createdAt     DateTime @default(now())
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  courseId  String
+  course    Course    @relation(fields: [courseId], references: [id])
+  amount    Int
+  status    String    @default("PENDING") // PENDING | PAID | FAILED | EXPIRED | CANCELLED
+  whatsapp  String
+  mayarId   String?
+  payUrl    String?
+  expiresAt DateTime
+  paidAt    DateTime?
+  note      String?
+  createdAt DateTime  @default(now())
 
   @@index([userId, courseId, status])
   @@index([status, expiresAt])
@@ -167,7 +187,7 @@ model AuditLog {
 
 model SiteContent {
   key       String   @id
-  value     String   // JSON
+  value     String // JSON
   updatedAt DateTime @updatedAt
   updatedBy String?
 }
@@ -177,7 +197,7 @@ model SiteContentVersion {
   id        String   @id @default(cuid())
   key       String
   version   Int
-  value     String   // JSON
+  value     String // JSON
   createdAt DateTime @default(now())
   createdBy String?
 
@@ -198,7 +218,7 @@ model LegalDocument {
 
 model Event {
   id        String   @id @default(cuid())
-  name      String   // course_view | checkout_start | order_paid
+  name      String // course_view | checkout_start | order_paid
   courseId  String?
   userId    String?
   createdAt DateTime @default(now())
