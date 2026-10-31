@@ -2,8 +2,14 @@ import {z} from "zod";
 import {db} from "@/lib/db";
 import {rateLimit} from "@/lib/rate-limit";
 const schema=z.object({courseId:z.string().min(1).max(80)});
+/** Asal yang sah: alamat server ini dan alamat publik situs (APP_URL), karena rewrite Vercel membuat keduanya berbeda. */
+function allowedOrigins(req:Request){
+  const set=new Set([new URL(req.url).origin]);
+  try{if(process.env.APP_URL)set.add(new URL(process.env.APP_URL).origin);}catch{/* APP_URL tidak valid: abaikan */}
+  return set;
+}
 export async function POST(req:Request){
-  if(req.headers.get("origin")!==new URL(req.url).origin)return new Response(null,{status:403});
+  if(!allowedOrigins(req).has(req.headers.get("origin")??""))return new Response(null,{status:403});
   const ip=(req.headers.get("x-forwarded-for")??"unknown").split(",")[0].trim();
   if(!await rateLimit(`view:${ip}`,30,60))return new Response(null,{status:429});
   let body;try{body=schema.safeParse(await req.json());}catch{return new Response(null,{status:400});}
