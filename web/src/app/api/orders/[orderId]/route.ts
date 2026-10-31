@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth-guard";
 import { rateLimit } from "@/lib/rate-limit";
 import { effectiveStatus, syncOrderWithMayar } from "@/lib/orders";
+import { probeEmbeddable } from "@/lib/pay-probe";
 
 export const dynamic = "force-dynamic";
 
@@ -29,5 +30,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ orderId:
       console.error("[orders] gagal sinkron ke Mayar", e);
     }
   }
-  return NextResponse.json({ status: effectiveStatus(order), slug: order.course.slug }, { headers: noStore });
+  // ?probe=1: periksa apakah halaman bayar Mayar boleh di-iframe (sekali saat pop-up dibuka).
+  const wantsProbe = new URL(req.url).searchParams.get("probe") === "1";
+  const embed = wantsProbe && order.payUrl && order.status === "PENDING" && (await rateLimit(`probe:${user.id}`, 20, 60))
+    ? await probeEmbeddable(order.payUrl, (process.env.APP_URL ?? new URL(req.url).origin).replace(/\/$/, ""))
+    : undefined;
+  return NextResponse.json({ status: effectiveStatus(order), slug: order.course.slug, ...(embed ? { embed } : {}) }, { headers: noStore });
 }

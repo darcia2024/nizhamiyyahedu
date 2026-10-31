@@ -47,7 +47,7 @@ export const COURSES: CourseSeed[] = [
   {
     slug: "dauroh-aqliyat", title: "Dauroh Aqliyat", titleAr: "الدورة العقلية", field: "AQLIYAT", price: 100000, sort: 0,
     desc: "Paket Daurah Aqliyah: kelas Mantiq (Matan Isaghuji) dan Ushul Fiqh (Matan Waraqat) sekaligus. Dua ilmu alat yang saling melengkapi untuk memahami cara ulama menetapkan hukum.",
-    sessions: 0, bundle: ["dauroh-ushul-fiqh", "dauroh-mantiq"],
+    sessions: 0, bundle: ["dauroh-ushul-fiqh", "dauroh-mantiq"], image: "/kelas/thumb-aqliyat.jpg",
   },
 ];
 

@@ -38,7 +38,8 @@ export function KitabCard({ c, all, wide = false, state, partial = 0, dashboard 
   const people = (bundle ? items : [c]).filter((i) => !isPlaceholder(i.teacherName)).map((i) => i.teacherName as string);
   const hours = hoursLabel(c.totalMin)?.replace("± ", "±");
   const free = c.priceRupiah === 0;
-  const thumbs = (bundle ? items : [c]).filter((i) => i.image).slice(0, 2);
+  // Paket yang punya thumbnail sendiri memakainya; kalau belum, thumbnail kelas-kelas isinya ditumpuk.
+  const thumbs = c.image ? [c] : bundle ? items.filter((i) => i.image).slice(0, 2) : [];
   const owned = state === "owned";
   // Yang sudah dimiliki dibuka di ruang belajar; selebihnya ke detail kelas (tempat bayar). Di dashboard detail tampil
   // sebagai pop-up di atas katalog, bukan pindah ke halaman publik.

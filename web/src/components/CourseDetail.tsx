@@ -59,7 +59,8 @@ export async function CourseDetail({ slug, variant, lanjut = false, managerPrevi
     .filter((t): t is NonNullable<typeof t> => !!t && !isPlaceholder(t.displayName))
     .filter((t, i, all) => all.findIndex((x) => x.id === t.id) === i);
   const isFree = course.priceRupiah === 0;
-  const thumbs = (isBundle ? bundle : [course]).filter((b) => b.coverUrl);
+  // Paket yang punya thumbnail sendiri memakainya; kalau belum, thumbnail kelas-kelas isinya ditumpuk.
+  const thumbs = course.coverUrl ? [course] : (isBundle ? bundle : []).filter((b) => b.coverUrl);
   const hasPreview = !isBundle && course.lessons.some((l) => l.isFreePreview);
   const contact = await getContent("contact.main");
 

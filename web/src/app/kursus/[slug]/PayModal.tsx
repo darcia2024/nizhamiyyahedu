@@ -28,6 +28,8 @@ export function PayModal({ orderId, payUrl, title, priceLabel, learnHref, onClos
   const router = useRouter();
   const [status, setStatus] = useState<Status>("PENDING");
   const [loaded, setLoaded] = useState(false);
+  // blocked: iframe tidak bisa dipakai (dilarang Mayar, atau aturan keamanan halaman ini masih versi lama); refresh: sarankan muat ulang.
+  const [embed, setEmbed] = useState<{ blocked: boolean; reason: string | null; refresh?: boolean }>({ blocked: false, reason: null });
 
   useEffect(() => {
     const d = ref.current;
@@ -52,6 +54,36 @@ export function PayModal({ orderId, payUrl, title, priceLabel, learnHref, onClos
     return () => { stop = true; clearInterval(t); };
   }, [orderId, status]);
 
+  // Server memeriksa dulu apakah Mayar mengizinkan halamannya di-iframe; kalau tidak, langsung pakai jendela cadangan.
+  useEffect(() => {
+    let off = false;
+    fetch(withBase(`/api/orders/${orderId}?probe=1`), { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j: { embed?: { embeddable?: boolean; reason?: string | null } } | null) => {
+        if (!off && j?.embed && j.embed.embeddable === false) setEmbed({ blocked: true, reason: j.embed.reason ?? "Halaman pembayaran tidak bisa ditampilkan di sini." });
+      })
+      .catch(() => undefined);
+    return () => { off = true; };
+  }, [orderId]);
+
+  // Browser melaporkan bila aturan keamanan halaman ini sendiri yang memblokir iframe (halaman dimuat sebelum aturan baru berlaku).
+  useEffect(() => {
+    const on = (e: SecurityPolicyViolationEvent) => {
+      if (!/^(frame-src|child-src)/.test(e.violatedDirective)) return;
+      setEmbed({ blocked: true, refresh: true, reason: "Halaman ini belum memuat aturan keamanan terbaru. Muat ulang halaman (Ctrl+Shift+R), lalu klik bayar lagi." });
+    };
+    document.addEventListener("securitypolicyviolation", on);
+    return () => document.removeEventListener("securitypolicyviolation", on);
+  }, []);
+
+  /** Jendela pembayaran kecil di tengah layar; pop-up ini tetap terbuka dan menunggu lunas. */
+  const openWindow = () => {
+    const w = 480, h = 780;
+    const left = Math.max(0, Math.round(window.screenX + (window.outerWidth - w) / 2));
+    const top = Math.max(0, Math.round(window.screenY + (window.outerHeight - h) / 2));
+    const win = window.open(payUrl, "mayar-pay", `popup=yes,width=${w},height=${h},left=${left},top=${top}`);
+    if (!win) window.open(payUrl, "_blank", "noopener,noreferrer"); // jendela pop-up diblokir browser: buka sebagai tab biasa
+  };
   // Halaman balasan Mayar (di dalam iframe) memberi tahu induknya begitu statusnya berubah, jadi tidak perlu menunggu putaran berikutnya.
   useEffect(() => {
     const on = (e: MessageEvent) => {
@@ -78,13 +110,24 @@ export function PayModal({ orderId, payUrl, title, priceLabel, learnHref, onClos
 
       {status === "PENDING" && (
         <>
-          <div className="pay-frame">
-            {!loaded && <p className="pay-loading" role="status">Memuat halaman pembayaran…</p>}
-            <iframe title="Halaman pembayaran" src={payUrl} onLoad={() => setLoaded(true)} allow="payment; clipboard-write" referrerPolicy="strict-origin-when-cross-origin" />
-          </div>
+          {embed.blocked ? (
+            <div className="pay-fallback" data-testid="pay-fallback">
+              <TriangleAlert size={36} aria-hidden="true" className="bad" />
+              <h3>Lanjutkan di jendela pembayaran</h3>
+              <p>{embed.reason}</p>
+              <button type="button" className="btn btn-primary" onClick={openWindow}>Buka jendela pembayaran <ExternalLink size={15} aria-hidden="true" /></button>
+              {embed.refresh && <button type="button" className="btn btn-ghost" onClick={() => window.location.reload()}>Muat ulang halaman</button>}
+              <p className="small">Pop-up ini tetap di sini dan otomatis berganti begitu pembayaranmu lunas.</p>
+            </div>
+          ) : (
+            <div className="pay-frame">
+              {!loaded && <p className="pay-loading" role="status">Memuat halaman pembayaran…</p>}
+              <iframe title="Halaman pembayaran" src={payUrl} onLoad={() => setLoaded(true)} allow="payment; clipboard-write" referrerPolicy="strict-origin-when-cross-origin" />
+            </div>
+          )}
           <footer className="pay-foot">
             <span className="pay-wait" role="status"><i aria-hidden="true" /> Menunggu pembayaran. Kelas terbuka otomatis setelah lunas.</span>
-            <a href={payUrl} target="_blank" rel="noopener noreferrer">Tidak tampil, atau mau bayar di aplikasi e-wallet? Buka di tab baru <ExternalLink size={13} aria-hidden="true" /></a>
+            {!embed.blocked && <button type="button" className="pay-link" onClick={openWindow}>Tidak tampil, atau mau bayar di aplikasi e-wallet? Buka jendela pembayaran <ExternalLink size={13} aria-hidden="true" /></button>}
           </footer>
         </>
       )}

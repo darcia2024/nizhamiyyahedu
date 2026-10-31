@@ -117,3 +117,13 @@
   .kb-book-ar { font-size: 34px }
 }
 @media (prefers-reduced-motion: reduce) { .kb-card, .kb-kitab, .kb-go svg { transition: none } .kb-card:hover, .kb-card:hover .kb-kitab { transform: none } }
+
+/* Paket dengan thumbnail sendiri: satu gambar 16:9 penuh tanpa terpotong. Kartu lebar jadi baris (gambar kiri) di layar lebar,
+   dan bertumpuk (gambar di atas) di layar sempit serta di dashboard yang berbagi lebar dengan sidebar. */
+.kb-card.wide .kb-media.thumb:not(.thumb-stack) { width: 52%; aspect-ratio: 16 / 9; height: auto; min-height: 0; align-self: stretch }
+@media (max-width: 1060px) {
+  .kb-card.wide:has(> .kb-media.thumb:not(.thumb-stack)) { flex-direction: column }
+  .kb-card.wide .kb-media.thumb:not(.thumb-stack) { width: auto; align-self: auto; height: auto }
+}
+.kb-grid.compact .kb-card.wide:has(> .kb-media.thumb:not(.thumb-stack)) { flex-direction: column }
+.kb-grid.compact .kb-card.wide .kb-media.thumb:not(.thumb-stack) { width: auto; align-self: auto; height: auto }
