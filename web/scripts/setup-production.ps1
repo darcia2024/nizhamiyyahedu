@@ -2,10 +2,14 @@
 # Jalankan SENDIRI dari folder web:  .\scripts\setup-production.ps1
 # Nilai yang kamu ketik tidak tampil di layar dan langsung dikirim ke Vercel (environment Production).
 # Kosongkan isian (langsung Enter) untuk melewati / mempertahankan nilai yang sudah ada.
+# Isi ulang sebagian saja:  .\scripts\setup-production.ps1 -Only DIRECT_URL,AUTH_GOOGLE_ID,AUTH_GOOGLE_SECRET
+param([string[]]$Only)
 # 'Continue': di Windows PowerShell 5.1, stderr dari npx yang dialihkan bisa dianggap error fatal.
 # Kegagalan diperiksa lewat $LASTEXITCODE.
 $ErrorActionPreference = 'Continue'
 Set-Location (Split-Path -Parent $PSScriptRoot)
+
+function Want([string]$name) { return (-not $Only) -or ($Only -contains $name) }
 
 function Read-Secret([string]$label) {
   $s = Read-Host -AsSecureString $label
@@ -35,29 +39,31 @@ function New-RandomSecret {
 $existing = (& npx vercel env ls production 2>$null) -join "`n"
 
 Write-Host "`n== Supabase: Project Settings > Database > Connection string ==" -ForegroundColor Cyan
-$pooled = Read-Secret 'DATABASE_URL (Transaction pooler, port 6543)'
-if ($pooled -and $pooled -match ':6543/' -and $pooled -notmatch 'pgbouncer=true') {
-  # Prisma lewat pooler transaksi Supabase wajib pgbouncer=true dan satu koneksi per fungsi.
-  $pooled += ($(if ($pooled.Contains('?')) { '&' } else { '?' }) + 'pgbouncer=true&connection_limit=1')
+if (Want 'DATABASE_URL') {
+  $pooled = Read-Secret 'DATABASE_URL (Transaction pooler, port 6543)'
+  if ($pooled -and $pooled -match ':6543/' -and $pooled -notmatch 'pgbouncer=true') {
+    # Prisma lewat pooler transaksi Supabase wajib pgbouncer=true dan satu koneksi per fungsi.
+    $pooled += ($(if ($pooled.Contains('?')) { '&' } else { '?' }) + 'pgbouncer=true&connection_limit=1')
+  }
+  Set-VercelEnv 'DATABASE_URL' $pooled
 }
-Set-VercelEnv 'DATABASE_URL' $pooled
-Set-VercelEnv 'DIRECT_URL' (Read-Secret 'DIRECT_URL (Session pooler / direct, port 5432)')
+if (Want 'DIRECT_URL') { Set-VercelEnv 'DIRECT_URL' (Read-Secret 'DIRECT_URL (Session pooler / direct, port 5432)') }
 
 Write-Host "`n== Supabase: Project Settings > API ==" -ForegroundColor Cyan
-Set-VercelEnv 'SUPABASE_URL' (Read-Host 'Project URL (https://xxxx.supabase.co)')
-Set-VercelEnv 'SUPABASE_SERVICE_ROLE_KEY' (Read-Secret 'service_role key (untuk simpan foto unggahan)')
+if (Want 'SUPABASE_URL') { Set-VercelEnv 'SUPABASE_URL' (Read-Host 'Project URL (https://xxxx.supabase.co)') }
+if (Want 'SUPABASE_SERVICE_ROLE_KEY') { Set-VercelEnv 'SUPABASE_SERVICE_ROLE_KEY' (Read-Secret 'service_role key (untuk simpan foto unggahan)') }
 
 Write-Host "`n== Google Cloud: OAuth client (Web application) ==" -ForegroundColor Cyan
 Write-Host "   Authorized redirect URI: https://nizhamiyyahedu.vercel.app/web/api/auth/callback/google" -ForegroundColor DarkGray
-Set-VercelEnv 'AUTH_GOOGLE_ID' (Read-Host 'Client ID')
-Set-VercelEnv 'AUTH_GOOGLE_SECRET' (Read-Secret 'Client secret')
+if (Want 'AUTH_GOOGLE_ID') { Set-VercelEnv 'AUTH_GOOGLE_ID' (Read-Host 'Client ID') }
+if (Want 'AUTH_GOOGLE_SECRET') { Set-VercelEnv 'AUTH_GOOGLE_SECRET' (Read-Secret 'Client secret') }
 
 Write-Host "`n== Superadmin ==" -ForegroundColor Cyan
-Set-VercelEnv 'ADMIN_EMAILS' (Read-Host 'Email Google superadmin (pisahkan koma bila lebih dari satu)')
+if (Want 'ADMIN_EMAILS') { Set-VercelEnv 'ADMIN_EMAILS' (Read-Host 'Email Google superadmin (pisahkan koma bila lebih dari satu)') }
 
 Write-Host "`n== Mayar (boleh dilewati dulu) ==" -ForegroundColor Cyan
-Set-VercelEnv 'MAYAR_API_KEY' (Read-Secret 'API key Mayar')
-Set-VercelEnv 'MAYAR_WEBHOOK_TOKEN' (Read-Secret 'Webhook token Mayar')
+if (Want 'MAYAR_API_KEY') { Set-VercelEnv 'MAYAR_API_KEY' (Read-Secret 'API key Mayar') }
+if (Want 'MAYAR_WEBHOOK_TOKEN') { Set-VercelEnv 'MAYAR_WEBHOOK_TOKEN' (Read-Secret 'Webhook token Mayar') }
 
 Write-Host "`n== Rahasia internal ==" -ForegroundColor Cyan
 foreach ($name in 'AUTH_SECRET', 'CRON_SECRET') {
