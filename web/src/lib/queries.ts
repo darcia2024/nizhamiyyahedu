@@ -5,6 +5,10 @@ import { normalizeArabic } from "@/lib/slug";
 import { FIELD_LABEL, type Field, type Level } from "@/lib/constants";
 import { parseBundle } from "@/lib/bundle";
 
+// Kunci cache ikut id deploy: tiap deploy memakai data segar, jadi perubahan data lewat migrasi atau seed langsung terlihat
+// dan cache deploy lama tidak terbawa. Di dalam satu deploy cache tetap berlaku 5 menit atau sampai tag dibuang.
+const DEPLOY = process.env.VERCEL_DEPLOYMENT_ID ?? "local";
+
 const courseSelect = {
   id: true,
   slug: true,
@@ -93,7 +97,7 @@ async function listRaw() {
 /** Semua kursus tayang. Dicache 5 menit dan dibuang lewat tag "catalog" saat admin menyimpan. */
 export const getPublishedCourses = unstable_cache(
   async (): Promise<CourseCard[]> => withBundleTotals((await listRaw()).map(toCard)),
-  ["published-courses"],
+  ["published-courses", DEPLOY],
   { tags: ["catalog", "home"], revalidate: 300 },
 );
 
@@ -133,7 +137,7 @@ export const getCourseBySlug = cache(async (slug: string) => {
 
 export const getTeachersForHome = unstable_cache(
   async () => db.teacherProfile.findMany({ where: { showOnHome: true }, orderBy: { displayName: "asc" } }),
-  ["home-teachers"],
+  ["home-teachers", DEPLOY],
   { tags: ["home"], revalidate: 300 },
 );
 

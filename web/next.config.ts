@@ -9,8 +9,23 @@ const config: NextConfig = {
   basePath,
   experimental: { serverActions: { bodySizeLimit: "2mb", allowedOrigins } },
   poweredByHeader: false,
+  images: {
+    // Hanya WebP: AVIF jauh lebih berat di CPU server saat pertama kali dibuat, selisih ukurannya kecil untuk thumbnail kita.
+    formats: ["image/webp"],
+    // Hasil optimasi bernama sesuai isi (nama file thumbnail berganti bila gambarnya berganti), jadi boleh disimpan 1 tahun.
+    // Tanpa ini pengoptimal mengolah ulang gambar besar tiap beberapa jam.
+    minimumCacheTTL: 31536000,
+    // Daftar ukuran dipersempit supaya satu gambar tidak menghasilkan belasan varian yang masing-masing harus dibuat server.
+    deviceSizes: [480, 768, 1080, 1440, 1920],
+    imageSizes: [104, 192, 384],
+  },
   async headers() {
     return [
+      {
+        // Gambar bawaan di public/ boleh dipakai ulang dari cache browser dan CDN tanpa menanyakan server tiap kali.
+        source: "/:dir(kelas|sosmed|hero)/:file*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
       {
         source: "/(.*)",
         headers: [
