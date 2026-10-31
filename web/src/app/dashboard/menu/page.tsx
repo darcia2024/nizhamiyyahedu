@@ -20,7 +20,7 @@ export default async function MenuPage() {
     { href: "/dashboard/pembayaran", label: "Transaksi", icon: <CreditCard {...icon} /> },
     { href: "/dashboard/katalog", label: "Katalog kelas", icon: <BookOpen {...icon} /> },
     { href: "/dashboard/profil", label: "Pengaturan", icon: <Settings2 {...icon} /> },
-    { href: "/kontak", label: "Bantuan", icon: <LifeBuoy {...icon} /> },
+    { href: "/dashboard/bantuan", label: "Bantuan", icon: <LifeBuoy {...icon} /> },
   ];
   if (user.role === "TEACHER") links.push({ href: "/dashboard/kelola", label: "Kelola kursus", icon: <PencilRuler {...icon} /> });
 

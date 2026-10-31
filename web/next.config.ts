@@ -33,6 +33,13 @@ const config: NextConfig = {
         headers: [{ key: "Content-Security-Policy", value: "frame-ancestors 'none'; frame-src https:" }],
       },
       {
+        // Detail kelas dan pembayaran tampil sebagai pop-up di atas halaman dashboard mana pun (navigasi sisi-klien tidak
+        // memuat dokumen baru), jadi dokumen yang aktif harus sudah mengizinkan iframe pembayaran. Halaman dashboard
+        // tetap tidak boleh dibingkai orang lain.
+        source: "/dashboard/:path*",
+        headers: [{ key: "Content-Security-Policy", value: "frame-ancestors 'none'; frame-src https:" }],
+      },
+      {
         // Setelah bayar, Mayar mengarahkan iframe itu kembali ke halaman status milik kita (dan halaman simulasi saat lokal),
         // jadi hanya halaman ini yang boleh dibingkai, dan hanya oleh situs kita sendiri.
         source: "/dashboard/pembayaran/:path*",

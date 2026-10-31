@@ -3,7 +3,7 @@ import { ArrowRight, Check, Play } from "lucide-react";
 import type { CourseCard } from "@/lib/queries";
 import { FIELD_LABEL, LEVEL_LABEL } from "@/lib/constants";
 import { hoursLabel, isPlaceholder, rupiah } from "@/lib/format";
-import { mediaSrc } from "@/lib/base-path";
+import { Thumb } from "@/components/Thumb";
 
 // Nama pengajar dipendekkan: "Ust. Afrozul Mukhoiyirin, Lc., Dipl." -> "Ust. Afrozul Mukhoiyirin".
 const shortName = (n: string) => n.split(",")[0].trim();
@@ -24,13 +24,13 @@ function KitabCover({ ar, label, foot }: { ar: string; label?: string; foot?: st
 }
 
 /**
- * Kartu kelas dengan foto asli kitab yang dikaji (dipotong dari poster resmi), tanpa foto wajah.
- * Paket bundling melebar dengan kitab-kitab isinya dan harga normal dicoret.
+ * Kartu kelas dengan thumbnail resmi 16:9 (tanpa thumbnail: sampul teks cadangan).
+ * Paket bundling melebar dengan thumbnail kelas-kelas isinya bertumpuk dan harga normal dicoret.
  * `all` dipakai untuk mencari kelas isi paket (harga normal, foto, pengajar).
  * `state` (katalog dashboard): "owned" = sudah dimiliki, tombolnya membuka kelas; "pending" = tagihan belum dibayar.
  * `partial` = paket yang sebagian isinya sudah dimiliki.
  */
-export function KitabCard({ c, all, wide = false, state, partial = 0 }: { c: CourseCard; all: CourseCard[]; wide?: boolean; state?: OwnState; partial?: number }) {
+export function KitabCard({ c, all, wide = false, state, partial = 0, dashboard = false }: { c: CourseCard; all: CourseCard[]; wide?: boolean; state?: OwnState; partial?: number; dashboard?: boolean }) {
   const items = c.bundleOf.map((id) => all.find((x) => x.id === id)).filter((x): x is CourseCard => !!x);
   const bundle = items.length > 0;
   const normal = items.reduce((a, i) => a + i.priceRupiah, 0);
@@ -38,16 +38,18 @@ export function KitabCard({ c, all, wide = false, state, partial = 0 }: { c: Cou
   const people = (bundle ? items : [c]).filter((i) => !isPlaceholder(i.teacherName)).map((i) => i.teacherName as string);
   const hours = hoursLabel(c.totalMin)?.replace("± ", "±");
   const free = c.priceRupiah === 0;
-  const books = (bundle ? items : [c]).filter((i) => i.image);
+  const thumbs = (bundle ? items : [c]).filter((i) => i.image).slice(0, 2);
   const owned = state === "owned";
-  // Yang sudah dimiliki dibuka di ruang belajar; selebihnya ke halaman kelas (tempat bayar).
-  const href = owned ? (bundle ? "/dashboard/kursus" : `/dashboard/kursus/${c.slug}`) : `/kursus/${c.slug}`;
+  // Yang sudah dimiliki dibuka di ruang belajar; selebihnya ke detail kelas (tempat bayar). Di dashboard detail tampil
+  // sebagai pop-up di atas katalog, bukan pindah ke halaman publik.
+  const detailHref = dashboard ? `/dashboard/katalog/${c.slug}` : `/kursus/${c.slug}`;
+  const href = owned ? (bundle ? "/dashboard/kursus" : `/dashboard/kursus/${c.slug}`) : detailHref;
 
   return (
     <article className={`kb-card${bundle ? " is-bundle" : ""}${wide ? " wide" : ""}${owned ? " is-owned" : ""}`} data-testid="course-card">
-      <div className="kb-media" aria-hidden="true">
-        {books.length > 0
-          ? <span className="kb-books">{books.map((b) => <img key={b.id} className="kb-kitab" src={mediaSrc(b.image as string)} alt="" loading="lazy" />)}</span>
+      <div className={`kb-media${thumbs.length ? " thumb" : ""}${thumbs.length > 1 ? " thumb-stack" : ""}`} aria-hidden="true">
+        {thumbs.length > 0
+          ? <span className="kb-thumbs">{thumbs.map((b) => <Thumb key={b.id} className="kb-thumb" src={b.image as string} sizes={thumbs.length > 1 ? "(max-width: 860px) 62vw, 320px" : "(max-width: 640px) 94vw, (max-width: 1100px) 46vw, 520px"} />)}</span>
           : <KitabCover ar={c.titleAr ?? c.title} label={FIELD_LABEL[c.field]} foot={`Marhalah ${LEVEL_LABEL[c.level]}`} />}
         {bundle && !owned && <span className="kb-ribbon">{items.length} kelas sekaligus</span>}
         {owned && <span className="kb-ribbon kb-ribbon-own"><Check size={13} aria-hidden="true" /> Sudah kamu miliki</span>}
@@ -63,7 +65,7 @@ export function KitabCard({ c, all, wide = false, state, partial = 0 }: { c: Cou
         {bundle && !owned && partial > 0 && <p className="kb-note">{partial} dari {items.length} kelas di paket ini sudah kamu miliki.</p>}
 
         {c.hasFreePreview && !bundle && !owned && (
-          <Link className="kb-free" href={`/kursus/${c.slug}/pratinjau`}><Play size={12} fill="currentColor" aria-hidden="true" /> Tonton pertemuan 1 gratis</Link>
+          <Link className="kb-free" href={dashboard ? detailHref : `/kursus/${c.slug}/pratinjau`}><Play size={12} fill="currentColor" aria-hidden="true" /> Tonton pertemuan 1 gratis</Link>
         )}
 
         <div className="kb-foot">
@@ -84,7 +86,7 @@ export function KitabCard({ c, all, wide = false, state, partial = 0 }: { c: Cou
 }
 
 /** Daftar kartu: paket bundling melebar dan (kecuali urutan dipilih user) ditaruh paling atas. */
-export function KitabGrid({ courses, all, bundleFirst = true, owned, pending, compact = false }: {
+export function KitabGrid({ courses, all, bundleFirst = true, owned, pending, compact = false, dashboard = false }: {
   courses: CourseCard[];
   all: CourseCard[];
   bundleFirst?: boolean;
@@ -94,6 +96,8 @@ export function KitabGrid({ courses, all, bundleFirst = true, owned, pending, co
   pending?: string[];
   /** Kolom lebih sempit, untuk area dashboard yang berbagi lebar dengan sidebar. */
   compact?: boolean;
+  /** Di dalam dashboard: tautan detail dan pratinjau membuka pop-up dashboard, bukan halaman publik. */
+  dashboard?: boolean;
 }) {
   const ordered = bundleFirst ? [...courses.filter((c) => c.bundleOf.length), ...courses.filter((c) => !c.bundleOf.length)] : courses;
   const own = new Set(owned ?? []);
@@ -105,7 +109,7 @@ export function KitabGrid({ courses, all, bundleFirst = true, owned, pending, co
         // Paket dianggap dimiliki bila semua kelas isinya sudah dimiliki.
         const have = isBundle ? c.bundleOf.filter((id) => own.has(id)).length : 0;
         const state: OwnState | undefined = (isBundle ? have === c.bundleOf.length : own.has(c.id)) ? "owned" : wait.has(c.id) ? "pending" : undefined;
-        return <KitabCard key={c.id} c={c} all={all} wide={isBundle} state={state} partial={have} />;
+        return <KitabCard key={c.id} c={c} all={all} wide={isBundle} state={state} partial={have} dashboard={dashboard} />;
       })}
     </div>
   );

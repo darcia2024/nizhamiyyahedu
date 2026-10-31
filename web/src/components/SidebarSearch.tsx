@@ -4,7 +4,7 @@ import { withBase } from "@/lib/base-path";
 import { Search } from "lucide-react";
 
 /** Pencarian katalog di sidebar. Tekan "/" di mana saja untuk fokus. Tanpa JS tetap jalan sebagai form GET. */
-export function SidebarSearch() {
+export function SidebarSearch({ action = "/kursus" }: { action?: string }) {
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -16,7 +16,7 @@ export function SidebarSearch() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
   return (
-    <form className="side-search" action={withBase("/kursus")} method="get" role="search">
+    <form className="side-search" action={withBase(action)} method="get" role="search">
       <Search size={17} aria-hidden="true" />
       <label htmlFor="side-q" className="sr-only">Cari kursus atau kitab</label>
       <input ref={ref} id="side-q" name="q" type="search" minLength={2} maxLength={80} placeholder="Cari kursus" autoComplete="off" />

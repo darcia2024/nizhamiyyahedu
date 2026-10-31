@@ -9,12 +9,13 @@ import { signOut } from "@/auth";
 import type { CurrentUser } from "@/lib/auth-guard";
 import { initials } from "@/lib/format";
 
-export type NavKey = "dashboard" | "kursus" | "katalog" | "catatan" | "progres" | "sertifikat" | "pembayaran" | "profil" | "kelola" | "admin" | "menu";
+export type NavKey = "dashboard" | "kursus" | "katalog" | "bantuan" | "catatan" | "progres" | "sertifikat" | "pembayaran" | "profil" | "kelola" | "admin" | "menu";
 
 const PAGE_LABEL: Record<NavKey, string> = {
   dashboard: "Ringkasan",
   kursus: "Ruang belajar",
   katalog: "Katalog kelas",
+  bantuan: "Bantuan",
   catatan: "Catatan saya",
   progres: "Progres",
   sertifikat: "Sertifikat",
@@ -73,13 +74,13 @@ export async function AppShell({
       <div className="shell">
         <aside className="side">
           <BackButton />
-          <Link href="/" className="ws" aria-label="Ke beranda Nizhamiyyah Edu">
+          <Link href={user.role === "ADMIN" ? "/admin" : "/dashboard"} className="ws" aria-label="Ke ringkasan Nizhamiyyah Edu">
             <span className="brand-mark"><StarMark size={22} stroke="#fff" dot={false} /></span>
             <span className="ws-info"><b>Nizhamiyyah</b><small>Ruang belajar</small></span>
             <ChevronsUpDown size={16} aria-hidden="true" />
           </Link>
 
-          <SidebarSearch />
+          <SidebarSearch action={user.role === "ADMIN" ? "/kursus" : "/dashboard/katalog"} />
 
           <nav className="group nav" aria-label="Menu utama">
             <span className="group-label">{user.role === "ADMIN" ? "Pengelolaan" : "Belajar"}</span>
@@ -105,7 +106,7 @@ export async function AppShell({
 
           <div className="side-foot">
             <nav className="group nav" aria-label="Akun">
-              <Link href="/kontak"><LifeBuoy {...icon} />Bantuan</Link>
+              <Link href="/dashboard/bantuan" aria-current={active === "bantuan" ? "page" : undefined}><LifeBuoy {...icon} />Bantuan</Link>
               <Link href="/dashboard/profil" aria-current={active === "profil" ? "page" : undefined}><Settings2 {...icon} />Pengaturan</Link>
               <InstallButton />
             </nav>

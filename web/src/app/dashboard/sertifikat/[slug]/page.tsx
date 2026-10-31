@@ -26,7 +26,7 @@ export default async function CertificatePage({ params }: Props) {
   if (!course) notFound();
 
   const enr = await db.enrollment.findUnique({ where: { userId_courseId: { userId: user.id, courseId: course.id } } });
-  if (enr?.status !== "ACTIVE") redirect(`/kursus/${slug}`);
+  if (enr?.status !== "ACTIVE") redirect(`/dashboard/katalog/${slug}`);
 
   const done = await db.lessonProgress.findMany({
     where: { userId: user.id, completedAt: { not: null }, lessonId: { in: course.lessons.map((l) => l.id) } },

@@ -27,7 +27,7 @@ export default async function LessonPage({ params }: Props) {
   const manager = await canManageCourse(user, course.id);
   const enr = await db.enrollment.findUnique({ where: { userId_courseId: { userId: user.id, courseId: course.id } } });
   const student = enr?.status === "ACTIVE";
-  if (!student && !manager) redirect(`/kursus/${slug}`);
+  if (!student && !manager) redirect(`/dashboard/katalog/${slug}`);
   const mode = manager ? "preview" : "student";
 
   const [lesson, lessons, prog] = await Promise.all([

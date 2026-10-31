@@ -1,0 +1,48 @@
+/* Pop-up di dalam dashboard: detail kelas (rute yang dicegat) dan pemutar pratinjau gratis. */
+
+/* Lapisan penuh transparan: area di luar lembar putih bisa diklik untuk menutup. */
+.route-modal {
+  width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: clamp(0px, 2.5vw, 28px);
+  border: 0; background: transparent; color: #10231c; overflow: hidden;
+}
+.route-modal[open] { display: flex; align-items: flex-start; justify-content: center }
+.route-modal::backdrop { background: rgba(16, 35, 28, .6); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px) }
+.route-modal-body {
+  position: relative; width: min(1100px, 100%); max-height: 100%; overflow-y: auto; overscroll-behavior: contain;
+  border-radius: 12px; background: var(--ground, #f4f6f3); box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .6);
+}
+.route-modal-x {
+  position: sticky; top: 12px; z-index: 20; display: grid; place-items: center; width: 40px; height: 40px; margin: 12px 12px -52px auto; padding: 0;
+  border: 0; border-radius: 50%; background: rgba(16, 35, 28, .72); color: #fff; cursor: pointer; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.route-modal-x:hover { background: rgba(16, 35, 28, .9) }
+
+/* Isi kelas di dalam dashboard: tanpa kerangka situs, hero tanpa jarak atas. */
+.kd-root.in-dash .kd-hero { border-radius: 12px 12px 0 0 }
+.kd-root.in-dash .kd-hero-grid { min-height: 0 }
+.kd-root.in-dash .kd-copy { padding-block: 40px 28px }
+.kd-root.in-dash .kd-layout { padding-block: 0 40px; gap: 40px }
+.kd-root.in-dash .buy-card { top: 12px }
+.cs-page { max-width: 1100px; margin-inline: auto }
+.cs-page .kd-hero { border-radius: 12px 12px 0 0 }
+.cs-back { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 14px; font-size: 14px; font-weight: 600; color: #1e715c; text-decoration: none }
+.cs-back:hover { text-decoration: underline }
+
+/* Pemutar pratinjau gratis. */
+.preview-dialog { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: clamp(0px, 3vw, 32px); border: 0; background: transparent; overflow: hidden }
+.preview-dialog[open] { display: flex; align-items: center; justify-content: center }
+.preview-dialog::backdrop { background: rgba(8, 20, 15, .78); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px) }
+.preview-box { width: min(960px, 100%); overflow: hidden; border-radius: 10px; background: #0e1f18; color: #fff; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .8) }
+.preview-box header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 10px 16px; font-size: 14px }
+.preview-box header .icon-btn { color: #fff; border-color: rgba(255, 255, 255, .3); background: transparent }
+.preview-player { position: relative; aspect-ratio: 16 / 9; background: #000 }
+.preview-player iframe, .preview-player video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0 }
+button.kd-hero-link, button.free { font: inherit; cursor: pointer; background: transparent }
+button.free { border: 0; border-bottom: 1px dashed rgba(30, 113, 92, .5); padding: 0 0 1px; display: inline-flex; align-items: center; gap: 6px; color: #1e715c; font-weight: 600 }
+button.free:hover { color: #0f4736; border-bottom-style: solid }
+
+@media (max-width: 640px) {
+  .route-modal { padding: 0 }
+  .route-modal-body { border-radius: 0; height: 100% }
+  .kd-root.in-dash .kd-hero { border-radius: 0 }
+}

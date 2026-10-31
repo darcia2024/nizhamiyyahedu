@@ -8,7 +8,7 @@ import type { PrismaClient } from "@prisma/client";
 type CourseSeed = {
   slug: string; title: string; titleAr: string; field: string; price: number; sort: number; desc: string; sessions: number;
   teacher?: "afrozul" | "reza"; bundle?: string[];
-  /** Foto kitab untuk sampul kartu, dipotong dari poster resmi (public/kelas). */
+  /** Thumbnail kelas 16:9 untuk kartu dan halaman detail (public/kelas). */
   image?: string;
   /** Rekaman YouTube (tidak publik) per pertemuan: [id video, durasi menit]. */
   videos?: [string, number][];
@@ -35,13 +35,13 @@ export const COURSES: CourseSeed[] = [
   {
     slug: "dauroh-ushul-fiqh", title: "Dauroh Ushul Fiqh Nizhamiyyah", titleAr: "الورقات", field: "USHUL_FIQH", price: 70000, sort: 1, teacher: "afrozul",
     desc: "Dars ilmu ushul fiqh dengan Matan al-Waraqat karya Imam al-Haramain al-Juwaini, dalam 8 pertemuan. Bagian dari Daurah Aqliyah Dar Nizhamiyyah.",
-    sessions: 8, image: "/kelas/waraqat.jpg",
+    sessions: 8, image: "/kelas/thumb-ushul-fiqh.jpg",
     videos: [["AeVUzyzxDaM", 61], ["imYDWt7k_1I", 116], ["RvkYATLEVSU", 97], ["Uf2G5X9KTGk", 100]],
   },
   {
     slug: "dauroh-mantiq", title: "Dauroh Mantiq Nizhamiyyah", titleAr: "إيساغوجي", field: "MANTIQ", price: 70000, sort: 2, teacher: "reza",
     desc: "Dars ilmu mantiq dengan Matan Isaghuji karya Imam Atsiruddin al-Abhari, dalam 5 pertemuan. Bagian dari Daurah Aqliyah Dar Nizhamiyyah.",
-    sessions: 5, image: "/kelas/isaghuji.jpg",
+    sessions: 5, image: "/kelas/thumb-mantiq.jpg",
     videos: [["97lvSGc_Rp4", 112], ["umo8GS8TZ4E", 123], ["kSAVzow9dw8", 91], ["jStHUpZr21s", 91]],
   },
   {

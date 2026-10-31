@@ -21,5 +21,5 @@ export default async function CourseEntry({ params }: { params: Promise<{ slug: 
     if (first) redirect(`/dashboard/kursus/${slug}/pelajaran/${first.id}`);
     redirect(`/dashboard/kelola/${course.id}`);
   }
-  redirect(`/kursus/${slug}`);
+  redirect(`/dashboard/katalog/${slug}`);
 }

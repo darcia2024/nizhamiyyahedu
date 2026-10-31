@@ -32,7 +32,7 @@ export default async function OrderStatusPage({ params }: { params: Promise<{ or
   }
 
   const status = effectiveStatus(order);
-  const retry = `/kursus/${order.course.slug}?lanjut=1`;
+  const retry = `/dashboard/katalog/${order.course.slug}`;
   // Tampil di dalam pop-up pembayaran (iframe): versi ringkas tanpa kerangka situs, dan kabari halaman induk.
   const embedded = (await headers()).get("sec-fetch-dest") === "iframe";
 

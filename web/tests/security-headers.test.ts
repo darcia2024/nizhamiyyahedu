@@ -37,9 +37,17 @@ describe("header keamanan frame", () => {
     expect(h.get("Content-Security-Policy")).toContain("frame-ancestors 'self'");
   });
 
-  it("bagian dashboard lain tetap tertutup untuk iframe", async () => {
-    for (const p of ["/dashboard", "/dashboard/katalog", "/admin"]) {
-      expect((await effective(p)).get("X-Frame-Options")).toBe("DENY");
+  it("dashboard tidak boleh dibingkai orang lain, tapi boleh memuat iframe pembayaran di pop-up", async () => {
+    for (const p of ["/dashboard", "/dashboard/katalog", "/dashboard/katalog/dauroh-mantiq"]) {
+      const h = await effective(p);
+      expect(h.get("X-Frame-Options")).toBe("DENY");
+      expect(h.get("Content-Security-Policy")).toBe("frame-ancestors 'none'; frame-src https:");
     }
+  });
+
+  it("panel admin tetap hanya boleh memuat YouTube", async () => {
+    const h = await effective("/admin");
+    expect(h.get("X-Frame-Options")).toBe("DENY");
+    expect(h.get("Content-Security-Policy")).toBe("frame-ancestors 'none'; frame-src https://www.youtube-nocookie.com");
   });
 });

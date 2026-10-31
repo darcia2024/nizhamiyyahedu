@@ -17,6 +17,23 @@
   background-color: #1f6f5c;
 }
 .kb-card.wide .kb-media { width: 44%; height: auto; min-height: 300px }
+/* Thumbnail resmi 16:9: memenuhi area gambar kartu. Paket: dua thumbnail bertumpuk berbingkai kertas. */
+.kb-media.thumb { height: auto; aspect-ratio: 16 / 9; display: block; background: #0e3f2a }
+.kb-thumbs { display: block; width: 100%; height: 100% }
+.kb-thumb { display: block; width: 100%; height: 100%; object-fit: cover }
+.kb-card.wide .kb-media.thumb { aspect-ratio: auto; min-height: 300px }
+.kb-media.thumb-stack { background: #1f6f5c }
+.kb-media.thumb-stack .kb-thumbs { position: relative; min-height: 300px }
+.kb-media.thumb-stack .kb-thumb {
+  position: absolute; width: 58%; height: auto; aspect-ratio: 16 / 9; border: 4px solid #fffdf7; border-radius: 3px;
+  box-shadow: 0 22px 34px -16px rgba(0, 0, 0, .6), 0 3px 8px rgba(0, 0, 0, .25); transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+}
+.kb-media.thumb-stack .kb-thumb:nth-child(1) { top: 22px; left: 16px; z-index: 1 }
+.kb-media.thumb-stack .kb-thumb:nth-child(2) { bottom: 22px; right: 16px; z-index: 2 }
+.kb-card:hover .kb-media.thumb-stack .kb-thumb:nth-child(1) { transform: translate(-4px, -4px) }
+.kb-card:hover .kb-media.thumb-stack .kb-thumb:nth-child(2) { transform: translate(4px, 4px) }
+.kb-ribbon { z-index: 3 }
+
 .kb-books { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; height: 100% }
 .kb-kitab {
   display: block; height: 74%; width: auto; border-radius: 2px;
@@ -90,6 +107,8 @@
 @media (max-width: 860px) {
   .kb-card.wide { flex-direction: column }
   .kb-card.wide .kb-media { width: auto; min-height: 0; height: 250px }
+  .kb-card.wide .kb-media.thumb-stack .kb-thumbs { min-height: 0; height: 100% }
+  .kb-media.thumb-stack .kb-thumb { width: 52% }
   .kb-card.wide .kb-body { padding: 22px 22px 20px }
 }
 @media (max-width: 640px) {
