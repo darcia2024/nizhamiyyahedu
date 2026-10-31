@@ -1,5 +1,10 @@
 {
+  "redirects": [
+    { "source": "/web", "destination": "/", "permanent": true },
+    { "source": "/web/:path*", "destination": "/:path*", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/", "destination": "/penawaran/index.html" }
+    { "source": "/", "destination": "https://nizhamiyyahedu-web.vercel.app/" },
+    { "source": "/:path*", "destination": "https://nizhamiyyahedu-web.vercel.app/:path*" }
   ]
 }
