@@ -86,7 +86,7 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
       const pending = await db.order.findFirst({
         where: { userId: user.id, courseId: course.id, status: "PENDING", expiresAt: { gt: new Date() } },
       });
-      state = pending?.payUrl ? { kind: "pending", payUrl: pending.payUrl, until: dateTimeWib(pending.expiresAt) } : { kind: "paid" };
+      state = pending?.payUrl ? { kind: "pending", payUrl: pending.payUrl, until: dateTimeWib(pending.expiresAt), orderId: pending.id } : { kind: "paid" };
     }
   }
 
@@ -231,6 +231,7 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
 
           <BuyPanel
             courseId={course.id}
+            learnHref={isBundle ? "/dashboard/kursus" : `/dashboard/kursus/${course.slug}`}
             title={course.title}
             titleAr={course.titleAr}
             priceLabel={rupiah(course.priceRupiah)}

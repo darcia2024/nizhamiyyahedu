@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { ORDER_TTL_HOURS, type OrderStatus } from "@/lib/constants";
 import { normalizePhone } from "@/lib/phone";
-import { createInvoice } from "@/lib/mayar";
+import { createInvoice, fetchTransaction, mayarSimulated } from "@/lib/mayar";
 import { unlockedCourseIds } from "@/lib/bundle";
 import type { CurrentUser } from "@/lib/auth-guard";
 import { Prisma } from "@prisma/client";
@@ -108,6 +108,22 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
     console.error("[orders] gagal membuat invoice", e);
     await db.order.update({ where: { id: order.id }, data: { status: "FAILED", note: "Gagal membuat invoice" } });
     return { ok: false, error: "Pembayaran belum bisa dibuat saat ini. Coba lagi sebentar lagi." };
+  }
+}
+
+/**
+ * Tanya Mayar langsung (server ke server) untuk order yang masih PENDING, lalu perbarui bila sudah lunas atau gagal.
+ * Dipakai pop-up pembayaran dan halaman status supaya tidak bergantung pada kecepatan webhook.
+ * Tidak melakukan apa-apa di mode simulasi atau bila invoice belum dibuat.
+ */
+export async function syncOrderWithMayar(order: { id: string; status: string; mayarId: string | null }): Promise<void> {
+  if (order.status !== "PENDING" || !order.mayarId || mayarSimulated()) return;
+  const tx = await fetchTransaction(order.mayarId);
+  if (!tx) return;
+  if (tx.status === "PAID" && tx.currency === "IDR" && (!tx.orderId || tx.orderId === order.id)) {
+    await settleOrder(order.id, tx.amount);
+  } else if (tx.status === "FAILED" || tx.status === "EXPIRED") {
+    await db.order.updateMany({ where: { id: order.id, status: "PENDING" }, data: { status: tx.status } });
   }
 }
 

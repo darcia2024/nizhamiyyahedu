@@ -5,17 +5,21 @@ import { Check } from "lucide-react";
 import { startCheckout, enrollFree } from "./actions";
 import { FieldError, SubmitButton } from "@/components/SubmitButton";
 import { idle } from "@/lib/action";
+import type { PayData } from "@/lib/pay";
+import { PayModal } from "./PayModal";
 
 export type BuyState =
   | { kind: "guest"; loginHref: string }
   | { kind: "free" }
   | { kind: "paid" }
-  | { kind: "pending"; payUrl: string; until: string }
+  | { kind: "pending"; payUrl: string; until: string; orderId: string }
   | { kind: "enrolled"; href: string }
   | { kind: "manage"; manageHref: string; previewHref: string };
 
 type Props = {
   courseId: string;
+  /** Alamat belajar setelah lunas: kelas satuan ke kelasnya, paket ke daftar kelas. */
+  learnHref: string;
   title: string;
   titleAr: string | null;
   priceLabel: string;
@@ -38,10 +42,17 @@ export function BuyPanel(p: Props) {
   // Dikontrol agar isian tidak terhapus saat form di-reset setelah action mengembalikan error.
   const [wa, setWa] = useState(p.whatsappDefault);
   const [agree, setAgree] = useState(false);
+  // Tagihan yang sedang dibayar di pop-up (halaman bayar Mayar tampil di dalam website ini).
+  const [pay, setPay] = useState<PayData | null>(null);
 
   useEffect(() => {
     if (p.autoOpen && p.state.kind === "paid") dialog.current?.showModal();
   }, [p.autoOpen, p.state.kind]);
+
+  // Tagihan berhasil dibuat: tutup ringkasan, buka pop-up pembayaran.
+  useEffect(() => {
+    if (co.ok && co.data) { dialog.current?.close(); setPay(co.data); }
+  }, [co]);
 
   const fe = !co.ok ? co.fieldErrors ?? {} : {};
   const coError = !co.ok && !Object.keys(fe).length ? co.error : undefined;
@@ -65,7 +76,7 @@ export function BuyPanel(p: Props) {
         return (
           <>
             <div className="alert info-box" role="status">Tagihan menunggu pembayaran, berlaku sampai {s.until}.</div>
-            <a className="btn btn-primary block" href={s.payUrl} data-testid="buy-pending">Lanjutkan bayar</a>
+            <button type="button" className="btn btn-primary block" onClick={() => setPay({ orderId: s.orderId, payUrl: s.payUrl })} data-testid="buy-pending">Lanjutkan bayar</button>
           </>
         );
       case "enrolled":
@@ -85,7 +96,7 @@ export function BuyPanel(p: Props) {
     const s = p.state;
     if (s.kind === "guest") return <Link className="btn btn-cream" href={s.loginHref}>{barLabel}</Link>;
     if (s.kind === "paid") return <button type="button" className="btn btn-cream" onClick={() => dialog.current?.showModal()}>{barLabel}</button>;
-    if (s.kind === "pending") return <a className="btn btn-cream" href={s.payUrl}>{barLabel}</a>;
+    if (s.kind === "pending") return <button type="button" className="btn btn-cream" onClick={() => setPay({ orderId: s.orderId, payUrl: s.payUrl })}>{barLabel}</button>;
     if (s.kind === "enrolled") return <Link className="btn btn-cream" href={s.href}>{barLabel}</Link>;
     if (s.kind === "manage") return <Link className="btn btn-cream" href={s.manageHref}>{barLabel}</Link>;
     return (
@@ -116,6 +127,10 @@ export function BuyPanel(p: Props) {
         <b className="num">{p.priceLabel}</b>
         {barNode}
       </div>
+
+      {pay && (
+        <PayModal key={pay.orderId} orderId={pay.orderId} payUrl={pay.payUrl} title={p.title} priceLabel={p.priceLabel} learnHref={p.learnHref} onClose={() => setPay(null)} />
+      )}
 
       {p.state.kind === "paid" && (
         <dialog ref={dialog} className="sheet" aria-labelledby="co-title">

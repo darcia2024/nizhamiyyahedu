@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth-guard";
 import { fail, fromZod, type ActionResult } from "@/lib/action";
 import { createOrder } from "@/lib/orders";
+import type { PayData } from "@/lib/pay";
 
 const checkoutSchema = z.object({
   courseId: z.string().min(1),
@@ -12,7 +13,8 @@ const checkoutSchema = z.object({
   agree: z.literal("on", { message: "Centang persetujuan Syarat dan ketentuan serta Kebijakan refund." }),
 });
 
-export async function startCheckout(_prev: ActionResult, fd: FormData): Promise<ActionResult> {
+/** Membuat (atau memakai ulang) tagihan lalu mengembalikan tautan bayar; pop-up di browser yang menampilkannya. */
+export async function startCheckout(_prev: ActionResult<PayData>, fd: FormData): Promise<ActionResult<PayData>> {
   const user = await getCurrentUser();
   if (!user) return fail("Sesimu sudah berakhir. Masuk lagi dulu ya.");
   const parsed = checkoutSchema.safeParse({
@@ -24,7 +26,7 @@ export async function startCheckout(_prev: ActionResult, fd: FormData): Promise<
 
   const r = await createOrder(user, parsed.data.courseId, parsed.data.whatsapp);
   if (!r.ok) return fail(r.error, r.field ? { [r.field]: r.error } : undefined);
-  redirect(r.redirectUrl);
+  return { ok: true, data: { orderId: r.orderId, payUrl: r.redirectUrl } };
 }
 
 export async function enrollFree(_prev: ActionResult, fd: FormData): Promise<ActionResult> {

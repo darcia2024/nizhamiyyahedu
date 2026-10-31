@@ -1,24 +1,62 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PollRefresh } from "../PollRefresh";
+import { EmbedNotify } from "../EmbedNotify";
 import { requireUser } from "@/lib/auth-guard";
 import { db } from "@/lib/db";
-import { effectiveStatus } from "@/lib/orders";
+import { effectiveStatus, syncOrderWithMayar } from "@/lib/orders";
 import { ORDER_LABEL } from "@/lib/constants";
 import { dateTimeWib, rupiah } from "@/lib/format";
+import "@/styles/pay-modal.css";
 
 export const metadata = { title: "Status pembayaran" };
 
 export default async function OrderStatusPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = await params;
   const user = await requireUser(`/dashboard/pembayaran/${orderId}`);
-  const order = await db.order.findFirst({ where: { id: orderId, userId: user.id }, include: { course: true } });
+  const find = () => db.order.findFirst({ where: { id: orderId, userId: user.id }, include: { course: true } });
+  let order = await find();
   if (!order) notFound(); // order orang lain atau id ngawur: tidak ada status palsu
+
+  // Mayar mengarahkan pembeli ke sini sesaat setelah bayar, kadang sebelum webhook tiba: tanya langsung ke Mayar.
+  if (order.status === "PENDING") {
+    try {
+      await syncOrderWithMayar(order);
+      order = (await find()) ?? order;
+    } catch (e) {
+      console.error("[pembayaran] gagal sinkron ke Mayar", e);
+    }
+  }
 
   const status = effectiveStatus(order);
   const retry = `/kursus/${order.course.slug}?lanjut=1`;
+  // Tampil di dalam pop-up pembayaran (iframe): versi ringkas tanpa kerangka situs, dan kabari halaman induk.
+  const embedded = (await headers()).get("sec-fetch-dest") === "iframe";
+
+  if (embedded) {
+    return (
+      <main className="pay-embed" data-testid="order-status" data-status={status}>
+        <EmbedNotify orderId={order.id} status={status} />
+        {status === "PAID" ? <CheckCircle2 size={44} className="ok" aria-hidden="true" /> : status === "PENDING" ? <Clock size={40} className="wait" aria-hidden="true" /> : <XCircle size={40} className="bad" aria-hidden="true" />}
+        <h1>
+          {status === "PAID" && "Pembayaran diterima"}
+          {status === "PENDING" && "Memastikan pembayaranmu…"}
+          {status === "EXPIRED" && "Tagihan kedaluwarsa"}
+          {status === "FAILED" && "Pembayaran gagal"}
+          {status === "CANCELLED" && "Pembayaran dibatalkan"}
+        </h1>
+        <p>
+          {status === "PAID" && "Kelasnya sudah terbuka. Sebentar lagi jendela ini beralih ke tombol mulai belajar."}
+          {status === "PENDING" && "Biasanya cuma beberapa detik. Jangan tutup jendela ini."}
+          {(status === "EXPIRED" || status === "FAILED" || status === "CANCELLED") && "Nggak ada dana yang terpotong. Tutup jendela ini lalu coba bayar lagi."}
+        </p>
+        {status === "PENDING" && <PollRefresh />}
+      </main>
+    );
+  }
 
   return (
     <AppShell user={user} active="pembayaran">
