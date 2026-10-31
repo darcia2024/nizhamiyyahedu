@@ -9,6 +9,8 @@ export type CourseProgress = {
   titleAr: string | null;
   field: Field;
   level: Level;
+  /** Thumbnail kelas (16:9); null bila belum diisi. */
+  image: string | null;
   teacherName: string | null;
   total: number;
   done: number;
@@ -68,6 +70,7 @@ export const getUserProgress = cache(async (userId: string): Promise<CourseProgr
       titleAr: c.titleAr,
       field: c.field as Field,
       level: c.level as Level,
+      image: c.coverUrl,
       teacherName: c.teacher?.displayName ?? null,
       total: ls.length,
       done,
