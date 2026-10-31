@@ -63,9 +63,8 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
     .filter((t): t is NonNullable<typeof t> => !!t && !isPlaceholder(t.displayName))
     .filter((t, i, all) => all.findIndex((x) => x.id === t.id) === i);
   const isFree = course.priceRupiah === 0;
-  // Foto sampul hero: kitab yang dikaji (paket: kitab tiap kelas isinya) dan foto pengajar, bila sudah ada.
+  // Foto sampul hero: hanya kitab yang dikaji (paket: kitab tiap kelas isinya), tanpa foto wajah.
   const books = (isBundle ? bundle : [course]).filter((b) => b.coverUrl);
-  const faces = teachers.filter((t) => t.photoUrl);
   const hasPreview = !isBundle && course.lessons.some((l) => l.isFreePreview);
   const contact = await getContent("contact.main");
 
@@ -131,12 +130,7 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
               <h1>{course.title}</h1>
               {teachers.length > 0 && (
                 <p className="kd-by">
-                  {teachers.map((t) => (
-                    <span key={t.id}>
-                      {t.photoUrl && <img src={mediaSrc(t.photoUrl)} alt="" width={44} height={44} />}
-                      {isBundle ? shortName(t.displayName) : t.displayName}
-                    </span>
-                  ))}
+                  {teachers.map((t) => <span key={t.id}>{isBundle ? shortName(t.displayName) : t.displayName}</span>)}
                 </p>
               )}
               <p className="kd-facts">{isBundle ? `${bundle.length} kelas · ` : ""}{lessonCount} pertemuan{totalMin ? ` · ${hoursLabel(totalMin)?.replace("± ", "±")} rekaman` : ""}</p>
@@ -147,7 +141,6 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
               {books.length > 0
                 ? <span className={`kd-books${books.length > 1 ? " two" : ""}`}>{books.map((b) => <img key={b.id} className="kd-kitab" src={mediaSrc(b.coverUrl as string)} alt="" />)}</span>
                 : course.titleAr && <p className="kd-ar" lang="ar" dir="rtl">{course.titleAr}</p>}
-              {faces.length > 0 && <span className={`kd-persons${faces.length > 1 ? " two" : ""}`}>{faces.map((t) => <img key={t.id} src={mediaSrc(t.photoUrl as string)} alt="" />)}</span>}
             </div>
           </div>
         </div>
