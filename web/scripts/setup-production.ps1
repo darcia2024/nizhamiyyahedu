@@ -54,7 +54,7 @@ if (Want 'SUPABASE_URL') { Set-VercelEnv 'SUPABASE_URL' (Read-Host 'Project URL 
 if (Want 'SUPABASE_SERVICE_ROLE_KEY') { Set-VercelEnv 'SUPABASE_SERVICE_ROLE_KEY' (Read-Secret 'service_role key (untuk simpan foto unggahan)') }
 
 Write-Host "`n== Google Cloud: OAuth client (Web application) ==" -ForegroundColor Cyan
-Write-Host "   Authorized redirect URI: https://nizhamiyyahedu.vercel.app/web/api/auth/callback/google" -ForegroundColor DarkGray
+Write-Host "   Authorized redirect URI: https://nizhamiyyahedu.vercel.app/api/auth/callback/google" -ForegroundColor DarkGray
 if (Want 'AUTH_GOOGLE_ID') { Set-VercelEnv 'AUTH_GOOGLE_ID' (Read-Host 'Client ID') }
 if (Want 'AUTH_GOOGLE_SECRET') { Set-VercelEnv 'AUTH_GOOGLE_SECRET' (Read-Secret 'Client secret') }
 

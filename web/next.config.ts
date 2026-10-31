@@ -1,6 +1,6 @@
 ﻿import type { NextConfig } from "next";
 
-// "/web" saat dipasang di nizhamiyyahedu.vercel.app/web; kosong di lokal.
+// Kosong: aplikasi tayang di akar nizhamiyyahedu.vercel.app. Isi (mis. "/web") hanya bila dipasang di sub-path.
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || undefined;
 // Domain lain yang meneruskan permintaan ke aplikasi ini (rewrite Vercel), dipisah koma.
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean);

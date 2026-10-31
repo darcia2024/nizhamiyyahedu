@@ -1,5 +1,5 @@
 /**
- * Awalan alamat aplikasi. Kosong di lokal; "/web" saat dipasang di nizhamiyyahedu.vercel.app/web.
+ * Awalan alamat aplikasi. Kosong di lokal dan di nizhamiyyahedu.vercel.app; terisi hanya bila dipasang di sub-path.
  * Link next/link dan redirect() sudah otomatis memakai basePath. Fungsi ini untuk sisanya:
  * <a>, <img>, next/image, fetch(), action form GET dan redirectTo Auth.js.
  */
