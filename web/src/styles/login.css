@@ -1,0 +1,66 @@
+/* Halaman masuk dua sisi: panel gambar (thumbnail kelas bergantian) di kiri, kartu putih di kanan,
+   keduanya di dalam bingkai hijau gelap. Di HP bertumpuk: gambar sebagai banner di atas, kartu di bawah. */
+
+.lg {
+  min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 14px; padding: 14px;
+  background: #0f3a2c; color: #10231c;
+}
+
+/* ---------- Panel gambar ---------- */
+.lg-hero { position: relative; isolation: isolate; overflow: hidden; border-radius: 20px; min-height: calc(100dvh - 28px); background: #0e3f2a; color: #fff }
+.lg-slide { z-index: -2; object-fit: cover; object-position: 100% 50%; opacity: 0; transition: opacity 1.1s ease }
+.lg-slide[data-on="true"] { opacity: 1 }
+/* Gradasi: gelap di bawah (untuk teks) dan di kiri (menyembunyikan sisa tulisan di thumbnail yang terpotong). */
+.lg-hero::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(7, 26, 19, .96) 0%, rgba(7, 26, 19, .6) 40%, rgba(7, 26, 19, .12) 72%, rgba(7, 26, 19, .5) 100%),
+    linear-gradient(to right, rgba(7, 26, 19, .72), transparent 58%);
+}
+.lg-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 26px clamp(22px, 3vw, 36px) }
+.lg-brand { display: inline-flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; font-size: 21px; letter-spacing: -.02em }
+.lg-back { display: inline-flex; align-items: center; gap: 7px; flex: none; white-space: nowrap; color: #e3efea; font-size: 13.5px; text-decoration: none }
+.lg-back:hover { color: #fff; text-decoration: underline }
+.lg-pitch { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 clamp(22px, 3.4vw, 44px) clamp(24px, 3.4vw, 40px) }
+.lg-pitch h2 { margin: 0; max-width: 13ch; font-family: var(--font-app); font-size: clamp(32px, 3.8vw, 52px); font-weight: 500; line-height: 1.04; letter-spacing: -.035em; text-wrap: balance }
+.lg-pitch p { margin: 14px 0 0; max-width: 34em; font-size: 15px; line-height: 1.65; color: #cfe5da }
+.lg-dots { display: flex; gap: 7px; margin-top: 24px }
+.lg-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .42); cursor: pointer; transition: width .3s, background .3s }
+.lg-dots button[aria-current="true"] { width: 30px; background: #fff }
+
+/* ---------- Kartu masuk ---------- */
+.lg-side { display: grid; place-items: center; padding: clamp(18px, 3vw, 40px); border-radius: 20px; background: #fff }
+.lg-card { width: min(100%, 440px) }
+.lg-card h1 { margin: 0; font-family: var(--font-app); font-size: clamp(30px, 3.2vw, 40px); font-weight: 600; line-height: 1.08; letter-spacing: -.035em }
+.lg-sub { margin: 12px 0 28px; font-size: 15.5px; line-height: 1.6; color: #55635a }
+.lg-card .alert { margin-bottom: 16px }
+.lg-google {
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 54px; padding: 0 20px;
+  border: 1px solid #cfd6cc; border-radius: 999px; background: #fff; color: #10231c; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.lg-google:hover { border-color: #1e715c; background: #f7fbf9; box-shadow: 0 0 0 4px rgba(30, 113, 92, .12) }
+.lg-google:disabled { opacity: .7; cursor: progress }
+.lg-google svg { width: 20px; height: 20px }
+.lg-points { list-style: none; margin: 26px 0 0; padding: 22px 0 0; border-top: 1px solid #e6e9e2; display: grid; gap: 12px }
+.lg-points li { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; line-height: 1.5; color: #3f5a4b }
+.lg-points svg { flex: none; margin-top: 2px; color: #1e715c }
+.lg-dev { margin-top: 24px; padding-top: 20px; border-top: 1px dashed #d9dfd5 }
+.lg-terms { margin: 26px 0 0; font-size: 12.5px; line-height: 1.65; color: #7a857d }
+.lg-terms a { color: #1e715c; text-decoration: underline }
+
+/* ---------- HP dan layar sempit ---------- */
+@media (max-width: 900px) {
+  .lg { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 10px }
+  .lg-hero { min-height: 300px; border-radius: 16px }
+  .lg-slide { object-position: 100% 40% }
+  .lg-hero::after { background: linear-gradient(to top, rgba(7, 26, 19, .96) 0%, rgba(7, 26, 19, .55) 45%, rgba(7, 26, 19, .15) 75%, rgba(7, 26, 19, .55) 100%), linear-gradient(to right, rgba(7, 26, 19, .9), rgba(7, 26, 19, .35) 55%, transparent 80%) }
+  .lg-back-long { display: none }
+  .lg-brand { font-size: 18px }
+  .lg-top { padding: 18px 18px 0 }
+  .lg-pitch { padding: 0 18px 20px }
+  .lg-pitch h2 { font-size: 28px }
+  .lg-pitch p, .lg-dots { display: none }
+  .lg-side { align-items: start; padding: 28px 20px 32px; border-radius: 16px }
+}
+@media (prefers-reduced-motion: reduce) { .lg-slide, .lg-dots button { transition: none } }
