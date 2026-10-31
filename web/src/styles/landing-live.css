@@ -48,18 +48,31 @@
 .landing-page .landing-kicker { display: inline-flex; align-items: center; gap: 9px; text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 600; color: var(--lv-green) }
 .landing-page .landing-kicker::before { content: ""; flex: none; width: 13px; height: 13px; background: currentColor; -webkit-mask: var(--lv-star) center / contain no-repeat; mask: var(--lv-star) center / contain no-repeat }
 
-/* ---------- Kabar dari majelis (Instagram) di pita gelap ---------- */
-.landing-page .social-section { background: var(--lv-deep); color: #fff; padding-block: 92px }
-.landing-page .social-section h2 { color: #fff }
-.landing-page .social-section .landing-section-head p { color: #cfe1d7 }
-.landing-page .social-section .landing-kicker { color: var(--lv-cream) }
-.landing-page .social-section .social-follow { background: var(--lv-cream); color: var(--lv-deep) }
-.landing-page .social-grid { display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 18px 4px 22px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .3) transparent }
-.landing-page .social-grid > li { flex: 0 0 clamp(210px, 23vw, 280px); scroll-snap-align: start }
-.landing-page .social-grid > li:nth-child(odd) .social-card { transform: rotate(-1.4deg) }
-.landing-page .social-grid > li:nth-child(even) .social-card { transform: rotate(1.2deg) translateY(10px) }
-.landing-page .social-card { border: 5px solid #fff; border-radius: 12px; background: #fff; box-shadow: 0 18px 40px rgba(0, 0, 0, .3) }
-.landing-page .social-grid > li .social-card:hover, .landing-page .social-grid > li .social-card:focus-visible { transform: rotate(0) translateY(-6px) }
+/* ---------- Catatan kegiatan: editorial, bukan deretan poster miring ---------- */
+.landing-page .social-section { overflow: hidden; background: var(--lv-deep); color: #fff; padding-block: 96px 84px; border: 0 }
+.landing-page .social-intro { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); gap: clamp(48px, 8vw, 112px); align-items: end; padding-bottom: 48px; border-bottom: 1px solid rgba(255, 255, 255, .18) }
+.landing-page .social-heading { max-width: 690px }
+.landing-page .social-section .landing-kicker { margin: 0 0 22px; color: var(--lv-cream) }
+.landing-page .social-section h2 { margin: 0; max-width: 12ch; color: #fff; font-size: clamp(42px, 5.4vw, 72px); font-weight: 500; line-height: 1.02; letter-spacing: -.042em; text-wrap: balance }
+.landing-page .social-summary > p { max-width: 38em; margin: 0; color: #c9dcd3; font-size: 15px; line-height: 1.75 }
+.landing-page .social-follow { display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 13px; width: min(100%, 350px); margin-top: 26px; padding: 10px 13px 10px 10px; border: 1px solid rgba(246, 231, 180, .42); border-radius: 9px; color: #fff; text-decoration: none; transition: background .2s, border-color .2s, color .2s }
+.landing-page .social-follow:hover, .landing-page .social-follow:focus-visible { background: var(--lv-cream); border-color: var(--lv-cream); color: var(--lv-deep) }
+.landing-page .social-follow-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 7px; background: var(--lv-cream); color: var(--lv-deep) }
+.landing-page .social-follow > span:nth-child(2) { min-width: 0; font-size: 14px; font-weight: 600; overflow-wrap: anywhere }
+.landing-page .social-follow small { display: block; margin-bottom: 2px; color: #b9d0c5; font-size: 10px; font-weight: 500; letter-spacing: .04em }
+.landing-page .social-follow:hover small, .landing-page .social-follow:focus-visible small { color: #4b685d }
+.landing-page .social-grid { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0; padding: 34px 2px 20px; scrollbar-width: thin; scrollbar-color: rgba(246, 231, 180, .44) transparent }
+.landing-page .social-grid > li { flex: 0 0 clamp(224px, 22vw, 282px); scroll-snap-align: start }
+.landing-page .social-grid > li:first-child { flex-basis: clamp(270px, 28vw, 360px) }
+.landing-page .social-card { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border: 1px solid rgba(255, 255, 255, .18); border-radius: 8px; background: #173d30; box-shadow: none; transform: none; transition: border-color .25s, transform .25s }
+.landing-page .social-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(5, 28, 20, .88) 100%); pointer-events: none }
+.landing-page .social-card img { filter: saturate(.88); transition: transform .45s ease, filter .3s }
+.landing-page .social-card:hover, .landing-page .social-card:focus-visible { border-color: rgba(246, 231, 180, .72); transform: translateY(-4px); box-shadow: none }
+.landing-page .social-card:hover img, .landing-page .social-card:focus-visible img { filter: saturate(1); transform: scale(1.025) }
+.landing-page .social-over { z-index: 1; inset: auto 0 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 44px 16px 15px; background: none; color: #fff; opacity: 1 }
+.landing-page .social-over > span { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600 }
+.landing-page .social-over small { max-width: 92px; color: #d5e2dc; font-size: 10px; font-weight: 500; line-height: 1.3; text-align: right }
+.landing-page .social-scroll-hint { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin: 6px 0 0; color: #a9c5b8; font-size: 11px }
 
 /* ---------- Cara belajar + contoh tampilan berdampingan ---------- */
 .lv-journey-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 64px; align-items: center }
@@ -82,6 +95,8 @@
   .lv-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 40px }
   .lv-board { height: 460px; max-width: 560px; width: 100%; margin-inline: auto }
   .lv-journey-grid { grid-template-columns: minmax(0, 1fr); gap: 44px }
+  .landing-page .social-intro { grid-template-columns: 1fr; gap: 28px; align-items: start }
+  .landing-page .social-section h2 { max-width: 13ch }
 }
 @media (max-width: 560px) {
   .lv-board { height: 380px }
@@ -89,7 +104,17 @@
   .lv-poster.p2 { width: 52%; left: 26% }
   .lv-place span { display: none }
   .lv-ticker li { font-size: 14px; padding-block: 12px }
-  .landing-page .social-grid > li { flex-basis: 70vw }
+  .landing-page .social-section { padding-block: 64px 54px }
+  .landing-page .social-intro { gap: 22px; padding-bottom: 32px }
+  .landing-page .social-section .landing-kicker { margin-bottom: 16px }
+  .landing-page .social-section h2 { max-width: 11ch; font-size: clamp(38px, 11.5vw, 50px); line-height: 1.04 }
+  .landing-page .social-summary > p { font-size: 14px; line-height: 1.7 }
+  .landing-page .social-follow { width: 100%; margin-top: 22px }
+  .landing-page .social-grid { width: calc(100% + max(16px, 4vw)); gap: 12px; padding-top: 24px; padding-right: max(16px, 4vw) }
+  .landing-page .social-grid > li, .landing-page .social-grid > li:first-child { flex-basis: min(76vw, 294px) }
+  .landing-page .social-card { border-radius: 7px }
+  .landing-page .social-over { padding: 40px 13px 12px }
+  .landing-page .social-scroll-hint { justify-content: flex-start; margin-top: 2px }
 }
 @media (prefers-reduced-motion: reduce) {
   .lv-ticker-track { animation: none; width: auto }

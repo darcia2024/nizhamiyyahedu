@@ -23,29 +23,35 @@ export async function SocialGallery() {
   return (
     <section id="sosmed" className="social-section gutter" aria-labelledby="sosmed-h">
       <div className="wrap">
-        <div className="landing-section-head split" data-reveal>
-          <div>
+        <div className="social-intro" data-reveal>
+          <div className="social-heading">
             <p className="landing-kicker">{copy.socialKicker}</p>
             <h2 id="sosmed-h">{copy.socialTitle}</h2>
           </div>
-          <div>
+          <div className="social-summary">
             <p>{copy.socialText}</p>
-            <a className="landing-btn primary social-follow" href={instagramUrl} target="_blank" rel="noopener noreferrer">
-              <InstagramGlyph size={18} /> Ikuti @{copy.instagramHandle} <ArrowRight size={16} aria-hidden="true" />
+            <a className="social-follow" href={instagramUrl} target="_blank" rel="noopener noreferrer">
+              <span className="social-follow-icon"><InstagramGlyph size={19} /></span>
+              <span><small>Ikuti di Instagram</small>@{copy.instagramHandle}</span>
+              <ArrowRight size={18} aria-hidden="true" />
             </a>
           </div>
         </div>
 
-        <ul className="social-grid">
+        <ul className="social-grid" aria-label="Postingan terbaru Nizhamiyyah Edu">
           {posts.map((p, i) => (
             <li key={p.code} data-reveal style={{ ["--delay" as string]: `${(i % 4) * 70}ms` }}>
               <a className="social-card" href={socialPostUrl(p.code)} target="_blank" rel="noopener noreferrer" aria-label={`Buka di Instagram: ${p.alt}`}>
-                <Image src={withBase(p.image ?? socialImage(p.code))} alt="" width={512} height={640} sizes="(max-width: 640px) 46vw, (max-width: 1100px) 30vw, 270px" loading="lazy" />
-                <span className="social-over"><InstagramGlyph size={18} /><small>{p.date}</small></span>
+                <Image src={withBase(p.image ?? socialImage(p.code))} alt={p.alt} width={512} height={640} sizes="(max-width: 640px) 76vw, (max-width: 1100px) 36vw, 280px" loading="lazy" />
+                <span className="social-over">
+                  <span><InstagramGlyph size={16} /> Lihat postingan</span>
+                  <small>{p.date}</small>
+                </span>
               </a>
             </li>
           ))}
         </ul>
+        <p className="social-scroll-hint" aria-hidden="true">Geser untuk melihat kegiatan lainnya <ArrowRight size={15} /></p>
       </div>
     </section>
   );
