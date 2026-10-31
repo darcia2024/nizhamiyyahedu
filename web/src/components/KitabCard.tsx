@@ -21,7 +21,7 @@ function KitabCover({ ar, label, foot }: { ar: string; label?: string; foot?: st
 }
 
 /**
- * Kartu kelas dengan foto asli: kitab yang dikaji dan pengajarnya, dipotong dari poster resmi.
+ * Kartu kelas dengan foto asli kitab yang dikaji (dipotong dari poster resmi), tanpa foto wajah.
  * Paket bundling melebar dengan kitab-kitab isinya dan harga normal dicoret.
  * `all` dipakai untuk mencari kelas isi paket (harga normal, foto, pengajar).
  */
@@ -30,18 +30,17 @@ export function KitabCard({ c, all, wide = false }: { c: CourseCard; all: Course
   const bundle = items.length > 0;
   const normal = items.reduce((a, i) => a + i.priceRupiah, 0);
   const save = bundle ? normal - c.priceRupiah : 0;
-  const people = (bundle ? items : [c]).filter((i) => !isPlaceholder(i.teacherName)).map((i) => ({ name: i.teacherName as string, photo: i.teacherPhoto }));
+  const people = (bundle ? items : [c]).filter((i) => !isPlaceholder(i.teacherName)).map((i) => i.teacherName as string);
   const hours = hoursLabel(c.totalMin)?.replace("± ", "±");
   const free = c.priceRupiah === 0;
   const books = (bundle ? items : [c]).filter((i) => i.image);
 
   return (
     <article className={`kb-card${bundle ? " is-bundle" : ""}${wide ? " wide" : ""}`} data-testid="course-card">
-      <div className={`kb-media${c.teacherPhoto && !bundle ? " has-person" : ""}`} aria-hidden="true">
+      <div className="kb-media" aria-hidden="true">
         {books.length > 0
           ? <span className="kb-books">{books.map((b) => <img key={b.id} className="kb-kitab" src={mediaSrc(b.image as string)} alt="" loading="lazy" />)}</span>
           : <KitabCover ar={c.titleAr ?? c.title} label={FIELD_LABEL[c.field]} foot={`Marhalah ${LEVEL_LABEL[c.level]}`} />}
-        {!bundle && c.teacherPhoto && <img className="kb-person" src={mediaSrc(c.teacherPhoto)} alt="" loading="lazy" />}
         {bundle && <span className="kb-ribbon">{items.length} kelas sekaligus</span>}
       </div>
 
@@ -50,16 +49,7 @@ export function KitabCard({ c, all, wide = false }: { c: CourseCard; all: Course
         <h3><Link href={`/kursus/${c.slug}`}>{c.title}</Link></h3>
         <p className="kb-meta">{c.lessonCount} pertemuan{hours && ` · ${hours} rekaman`}</p>
 
-        {bundle ? (
-          <ul className="kb-people">
-            {people.map((p) => (
-              <li key={p.name}>
-                {p.photo ? <img src={mediaSrc(p.photo)} alt="" width={36} height={36} loading="lazy" /> : <span className="kb-noface" />}
-                {shortName(p.name)}
-              </li>
-            ))}
-          </ul>
-        ) : people[0] && <p className="kb-teacher">{people[0].name}</p>}
+        {people.length > 0 && <p className="kb-teacher">{bundle ? people.map(shortName).join(" & ") : people[0]}</p>}
         {bundle && c.description && <p className="kb-desc">{c.description}</p>}
 
         {c.hasFreePreview && !bundle && (

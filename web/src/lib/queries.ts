@@ -32,9 +32,8 @@ export type CourseCard = {
   level: Level;
   priceRupiah: number;
   teacherName: string | null;
-  /** Foto kitab yang dikaji (sampul kartu) dan foto pengajar; null bila belum diisi. */
+  /** Foto kitab yang dikaji (sampul kartu); null bila belum diisi. */
   image: string | null;
-  teacherPhoto: string | null;
   lessonCount: number;
   totalMin: number;
   hasFreePreview:boolean;
@@ -57,7 +56,6 @@ function toCard(c: Raw): CourseCard {
     priceRupiah: c.priceRupiah,
     teacherName: c.teacher?.displayName ?? null,
     image: c.coverUrl,
-    teacherPhoto: c.teacher?.photoUrl ?? null,
     lessonCount: c.lessons.length,
     totalMin: c.lessons.reduce((a, l) => a + (l.durationMin ?? 0), 0),
     hasFreePreview:c.lessons.some(l=>l.isFreePreview),

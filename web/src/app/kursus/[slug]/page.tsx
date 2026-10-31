@@ -9,7 +9,7 @@ import { db } from "@/lib/db";
 import { getCurrentUser, canManageCourse } from "@/lib/auth-guard";
 import { getCourseBySlug } from "@/lib/queries";
 import { FIELD_LABEL, LEVEL_LABEL, type Field, type Level } from "@/lib/constants";
-import { dateTimeWib, hoursLabel, initials, isPlaceholder, rupiah } from "@/lib/format";
+import { dateTimeWib, hoursLabel, isPlaceholder, rupiah } from "@/lib/format";
 import { mediaSrc } from "@/lib/base-path";
 import "@/styles/kursus-detail.css";
 
@@ -208,7 +208,6 @@ export default async function CourseDetailPage({ params, searchParams }: Props) 
                 <div className="kd-teachers">
                   {teachers.map((t) => (
                     <div key={t.id} className="kd-teacher">
-                      {t.photoUrl ? <img className="face" src={mediaSrc(t.photoUrl)} alt={`Foto ${t.displayName}`} width={96} height={96} /> : <div className="face" aria-hidden="true">{initials(t.displayName)}</div>}
                       <div>
                         <h3>{t.displayName}</h3>
                         {!isPlaceholder(t.alumni) && <p>{t.alumni}</p>}

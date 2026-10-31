@@ -59,10 +59,9 @@
 .kd-bundle s { font-size: 14px; color: #8b8670 }
 .kd-save { display: inline-block; margin: 18px 0 0; padding: 6px 12px; border-radius: 3px; background: #f6e7b4; color: #6b4a07; font-size: 13.5px; font-weight: 600 }
 
-.kd-teachers { display: grid; gap: 30px }
-.kd-teacher { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 22px; align-items: start }
-.kd-teacher .face { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; object-position: 50% 14%; background: #1f6f5c; display: grid; place-items: center; color: #fff; font-weight: 600; font-size: 24px }
-.kd-teacher h3 { margin: 4px 0 0; font-family: var(--font-app); font-size: 20px; font-weight: 600; letter-spacing: -.015em }
+.kd-teachers { display: grid; gap: 28px }
+.kd-teacher { padding-left: 18px; border-left: 2px solid #d9cfae }
+.kd-teacher h3 { margin: 0; font-family: var(--font-app); font-size: 20px; font-weight: 600; letter-spacing: -.015em }
 .kd-teacher p { margin: 6px 0 0; font-size: 14.5px; line-height: 1.6; color: #4a5a50 }
 
 /* Panel beli dan FAQ mengikuti gaya kartu katalog. */
@@ -87,6 +86,4 @@
   .kd-bundle li { grid-template-columns: 48px minmax(0, 1fr) }
   .kd-bundle img, .kd-bundle .ph { width: 48px }
   .kd-bundle s { grid-column: 2 }
-  .kd-teacher { grid-template-columns: 72px minmax(0, 1fr); gap: 16px }
-  .kd-teacher .face { width: 72px; height: 72px }
 }

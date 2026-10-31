@@ -1,6 +1,5 @@
 /* Kartu kelas (beranda dan katalog).
-   Sampul memakai foto asli dari poster resmi: kitab yang dikaji di kiri, pengajar di kanan.
-   Hijau latar #1f6f5c sama dengan latar foto pengajar supaya potongan foto menyatu. */
+   Sampul memakai foto asli kitab yang dikaji, dipotong dari poster resmi, di atas hijau polos #1f6f5c. Tanpa foto wajah. */
 
 .kb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px }
 .kb-card {
@@ -18,8 +17,6 @@
   background-color: #1f6f5c;
 }
 .kb-card.wide .kb-media { width: 44%; height: auto; min-height: 300px }
-.kb-media.has-person { justify-content: flex-start; padding-left: 26px }
-
 .kb-books { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; height: 100% }
 .kb-kitab {
   display: block; height: 74%; width: auto; border-radius: 2px;
@@ -34,11 +31,6 @@
 .is-bundle:hover .kb-kitab:first-child { transform: rotate(-8deg) translateX(4px) }
 .is-bundle:hover .kb-kitab:last-child { transform: rotate(7deg) translateX(-4px) translateY(10px) }
 
-/* Foto pengajar menempel di dasar kanan; tepi kirinya dipudarkan ke hijau latar. */
-.kb-person {
-  position: absolute; right: 0; bottom: 0; height: 100%; width: auto; max-width: 62%; object-fit: cover; object-position: top center;
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 26%); mask-image: linear-gradient(to right, transparent 0, #000 26%);
-}
 
 .kb-ribbon {
   position: absolute; top: 18px; left: 0; z-index: 2; padding: 6px 14px 6px 12px; background: #f6e7b4; color: #5c4306;
@@ -68,9 +60,6 @@
 .kb-meta { margin: 6px 0 0; font-size: 13.5px; color: #66705f }
 .kb-teacher { margin: 10px 0 0; font-size: 14px; font-weight: 600; color: #2c4a3c }
 
-.kb-people { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px }
-.kb-people li { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: #2c4a3c }
-.kb-people img, .kb-noface { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; object-position: 50% 12%; background: #1f6f5c; box-shadow: 0 0 0 2px #fffdf7, 0 0 0 3px #d9cfae }
 
 .kb-desc { margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: #55635a; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; max-width: 34em }
 .kb-free {
