@@ -3,6 +3,7 @@ import { getContent } from "@/lib/content";
 import { ArrowRight } from "lucide-react";
 import { withBase } from "@/lib/base-path";
 import { socialImage, socialPostUrl } from "@/lib/social";
+import { SocialRail } from "./SocialRail";
 
 /** Glyph Instagram sederhana (lucide-react v1 tidak lagi menyertakan ikon merek). */
 export function InstagramGlyph({ size = 18 }: { size?: number }) {
@@ -38,7 +39,7 @@ export async function SocialGallery() {
           </div>
         </div>
 
-        <ul className="social-grid" aria-label="Postingan terbaru Nizhamiyyah Edu">
+        <SocialRail label="Postingan terbaru Nizhamiyyah Edu">
           {posts.map((p, i) => (
             <li key={p.code} data-reveal style={{ ["--delay" as string]: `${(i % 4) * 70}ms` }}>
               <a className="social-card" href={socialPostUrl(p.code)} target="_blank" rel="noopener noreferrer" aria-label={`Buka di Instagram: ${p.alt}`}>
@@ -50,7 +51,7 @@ export async function SocialGallery() {
               </a>
             </li>
           ))}
-        </ul>
+        </SocialRail>
         <p className="social-scroll-hint" aria-hidden="true">Geser untuk melihat kegiatan lainnya <ArrowRight size={15} /></p>
       </div>
     </section>
