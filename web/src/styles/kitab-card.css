@@ -15,11 +15,10 @@
 .kb-media {
   position: relative; flex: none; height: 250px; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  background-color: #1f6f5c; background-image: var(--lv-tile-soft); background-size: 64px 64px;
+  background-color: #1f6f5c;
 }
 .kb-card.wide .kb-media { width: 44%; height: auto; min-height: 300px }
-/* Tanpa pola di belakang foto pengajar supaya tidak ada batas kotak antara foto dan latar. */
-.kb-media.has-person { justify-content: flex-start; padding-left: 26px; background-image: none }
+.kb-media.has-person { justify-content: flex-start; padding-left: 26px }
 
 .kb-books { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; height: 100% }
 .kb-kitab {

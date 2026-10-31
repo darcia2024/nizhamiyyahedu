@@ -19,6 +19,9 @@ type Props = {
   title: string;
   titleAr: string | null;
   priceLabel: string;
+  /** Paket: harga normal (dicoret) dan label hemat. */
+  normalLabel?: string;
+  saveLabel?: string;
   isFree: boolean;
   isBundle?: boolean;
   priceNumber: number;
@@ -97,7 +100,9 @@ export function BuyPanel(p: Props) {
     <>
       <aside className="buy-card" aria-label="Pendaftaran">
         <div>
+          {p.normalLabel && <s className="kd-was num">{p.normalLabel}</s>}
           <div className="price num">{p.priceLabel}</div>
+          {p.saveLabel && <span className="kd-hemat">{p.saveLabel}</span>}
           {!p.isFree && <p className="small muted">{p.isBundle ? "Sekali bayar, semua kelas di paket terbuka" : "Sekali bayar, akses selamanya"}</p>}
         </div>
         <ul className="ticks">
