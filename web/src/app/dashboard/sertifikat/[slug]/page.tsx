@@ -22,7 +22,7 @@ export default async function CertificatePage({ params }: Props) {
   if (!issued.ok) redirect(issued.reason === "not-enrolled" ? `/dashboard/katalog/${slug}` : "/dashboard/sertifikat");
   const c = issued.certificate;
   if (c.revokedAt) redirect("/dashboard/sertifikat");
-  const verifyUrl = `${(process.env.APP_URL ?? "https://nizhamiyyahedu.vercel.app").replace(/\/$/, "")}/sertifikat/${c.code}`;
+  const verifyUrl = `${(process.env.APP_URL ?? "https://belajarditimurtengah.com").replace(/\/$/, "")}/sertifikat/${c.code}`;
 
   return (
     <main className="cert-page" id="isi">
