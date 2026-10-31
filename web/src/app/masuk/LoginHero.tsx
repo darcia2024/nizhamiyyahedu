@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { StarMark } from "@/components/Logo";
@@ -25,11 +24,11 @@ export function LoginHero({ images, headline, text }: { images: string[]; headli
         <Image key={src} className="lg-slide" data-on={idx === i} src={src} alt="" fill sizes="(max-width: 900px) 100vw, 56vw" quality={82} priority={idx === 0} />
       ))}
       <header className="lg-top">
-        <Link href="/" className="lg-brand" aria-label="Nizhamiyyah Edu">
+        <a href="/" className="lg-brand" aria-label="Nizhamiyyah Edu">
           <StarMark size={40} />
           <b>Nizhamiyyah</b>
-        </Link>
-        <Link href="/" className="lg-back"><ArrowLeft size={15} aria-hidden="true" /> <span className="lg-back-long">Kembali ke </span>beranda</Link>
+        </a>
+        <a href="/" className="lg-back"><ArrowLeft size={15} aria-hidden="true" /> <span className="lg-back-long">Kembali ke </span>beranda</a>
       </header>
       <div className="lg-pitch">
         <h2>{headline}</h2>

@@ -20,7 +20,8 @@ export async function PublicHeader({ landing = false }: { landing?: boolean }) {
     <header className={`pub-header gutter${landing ? " landing-header" : ""}`}>
       <div className="wrap">
         <BackButton className="on-header" />
-        <Link href="/" aria-label="Nizhamiyyah Edu, ke beranda"><Logo /></Link>
+        {/* <a> biasa, bukan <Link>: pindah penuh ke beranda, jadi tidak memakai salinan lama beranda dari cache router (mis. dari sebelum logout). */}
+        <a href="/" aria-label="Nizhamiyyah Edu, ke beranda"><Logo /></a>
         <nav className="nav-inline" aria-label="Navigasi utama">
           {NAV.map((n) => <Link key={n.href} href={n.href}>{n.label}</Link>)}
         </nav>
