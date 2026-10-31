@@ -78,6 +78,11 @@
 .kb-price s { flex-basis: 100%; font-size: 13px; color: #8b8670 }
 .kb-price small { font-size: 12px; color: #7d8a80 }
 .kb-price em { font-style: normal; font-size: 12px; font-weight: 700; color: #6b4a07; background: #f6e7b4; padding: 3px 8px; border-radius: 3px }
+.kb-note { margin: 10px 0 0; font-size: 13px; color: #8a7433 }
+.kb-owned { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-app); font-size: 16px; font-weight: 600; color: #1e715c }
+.kb-ribbon.kb-ribbon-own { display: inline-flex; align-items: center; gap: 5px; background: #fffdf7; color: #1e715c }
+.kb-card.is-owned { border-color: #b7d3c7 }
+.kb-grid.compact { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px }
 .kb-go { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #1e715c; white-space: nowrap }
 .kb-go svg { transition: transform .2s }
 .kb-card:hover .kb-go svg { transform: translateX(3px) }

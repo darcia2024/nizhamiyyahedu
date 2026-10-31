@@ -60,7 +60,7 @@ export default async function ProgressPage() {
         <section className="card pad stack" aria-labelledby="krs-h">
           <h2 id="krs-h">Progres per kursus</h2>
           {progress.length === 0 ? (
-            <p className="muted">Belum ada kursus yang diikuti. <Link href="/kursus">Lihat katalog</Link>.</p>
+            <p className="muted">Belum ada kursus yang diikuti. <Link href="/dashboard/katalog">Lihat katalog</Link>.</p>
           ) : (
             progress.map((p) => {
               const pct = p.total ? Math.round((p.done / p.total) * 100) : 0;

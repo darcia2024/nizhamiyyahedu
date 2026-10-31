@@ -91,7 +91,7 @@
 .lh-hijri { display: block; margin-top: 3px; font-size: 11.5px; color: var(--lv-green); font-weight: 500 }
 
 /* Kartu "lanjutkan dari sini" di ruang belajar memakai pola yang sama dengan beranda. */
-.lh-feature { position: relative; background-image: var(--lv-tile-soft); background-size: 80px 80px }
+.lh-feature { position: relative }
 
 @media (max-width: 560px) {
   .lv-band { padding-block: 40px 44px }

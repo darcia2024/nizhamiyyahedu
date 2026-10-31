@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { withBase } from "@/lib/base-path";
-import { Award, BookOpen, ChevronsUpDown, CirclePlay, CreditCard, Ellipsis, LayoutGrid, LifeBuoy, LineChart, LogOut, NotebookPen, PencilRuler, Search, Settings2, ShieldCheck } from "lucide-react";
+import { Award, BookOpen, ChevronsUpDown, CirclePlay, CreditCard, Ellipsis, LayoutGrid, LifeBuoy, LineChart, LogOut, NotebookPen, PencilRuler, Search, Settings2, ShieldCheck, ShoppingBag } from "lucide-react";
 import { StarMark } from "@/components/Logo";
 import { InstallButton } from "@/components/InstallButton";
 import { SidebarSearch } from "@/components/SidebarSearch";
@@ -9,11 +9,12 @@ import { signOut } from "@/auth";
 import type { CurrentUser } from "@/lib/auth-guard";
 import { initials } from "@/lib/format";
 
-export type NavKey = "dashboard" | "kursus" | "catatan" | "progres" | "sertifikat" | "pembayaran" | "profil" | "kelola" | "admin" | "menu";
+export type NavKey = "dashboard" | "kursus" | "katalog" | "catatan" | "progres" | "sertifikat" | "pembayaran" | "profil" | "kelola" | "admin" | "menu";
 
 const PAGE_LABEL: Record<NavKey, string> = {
   dashboard: "Ringkasan",
   kursus: "Ruang belajar",
+  katalog: "Katalog kelas",
   catatan: "Catatan saya",
   progres: "Progres",
   sertifikat: "Sertifikat",
@@ -44,6 +45,7 @@ export async function AppShell({
   ] : [
     { key: "dashboard", href: "/dashboard", label: "Ringkasan", icon: <LayoutGrid {...icon} /> },
     { key: "kursus", href: "/dashboard/kursus", label: "Ruang belajar", icon: <CirclePlay {...icon} /> },
+    { key: "katalog", href: "/dashboard/katalog", label: "Katalog kelas", icon: <ShoppingBag {...icon} /> },
     { key: "catatan", href: "/dashboard/catatan", label: "Catatan saya", icon: <NotebookPen {...icon} /> },
   ];
   const achieve: Item[] = user.role === "ADMIN" ? [] : [
@@ -51,7 +53,6 @@ export async function AppShell({
     { key: "sertifikat", href: "/dashboard/sertifikat", label: "Sertifikat", icon: <Award {...icon} /> },
   ];
   const other: Item[] = user.role === "ADMIN" ? [] : [
-    { key: null, href: "/kursus", label: "Katalog program", icon: <BookOpen {...icon} /> },
     { key: "pembayaran", href: "/dashboard/pembayaran", label: "Transaksi", icon: <CreditCard {...icon} /> },
   ];
   const manage: Item[] = [];
@@ -125,7 +126,7 @@ export async function AppShell({
           <div className="topbar">
             <p className="crumb">Dashboard <span aria-hidden="true">/</span> <b>{PAGE_LABEL[active]}</b></p>
             <div className="grow" />
-            <Link className="top-btn" href="/kursus"><Search size={16} aria-hidden="true" />Jelajahi katalog</Link>
+            <Link className="top-btn" href={user.role === "ADMIN" ? "/kursus" : "/dashboard/katalog"}><Search size={16} aria-hidden="true" />Jelajahi katalog</Link>
           </div>
           <div id="isi" className="panel">{children}</div>
         </div>
@@ -135,6 +136,7 @@ export async function AppShell({
         {user.role === "ADMIN" ? <><Link href="/admin"><LayoutGrid size={20} aria-hidden="true" />Ringkasan</Link><Link href="/admin/konten"><NotebookPen size={20} aria-hidden="true" />Konten</Link><Link href="/admin/kursus"><BookOpen size={20} aria-hidden="true" />Kursus</Link><Link href="/admin/log"><LineChart size={20} aria-hidden="true" />Aktivitas</Link></> : <>
         <Link href="/dashboard" aria-current={active === "dashboard" ? "page" : undefined}><LayoutGrid size={20} aria-hidden="true" />Belajar</Link>
         <Link href="/dashboard/kursus" aria-current={active === "kursus" ? "page" : undefined}><CirclePlay size={20} aria-hidden="true" />Kursus</Link>
+        <Link href="/dashboard/katalog" aria-current={active === "katalog" ? "page" : undefined}><ShoppingBag size={20} aria-hidden="true" />Katalog</Link>
         <Link href="/dashboard/catatan" aria-current={active === "catatan" ? "page" : undefined}><NotebookPen size={20} aria-hidden="true" />Catatan</Link>
         <Link href="/dashboard/menu" aria-current={["menu", "progres", "sertifikat", "pembayaran", "profil", "kelola", "admin"].includes(active) ? "page" : undefined}><Ellipsis size={20} aria-hidden="true" />Menu</Link>
         </>}

@@ -26,7 +26,7 @@ export default async function CertificatesPage() {
           <Award size={28} aria-hidden="true" />
           <h2>Belum ada kursus</h2>
           <p className="muted">Ikuti kursus dan selesaikan semua pelajarannya untuk mendapat sertifikat.</p>
-          <Link className="btn btn-primary" href="/kursus">Lihat katalog</Link>
+          <Link className="btn btn-primary" href="/dashboard/katalog">Lihat katalog</Link>
         </div>
       )}
 

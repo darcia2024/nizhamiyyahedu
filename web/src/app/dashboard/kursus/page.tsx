@@ -52,7 +52,7 @@ export default async function MyCourses() {
         <div className="empty-state">
           <h2 className="serif" style={{ fontSize: 22, fontWeight: 600 }}>Belum ada kursus</h2>
           <p className="muted">Pilih kursus di katalog untuk mulai belajar.</p>
-          <Link className="btn btn-primary" href="/kursus">Buka katalog</Link>
+          <Link className="btn btn-primary" href="/dashboard/katalog">Buka katalog</Link>
         </div>
       )}
     </AppShell>

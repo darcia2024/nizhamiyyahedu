@@ -18,7 +18,7 @@ export default async function MenuPage() {
     { href: "/dashboard/progres", label: "Progres", icon: <LineChart {...icon} /> },
     { href: "/dashboard/sertifikat", label: "Sertifikat", icon: <Award {...icon} /> },
     { href: "/dashboard/pembayaran", label: "Transaksi", icon: <CreditCard {...icon} /> },
-    { href: "/kursus", label: "Katalog program", icon: <BookOpen {...icon} /> },
+    { href: "/dashboard/katalog", label: "Katalog kelas", icon: <BookOpen {...icon} /> },
     { href: "/dashboard/profil", label: "Pengaturan", icon: <Settings2 {...icon} /> },
     { href: "/kontak", label: "Bantuan", icon: <LifeBuoy {...icon} /> },
   ];
