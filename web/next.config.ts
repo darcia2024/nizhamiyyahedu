@@ -26,6 +26,29 @@ const config: NextConfig = {
         ],
       },
       {
+        // Halaman kursus memuat pop-up pembayaran: halaman bayar Mayar (*.myr.id) tampil di iframe, dan alur bayarnya
+        // (bank, e-wallet) bisa berpindah ke domain lain di dalam iframe itu, jadi frame-src dibuka untuk https di sini saja.
+        // Header dengan nama sama di aturan yang cocok belakangan menimpa yang di atas.
+        source: "/kursus/:slug*",
+        headers: [{ key: "Content-Security-Policy", value: "frame-ancestors 'none'; frame-src https:" }],
+      },
+      {
+        // Setelah bayar, Mayar mengarahkan iframe itu kembali ke halaman status milik kita (dan halaman simulasi saat lokal),
+        // jadi hanya halaman ini yang boleh dibingkai, dan hanya oleh situs kita sendiri.
+        source: "/dashboard/pembayaran/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'; frame-src https://www.youtube-nocookie.com" },
+        ],
+      },
+      {
+        source: "/dev/mayar/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'; frame-src https://www.youtube-nocookie.com" },
+        ],
+      },
+      {
         // Service worker selalu diperiksa ulang supaya versi baru aplikasi cepat sampai ke HP user.
         source: "/sw.js",
         headers: [
