@@ -2,6 +2,21 @@
 export type TutorialStep = { text: string; shot?: string; alt?: string };
 export type TutorialGuide = { id: string; title: string; intro: string; href?: string; steps: TutorialStep[]; note?: string };
 
+export const GROUPS: { title: string; text: string; ids: string[] }[] = [
+  { title: "Mulai dari sini", text: "Cara masuk dan hal yang paling sering dibuka setiap hari.", ids: ["masuk", "ringkasan", "tinjau", "cari"] },
+  { title: "Kursus dan pengajar", text: "Dari membuat kelas baru sampai siap ditonton pembeli.", ids: ["kursus-baru", "pelajaran", "harga", "arsip", "pengajar"] },
+  { title: "User dan pembayaran", text: "Mengatur akses, peran, dan tagihan yang perlu diperiksa.", ids: ["akses", "peran", "pembayaran"] },
+  { title: "Isi website", text: "Tulisan, gambar, kontak, dan kebijakan yang dilihat pengunjung.", ids: ["beranda", "gambar", "kontak", "kebijakan"] },
+  { title: "Riwayat dan catatan", text: "Kalau ada yang salah ubah, atau ingin tahu siapa yang mengubah.", ids: ["riwayat", "aktivitas"] },
+];
+
+/** Pintasan di bagian atas untuk tugas yang paling sering dicari. */
+export const QUICK_LINKS = [
+  { id: "kursus-baru", title: "Saya mau menambah kelas", text: "Buat kursus, isi pelajaran, lalu tayangkan." },
+  { id: "pembayaran", title: "Ada yang sudah bayar tapi kelasnya belum terbuka", text: "Periksa tagihannya, lalu buka aksesnya." },
+  { id: "beranda", title: "Saya mau mengubah tulisan di website", text: "Ubah teks beranda, menu, sampai footer." },
+];
+
 export const GUIDES: TutorialGuide[] = [
   {
     id: "masuk",
