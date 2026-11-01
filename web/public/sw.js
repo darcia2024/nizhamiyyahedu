@@ -12,7 +12,7 @@ const IMAGE_CACHE = `${VERSION}-images`;
 const BASE = new URL(self.registration.scope).pathname.replace(/\/$/, "");
 const OFFLINE_URL = `${BASE}/offline`;
 const PRECACHE = [OFFLINE_URL, `${BASE}/icon-192.png`, `${BASE}/icon-512.png`, `${BASE}/icon-maskable-512.png`];
-const PRIVATE = ["/dashboard", "/admin", "/api", "/masuk", "/dev"].map((p) => BASE + p);
+const PRIVATE = ["/dashboard", "/admin", "/api", "/masuk", "/dev", "/tutorial"].map((p) => BASE + p);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(STATIC_CACHE).then((c) => c.addAll(PRECACHE)));
