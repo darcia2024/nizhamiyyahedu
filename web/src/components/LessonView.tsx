@@ -6,11 +6,11 @@ import { ActionForm, Field as FormField } from "@/components/ActionForm";
 import { saveNote } from "@/app/dashboard/catatan/actions";
 import { NOTE_MAX } from "@/lib/learning";
 import { toggleComplete } from "@/app/dashboard/kursus/[slug]/pelajaran/actions";
-import { parseVideoUrl } from "@/lib/video";
+import { parseVideoUrl, videoThumbnail } from "@/lib/video";
 import { FIELD_LABEL, FIELD_TONE, type Field } from "@/lib/constants";
 import { hoursLabel, initials } from "@/lib/format";
 
-export type LessonLite = { id: string; title: string; position: number; durationMin: number | null };
+export type LessonLite = { id: string; title: string; position: number; durationMin: number | null; videoUrl: string | null };
 
 export type LessonViewProps = {
   mode: "student" | "preview";
@@ -66,9 +66,17 @@ export function LessonView({ mode, course, lesson, lessons, completed, note = ""
       {lessons.map((l) => {
         const d = completed.has(l.id);
         const cur = l.id === lesson.id;
+        const thumb = videoThumbnail(l.videoUrl);
+        const num = <span className="n" aria-hidden="true">{d ? "✓" : l.position}</span>;
         return (
           <Link key={l.id} href={`${basePath}/${l.id}`} className={d ? "done" : ""} aria-current={cur ? "page" : undefined}>
-            <span className="n" aria-hidden="true">{d ? "✓" : l.position}</span>
+            {thumb ? (
+              <span className="thumb">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={thumb} alt="" width={88} height={50} loading="lazy" referrerPolicy="no-referrer" />
+                {num}
+              </span>
+            ) : num}
             <span style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1 }}>
               <span className="t">{l.position}. {l.title}</span>
               <small>{l.durationMin ? `${l.durationMin} menit` : "—"}{cur ? " · sedang dibuka" : d ? " · selesai" : ""}</small>

@@ -43,3 +43,9 @@ export function parseVideoUrl(input: string | null | undefined): VideoSource | n
   }
   return null;
 }
+
+/** Gambar kecil dari YouTube untuk daftar pelajaran. Null bila video bukan dari YouTube atau belum ada. */
+export function videoThumbnail(input: string | null | undefined): string | null {
+  const v = parseVideoUrl(input);
+  return v?.kind === "youtube" ? `https://i.ytimg.com/vi/${v.embedUrl.split("/").pop()}/mqdefault.jpg` : null;
+}

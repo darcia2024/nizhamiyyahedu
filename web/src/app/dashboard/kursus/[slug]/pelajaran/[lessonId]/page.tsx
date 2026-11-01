@@ -35,7 +35,7 @@ export default async function LessonPage({ params }: Props) {
     db.lesson.findMany({
       where: { courseId: course.id, ...(mode === "student" ? { status: "PUBLISHED" } : {}) },
       orderBy: { position: "asc" },
-      select: { id: true, title: true, position: true, durationMin: true },
+      select: { id: true, title: true, position: true, durationMin: true, videoUrl: true },
     }),
     mode === "student" ? db.lessonProgress.findMany({ where: { userId: user.id, lesson: { courseId: course.id } } }) : Promise.resolve([]),
   ]);

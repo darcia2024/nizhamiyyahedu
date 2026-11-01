@@ -590,6 +590,10 @@ a.matan-card:hover { border-color: #1E715C; transform: translateY(-2px) }
 .dash-list .t { font-size: 14px; font-weight: 500; line-height: 1.35 }
 .dash-list [aria-current="page"] .t { font-weight: 700 }
 .dash-list small { font-size: 12px; color: var(--muted-text) }
+.dash-list .thumb { position: relative; flex: none; width: 88px; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: #DCE1DE }
+.dash-list .thumb img { display: block; width: 100%; height: 100%; object-fit: cover }
+.dash-list .thumb .n { position: absolute; left: 4px; bottom: 4px; width: 22px; height: 22px; font-size: 11px; border-width: 1px }
+.dash-list [aria-current="page"] .thumb { outline: 2px solid var(--brand); outline-offset: 1px }
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px }
 .stat { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px }
 .stat b { display: block; font-size: 28px; letter-spacing: -.03em; font-weight: 700 }
