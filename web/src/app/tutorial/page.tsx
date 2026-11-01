@@ -1,19 +1,38 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { cookies } from "next/headers";
 import "@/styles/tutorial.css";
-import { requireRole } from "@/lib/auth-guard";
+import { ActionForm, Field } from "@/components/ActionForm";
+import { getCurrentUser } from "@/lib/auth-guard";
 import { withBase } from "@/lib/base-path";
+import { TUTORIAL_COOKIE, tutorialToken } from "@/lib/tutorial-pin";
+import { unlockTutorial } from "./actions";
 import { GUIDES } from "./guides";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Tutorial superadmin", robots: { index: false, follow: false } };
 
 export default async function TutorialPage() {
-  await requireRole(["ADMIN"], "/tutorial");
+  const [user, store] = await Promise.all([getCurrentUser(), cookies()]);
+  const isAdmin = user?.role === "ADMIN";
+  if (!isAdmin && store.get(TUTORIAL_COOKIE)?.value !== tutorialToken()) {
+    return (
+      <main id="isi" className="tutorial gutter">
+        <section className="card pad tutorial-gate">
+          <p className="eyebrow">Tutorial superadmin</p>
+          <h1>Masukkan PIN</h1>
+          <p>Halaman ini memakai PIN. Silakan masukkan PIN yang sudah saya berikan.</p>
+          <ActionForm action={unlockTutorial} submit="Buka tutorial" pendingText="Memeriksa…" className="tutorial-gate-form">
+            <Field name="pin" label="PIN" type="password" maxLength={20} full />
+          </ActionForm>
+        </section>
+      </main>
+    );
+  }
   return (
     <main id="isi" className="tutorial gutter">
       <div className="tutorial-wrap">
-        <Link className="btn btn-ghost sm" href="/admin"><ArrowLeft size={16} aria-hidden="true" /> Kembali ke panel</Link>
+        {isAdmin && <Link className="btn btn-ghost sm" href="/admin"><ArrowLeft size={16} aria-hidden="true" /> Kembali ke panel</Link>}
         <header className="tutorial-head">
           <p className="eyebrow">Tutorial superadmin</p>
           <h1>Cara mengatur website</h1>

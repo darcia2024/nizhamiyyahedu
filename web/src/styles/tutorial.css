@@ -1,4 +1,7 @@
 .tutorial {padding-top:24px; padding-bottom:64px}
+.tutorial-gate {max-width:420px; margin:12vh auto 0; display:grid; gap:12px}
+.tutorial-gate h1 {font-size:30px; line-height:1.2}
+.tutorial-gate-form {display:grid; gap:14px; margin-top:4px}
 .tutorial-wrap {max-width:820px; margin:0 auto; display:grid; gap:20px; justify-items:stretch}
 .tutorial-wrap > .btn {justify-self:start}
 .tutorial-head {display:grid; gap:12px; padding:12px 0}
