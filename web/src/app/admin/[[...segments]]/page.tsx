@@ -14,6 +14,7 @@ import { AdminPayments } from "@/components/manage/AdminPayments";
 import { AdminContent } from "@/components/manage/AdminContent";
 import { AdminTeachers } from "@/components/manage/AdminTeachers";
 import { AdminLog } from "@/components/manage/AdminLog";
+import { AdminReview } from "@/components/manage/AdminReview";
 export default async function AdminPage({params,searchParams}: {params:Promise<{segments?:string[]}>; searchParams:Promise<Record<string,string|undefined>>}) {
   const user=await requireRole(["ADMIN"],"/admin");
   const {segments:s=[]}=await params,q=await searchParams;
@@ -31,6 +32,7 @@ export default async function AdminPage({params,searchParams}: {params:Promise<{
   if(s[0]==="pembayaran"&&s.length<=2)return <AdminPayments id={s[1]} query={q}/>;
   if(s[0]==="pengajar"&&s.length===1)return <AdminTeachers query={q}/>;
   if(s[0]==="konten"&&s.length===1)return <AdminContent/>;
+  if(s[0]==="tinjau"&&s.length===1)return <AdminReview/>;
   if(s[0]==="log"&&s.length===1)return <AdminLog query={q}/>;
   if(s[0]==="bantuan"&&s.length===1)return <AdminHelp/>;
   notFound();
