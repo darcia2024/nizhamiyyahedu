@@ -1,0 +1,32 @@
+/* Tinggi iframe dilebihkan supaya judul dan tanda air YouTube terpotong di luar bingkai; videonya tetap utuh. */
+.video.lp {display:block; background:#000; outline-offset:2px}
+.video.lp iframe {top:-60px; bottom:auto; height:calc(100% + 120px); pointer-events:none}
+.video.lp-native iframe {top:0; height:100%; pointer-events:auto}
+.lp-poster {position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+.lp-shield {position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:transparent; color:#fff; cursor:pointer; display:grid; place-items:center}
+.lp-shield:disabled {cursor:progress}
+.lp-big {display:grid; justify-items:center; gap:8px; padding:18px 24px; border-radius:18px; background:rgba(16,32,26,.72)}
+.lp-big small {font-size:13px; font-weight:600}
+.lp-bar {position:absolute; left:0; right:0; bottom:0; padding:28px 12px 8px; color:#fff; background:linear-gradient(transparent,rgba(0,0,0,.78)); transition:opacity .2s}
+.lp-idle .lp-bar {opacity:0; pointer-events:none}
+.lp-idle {cursor:none}
+.lp-idle .lp-shield {cursor:none}
+.lp:focus-within .lp-bar {opacity:1; pointer-events:auto}
+.lp-seek {display:block; width:100%; margin:0 0 4px; accent-color:#E2C779; cursor:pointer}
+.lp-row {display:flex; align-items:center; gap:4px}
+.lp-row button {display:grid; place-items:center; width:38px; height:38px; padding:0; border:0; border-radius:8px; background:transparent; color:#fff; cursor:pointer}
+.lp-row button:hover:not(:disabled) {background:rgba(255,255,255,.16)}
+.lp-row button:disabled {opacity:.5; cursor:progress}
+.lp-time {margin-left:4px; font-size:13px; font-variant-numeric:tabular-nums; white-space:nowrap}
+.lp-spacer {flex:1}
+.lp-volume {width:80px; accent-color:#fff; cursor:pointer}
+.lp-row select {height:32px; margin:0 2px; padding:0 4px; border:1px solid rgba(255,255,255,.4); border-radius:6px; background:rgba(0,0,0,.45); color:#fff; font-size:13px; cursor:pointer}
+.lp-row select option {color:#111}
+.video.lp:fullscreen, .video.lp-full {border-radius:0; width:100%; height:100%; aspect-ratio:auto}
+.video.lp-full {position:fixed; inset:0; z-index:1000; height:100dvh}
+@media (max-width:640px) {
+  .lp-volume {display:none}
+  .lp-bar {padding:20px 6px 4px}
+  .lp-row button {width:34px; height:34px}
+  .lp-time {font-size:12px; margin-left:2px}
+}

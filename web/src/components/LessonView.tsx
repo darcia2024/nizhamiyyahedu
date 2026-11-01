@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Check, MessageCircleQuestion, PlayCircle } from "lucide-react";
+import { LessonPlayer } from "@/components/LessonPlayer";
 import { Markdown, MatanList, parseMatan } from "@/components/Markdown";
 import { SubmitButton } from "@/components/SubmitButton";
 import { ActionForm, Field as FormField } from "@/components/ActionForm";
@@ -23,7 +24,7 @@ export type LessonViewProps = {
   basePath: string; // mis. /dashboard/kursus/slug/pelajaran
 };
 
-function VideoBox({ url }: { url: string | null }) {
+function VideoBox({ url, lessonId, title }: { url: string | null; lessonId: string; title: string }) {
   const v = parseVideoUrl(url);
   if (!v) {
     return (
@@ -32,21 +33,10 @@ function VideoBox({ url }: { url: string | null }) {
       </div>
     );
   }
+  if (v.kind === "youtube") return <LessonPlayer key={lessonId} embedUrl={v.embedUrl} lessonId={lessonId} title={title} />;
   return (
     <div className="video">
-      {v.kind === "youtube" ? (
-        <iframe
-          src={v.embedUrl}
-          title="Video pelajaran"
-          loading="lazy"
-          sandbox="allow-scripts allow-same-origin allow-presentation"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allow="encrypted-media; picture-in-picture; fullscreen"
-          allowFullScreen
-        />
-      ) : (
-        <video controls preload="metadata" src={v.src} />
-      )}
+      <video controls controlsList="nodownload" preload="metadata" src={v.src} />
     </div>
   );
 }
@@ -92,7 +82,7 @@ export function LessonView({ mode, course, lesson, lessons, completed, note = ""
       <div className="center">
         {mode === "preview" && <div className="preview-banner" role="status">Mode pratinjau pengajar. Progres tidak dicatat.</div>}
 
-        <VideoBox url={lesson.videoUrl} />
+        <VideoBox url={lesson.videoUrl} lessonId={lesson.id} title={lesson.title} />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>

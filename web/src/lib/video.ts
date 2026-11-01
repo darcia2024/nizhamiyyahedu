@@ -44,6 +44,18 @@ export function parseVideoUrl(input: string | null | undefined): VideoSource | n
   return null;
 }
 
+/** Alamat iframe untuk player sendiri. nativeControls dipakai sebagai cadangan kalau API YouTube gagal dimuat. */
+export function playerEmbedSrc(embedUrl: string, origin: string, nativeControls = false): string {
+  const q = new URLSearchParams({ enablejsapi: "1", controls: nativeControls ? "1" : "0", rel: "0", modestbranding: "1", disablekb: "1", fs: "0", iv_load_policy: "3", playsinline: "1", origin });
+  return `${embedUrl}?${q}`;
+}
+
+export function formatVideoTime(totalSec: number): string {
+  const s = Math.max(0, Math.floor(totalSec || 0));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = String(s % 60).padStart(2, "0");
+  return h ? `${h}:${String(m).padStart(2, "0")}:${r}` : `${m}:${r}`;
+}
+
 /** Gambar kecil dari YouTube untuk daftar pelajaran. Null bila video bukan dari YouTube atau belum ada. */
 export function videoThumbnail(input: string | null | undefined): string | null {
   const v = parseVideoUrl(input);
