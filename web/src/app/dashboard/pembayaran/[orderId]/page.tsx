@@ -5,6 +5,7 @@ import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PollRefresh } from "../PollRefresh";
 import { EmbedNotify } from "../EmbedNotify";
+import { CancelOrder } from "../CancelOrder";
 import { requireUser } from "@/lib/auth-guard";
 import { db } from "@/lib/db";
 import { effectiveStatus, syncOrderWithMayar } from "@/lib/orders";
@@ -22,7 +23,7 @@ export default async function OrderStatusPage({ params }: { params: Promise<{ or
   if (!order) notFound(); // order orang lain atau id ngawur: tidak ada status palsu
 
   // Mayar mengarahkan pembeli ke sini sesaat setelah bayar, kadang sebelum webhook tiba: tanya langsung ke Mayar.
-  if (order.status === "PENDING") {
+  if (order.status === "PENDING" || order.status === "CANCELLED") {
     try {
       await syncOrderWithMayar(order);
       order = (await find()) ?? order;
@@ -74,18 +75,20 @@ export default async function OrderStatusPage({ params }: { params: Promise<{ or
             {status === "PENDING" && `Berlaku sampai ${dateTimeWib(order.expiresAt)}. Halaman ini memeriksa status otomatis.`}
             {status === "PAID" && order.paidAt && `Dibayar ${dateTimeWib(order.paidAt)}.`}
             {status === "EXPIRED" && "Batas waktu pembayaran sudah lewat. Kamu bisa bikin tagihan baru."}
-            {(status === "FAILED" || status === "CANCELLED") && "Nggak ada dana yang terpotong dari tagihan ini. Coba lagi ya."}
+            {status === "FAILED" && "Nggak ada dana yang terpotong dari tagihan ini. Coba lagi ya."}
+            {status === "CANCELLED" && "Pesanan ini sudah kamu batalkan. Kalau berubah pikiran, kamu bisa pesan lagi."}
           </div>
         </div>
         {status === "PAID" && <Link className="btn btn-primary" href={`/dashboard/kursus/${order.course.slug}`}>Mulai belajar</Link>}
         {status === "PENDING" && (
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
             {order.payUrl && <a className="btn btn-primary" href={order.payUrl}>Lanjutkan bayar</a>}
+            <CancelOrder orderId={order.id} courseTitle={order.course.title} label="Batalkan pesanan" />
             <PollRefresh />
           </div>
         )}
         {status === "EXPIRED" && <Link className="btn btn-primary" href={retry}>Bayar ulang</Link>}
-        {(status === "FAILED" || status === "CANCELLED") && <Link className="btn btn-primary" href={retry}>Coba lagi</Link>}
+        {(status === "FAILED" || status === "CANCELLED") && <Link className="btn btn-primary" href={retry}>{status === "CANCELLED" ? "Pesan lagi" : "Coba lagi"}</Link>}
       </section>
 
       <section className="card pad" aria-labelledby="rinci-h">

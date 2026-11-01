@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { effectiveStatus } from "@/lib/orders";
 import { ORDER_LABEL, ORDER_BADGE as badgeClass } from "@/lib/constants";
 import { dateTimeWib, rupiah } from "@/lib/format";
+import { CancelOrder } from "./CancelOrder";
 
 export const metadata = { title: "Pembayaran" };
 
@@ -27,7 +28,7 @@ export default async function PaymentsPage() {
                     <td style={{ fontWeight: 500 }}>{o.course.title}</td>
                     <td className="num">{rupiah(o.amount)}</td>
                     <td><span className={`badge ${badgeClass[s]}`}>{ORDER_LABEL[s]}</span></td>
-                    <td className="right-align"><Link className="btn btn-ghost sm" href={`/dashboard/pembayaran/${o.id}`}>Detail</Link></td>
+                    <td className="right-align"><div className="row-actions" style={{ justifyContent: "flex-end", alignItems: "flex-start" }}>{s === "PENDING" && <CancelOrder orderId={o.id} courseTitle={o.course.title} />}<Link className="btn btn-ghost sm" href={`/dashboard/pembayaran/${o.id}`}>Detail</Link></div></td>
                   </tr>
                 );
               })}

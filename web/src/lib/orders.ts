@@ -117,7 +117,7 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
  * Tidak melakukan apa-apa di mode simulasi atau bila invoice belum dibuat.
  */
 export async function syncOrderWithMayar(order: { id: string; status: string; mayarId: string | null }): Promise<void> {
-  if (order.status !== "PENDING" || !order.mayarId || mayarSimulated()) return;
+  if ((order.status !== "PENDING" && order.status !== "CANCELLED") || !order.mayarId || mayarSimulated()) return;
   const tx = await fetchTransaction(order.mayarId);
   if (!tx) return;
   if (tx.status === "PAID" && tx.currency === "IDR" && (!tx.orderId || tx.orderId === order.id)) {
@@ -125,6 +125,24 @@ export async function syncOrderWithMayar(order: { id: string; status: string; ma
   } else if (tx.status === "FAILED" || tx.status === "EXPIRED") {
     await db.order.updateMany({ where: { id: order.id, status: "PENDING" }, data: { status: tx.status } });
   }
+}
+
+export type CancelResult = "cancelled" | "paid" | "not_found" | "not_pending";
+
+/** Batalkan tagihan milik user yang masih menunggu. Tanya Mayar dulu supaya tagihan yang sudah lunas tidak ikut batal. */
+export async function cancelOrder(userId: string, orderId: string): Promise<CancelResult> {
+  const order = await db.order.findFirst({ where: { id: orderId, userId } });
+  if (!order) return "not_found";
+  if (effectiveStatus(order) !== "PENDING") return "not_pending";
+  try {
+    await syncOrderWithMayar(order);
+  } catch (e) {
+    console.error("[orders] gagal sinkron sebelum batal", e);
+  }
+  const { count } = await db.order.updateMany({ where: { id: order.id, status: "PENDING" }, data: { status: "CANCELLED" } });
+  if (count) return "cancelled";
+  const now = await db.order.findUnique({ where: { id: order.id }, select: { status: true } });
+  return now?.status === "PAID" ? "paid" : "not_pending";
 }
 
 export type SettleResult = "paid" | "already" | "not_found" | "amount_mismatch" | "cancelled";
@@ -136,7 +154,8 @@ export async function settleOrder(orderId: string, paidAmount: number): Promise<
     if (!o) return "not_found";
     if (paidAmount !== o.amount) return "amount_mismatch";
     if (o.status === "PAID") return "already";
-    if (o.status === "CANCELLED" || o.status === "FAILED") return "cancelled";
+    // Tautan Mayar tetap bisa dibayar setelah user membatalkan, jadi pembayaran atas tagihan CANCELLED tetap diakui.
+    if (o.status === "FAILED") return "cancelled";
     await tx.order.update({ where: { id: o.id }, data: { status: "PAID", paidAt: new Date() } });
     const course = await tx.course.findUnique({ where: { id: o.courseId }, select: { id: true, bundleCourseIds: true } });
     for (const courseId of course ? unlockedCourseIds(course) : [o.courseId]) {
