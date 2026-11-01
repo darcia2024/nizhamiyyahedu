@@ -5,7 +5,7 @@ export type TutorialGuide = { id: string; title: string; intro: string; href?: s
 export const GROUPS: { title: string; text: string; ids: string[] }[] = [
   { title: "Mulai dari sini", text: "Cara masuk dan hal yang paling sering dibuka setiap hari.", ids: ["masuk", "ringkasan", "tinjau", "cari"] },
   { title: "Kursus dan pengajar", text: "Dari membuat kelas baru sampai siap ditonton pembeli.", ids: ["kursus-baru", "pelajaran", "harga", "arsip", "pengajar"] },
-  { title: "User dan pembayaran", text: "Mengatur akses, peran, dan tagihan yang perlu diperiksa.", ids: ["akses", "peran", "pembayaran"] },
+  { title: "User dan pembayaran", text: "Mengatur akses, peran, dan tagihan yang perlu diperiksa.", ids: ["akses", "peran", "hapus-user", "pembayaran"] },
   { title: "Isi website", text: "Tulisan, gambar, kontak, dan kebijakan yang dilihat pengunjung.", ids: ["beranda", "gambar", "kontak", "kebijakan"] },
   { title: "Riwayat dan catatan", text: "Kalau ada yang salah ubah, atau ingin tahu siapa yang mengubah.", ids: ["riwayat", "aktivitas"] },
 ];
@@ -199,6 +199,17 @@ export const GUIDES: TutorialGuide[] = [
       { text: "Centang kotak konfirmasinya, lalu tekan Simpan peran." },
     ],
     note: "Sidi tidak bisa mengubah peran akun sendiri, dan website harus selalu punya minimal satu admin.",
+  },
+  {
+    id: "hapus-user",
+    title: "Menghapus user",
+    intro: "Ini untuk akun yang memang tidak dipakai, misalnya akun percobaan. Penghapusan tidak bisa dibatalkan, jadi mohon dipastikan dulu.",
+    href: "/admin/pengguna",
+    steps: [
+      { text: "Untuk satu akun, buka Pengguna, tekan Detail, lalu buka Hapus akun ini di paling bawah. Tulis alasannya, ketik email akun sebagai konfirmasi, lalu tekan Hapus permanen." },
+      { text: "Untuk beberapa akun, centang di daftar Pengguna, tulis alasannya di kolom Alasan, lalu tekan Hapus yang dipilih. Akun yang tidak boleh dihapus akan dilewati dan disebutkan alasannya." },
+    ],
+    note: "Akun admin, pengajar, akun yang sudah pernah membeli atau punya sertifikat, dan akun dengan tagihan yang masih bisa dibayar tidak bisa dihapus. Untuk yang sudah membeli, cukup nonaktifkan aksesnya.",
   },
   {
     id: "pembayaran",

@@ -1,6 +1,8 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { deleteUserAccount } from "@/lib/user-delete";
 import { audit } from "@/lib/audit";
 import { fail, type ActionResult } from "@/lib/action";
 import { getCurrentUser } from "@/lib/auth-guard";
@@ -64,6 +66,48 @@ export async function bulkGrantAccess(_p: ActionResult, fd: FormData): Promise<A
   }
   revalidatePath("/admin/pengguna");
   return { ok: true, message: `Akses dibuka untuk ${users.length} user.` };
+}
+
+/** Hapus satu user dari halaman detailnya. Wajib mengetik email akun sebagai konfirmasi. */
+export async function deleteUser(_p: ActionResult, fd: FormData): Promise<ActionResult> {
+  const admin = await adminOnly();
+  if (!admin) return fail("Hanya admin yang boleh melakukan ini.");
+  const userId = String(fd.get("userId") ?? "");
+  const reason = String(fd.get("reason") ?? "").trim();
+  if (reason.length < 3) return fail("Alasan wajib diisi.", { reason: "Alasan wajib diisi." });
+  const target = await db.user.findUnique({ where: { id: userId }, select: { email: true } });
+  if (!target) return fail("User tidak ditemukan.");
+  if (String(fd.get("confirm") ?? "").trim().toLowerCase() !== target.email.toLowerCase()) return fail("Email konfirmasi belum sama.", { confirm: "Ketik email akun ini persis." });
+  const r = await deleteUserAccount(admin.id, userId);
+  if (!r.ok) return fail(r.reason);
+  await audit(admin, "USER_DELETE", "User", userId, { before: { email: r.email, name: r.name }, reason });
+  revalidatePath("/admin", "layout");
+  redirect("/admin/pengguna");
+}
+
+/** Hapus banyak user sekaligus. Yang tidak boleh dihapus dilewati dan disebutkan alasannya. */
+export async function bulkDeleteUsers(_p: ActionResult, fd: FormData): Promise<ActionResult> {
+  const admin = await adminOnly();
+  if (!admin) return fail("Hanya admin yang boleh melakukan ini.");
+  const userIds = ids(fd);
+  const reason = String(fd.get("reason") ?? "").trim();
+  if (!userIds.length) return fail("Pilih minimal satu user.");
+  if (userIds.length > MAX_BULK) return fail(`Maksimal ${MAX_BULK} user sekali proses.`);
+  if (reason.length < 3) return fail("Alasan wajib diisi.", { reason: "Alasan wajib diisi." });
+  const labels = new Map((await db.user.findMany({ where: { id: { in: userIds } }, select: { id: true, email: true } })).map((u) => [u.id, u.email]));
+  let deleted = 0;
+  const skipped: string[] = [];
+  for (const id of userIds) {
+    const r = await deleteUserAccount(admin.id, id);
+    if (r.ok) {
+      deleted++;
+      await audit(admin, "USER_DELETE", "User", id, { before: { email: r.email, name: r.name }, reason });
+    } else skipped.push(`${labels.get(id) ?? "User"}: ${r.reason}`);
+  }
+  revalidatePath("/admin", "layout");
+  const summary = `${deleted} user dihapus.`;
+  if (!skipped.length) return { ok: true, message: summary };
+  return deleted ? { ok: true, message: `${summary} Dilewati: ${skipped.join(" ")}` } : fail(`Tidak ada yang dihapus. ${skipped.join(" ")}`);
 }
 
 /** Tanya Mayar untuk banyak tagihan; yang sudah lunas langsung diselesaikan. */
