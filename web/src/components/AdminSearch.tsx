@@ -2,9 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
-import { withBase } from "@/lib/base-path";
+import { adminSearch, type SearchHit } from "@/app/actions/admin-bulk";
 
-type Hit = { type: string; title: string; sub: string; href: string };
+type Hit = SearchHit;
 
 /** Kotak cari global panel admin. Buka dengan Ctrl+K / Cmd+K. */
 export function AdminSearch() {
@@ -30,10 +30,10 @@ export function AdminSearch() {
     const t = setTimeout(async () => {
       setBusy(true);
       try {
-        const res = await fetch(withBase(`/api/admin/search?q=${encodeURIComponent(q.trim())}`), { signal: ctl.signal });
-        if (res.ok) setHits((await res.json()).results);
-      } catch { /* dibatalkan atau offline */ }
-      setBusy(false);
+        const results = await adminSearch(q);
+        if (!ctl.signal.aborted) setHits(results);
+      } catch { /* offline */ }
+      if (!ctl.signal.aborted) setBusy(false);
     }, 220);
     return () => { clearTimeout(t); ctl.abort(); };
   }, [q]);

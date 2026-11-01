@@ -10,6 +10,27 @@ import { unlockedCourseIds } from "@/lib/bundle";
 
 const MAX_BULK = 100;
 
+export type SearchHit = { type: string; title: string; sub: string; href: string };
+
+/** Pencarian cepat panel admin (Ctrl+K): user, kursus, dan tagihan. */
+export async function adminSearch(q: string): Promise<SearchHit[]> {
+  const me = await getCurrentUser();
+  if (!me || me.role !== "ADMIN") return [];
+  const term = q.trim().slice(0, 80);
+  if (term.length < 2) return [];
+  const like = { contains: term, mode: "insensitive" as const };
+  const [users, courses, orders] = await Promise.all([
+    db.user.findMany({ where: { OR: [{ name: like }, { email: like }] }, take: 5, orderBy: { createdAt: "desc" }, select: { id: true, name: true, email: true, role: true } }),
+    db.course.findMany({ where: { title: like }, take: 5, select: { id: true, title: true, status: true } }),
+    db.order.findMany({ where: { OR: [{ mayarId: like }, { user: { email: like } }] }, take: 5, orderBy: { createdAt: "desc" }, select: { id: true, amount: true, status: true, user: { select: { email: true } }, course: { select: { title: true } } } }),
+  ]);
+  return [
+    ...users.map((u) => ({ type: "User", title: u.name ?? u.email, sub: `${u.email} · ${u.role}`, href: `/admin/pengguna/${u.id}` })),
+    ...courses.map((c) => ({ type: "Kursus", title: c.title, sub: c.status === "PUBLISHED" ? "Tayang" : "Draf", href: `/admin/kursus/${c.id}` })),
+    ...orders.map((o) => ({ type: "Tagihan", title: o.user.email, sub: `${o.course.title} · Rp${o.amount.toLocaleString("id-ID")} · ${o.status}`, href: `/admin/pembayaran/${o.id}` })),
+  ];
+}
+
 async function adminOnly() {
   const user = await getCurrentUser();
   return user && user.role === "ADMIN" ? user : null;
