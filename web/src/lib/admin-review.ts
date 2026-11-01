@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { unlockedCourseIds } from "@/lib/bundle";
 
 const HOUR = 3600000;
 
@@ -19,18 +20,18 @@ async function submittedDrafts() {
   return drafts.flatMap((d) => { const l = last.get(d.id); return l?.action === "COURSE_SUBMIT" ? [{ ...d, submittedAt: l.createdAt }] : []; });
 }
 
-/** Tagihan lunas yang akses kursusnya belum aktif. */
+/** Tagihan lunas yang belum punya pendaftaran. Paket dicek per kursus isinya; akses yang sengaja dicabut (REVOKED) tidak ikut. */
 async function paidWithoutAccess() {
   const paid = await db.order.findMany({
     where: { status: "PAID", paidAt: { gte: new Date(Date.now() - 60 * 24 * HOUR) } },
     orderBy: { paidAt: "desc" },
     take: 200,
-    select: { id: true, amount: true, paidAt: true, userId: true, courseId: true, user: { select: { name: true, email: true } }, course: { select: { title: true } } },
+    select: { id: true, amount: true, paidAt: true, userId: true, courseId: true, user: { select: { name: true, email: true } }, course: { select: { id: true, title: true, bundleCourseIds: true } } },
   });
   if (!paid.length) return [];
-  const active = await db.enrollment.findMany({ where: { status: "ACTIVE", userId: { in: paid.map((o) => o.userId) } }, select: { userId: true, courseId: true } });
-  const has = new Set(active.map((e) => `${e.userId}:${e.courseId}`));
-  return paid.filter((o) => !has.has(`${o.userId}:${o.courseId}`));
+  const enrolled = await db.enrollment.findMany({ where: { userId: { in: paid.map((o) => o.userId) } }, select: { userId: true, courseId: true } });
+  const has = new Set(enrolled.map((e) => `${e.userId}:${e.courseId}`));
+  return paid.filter((o) => unlockedCourseIds(o.course).some((id) => !has.has(`${o.userId}:${id}`)));
 }
 
 export async function reviewQueue() {
@@ -42,8 +43,8 @@ export async function reviewQueue() {
   return { drafts, pending, noAccess, total: drafts.length + pending.length + noAccess.length };
 }
 
-/** Hitungan ringan untuk lencana menu. */
+/** Hitungan untuk lencana menu; sama dengan isi halaman Perlu ditinjau. */
 export async function reviewCount() {
-  const [drafts, pending] = await Promise.all([submittedDrafts(), db.order.count({ where: stalePending() })]);
-  return drafts.length + pending;
+  const [drafts, pending, noAccess] = await Promise.all([submittedDrafts(), db.order.count({ where: stalePending() }), paidWithoutAccess()]);
+  return drafts.length + pending + noAccess.length;
 }
