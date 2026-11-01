@@ -175,7 +175,7 @@ export const GUIDES: TutorialGuide[] = [
         shot: "pengguna",
         alt: "Daftar user dengan kotak centang, pilihan kursus, kolom alasan, dan tombol Buka akses untuk yang dipilih",
       },
-      { text: "Pilih kursusnya, tulis alasannya, lalu tekan Buka akses untuk yang dipilih. Sekali proses maksimal 100 orang." },
+      { text: "Pilih kursusnya, tulis alasannya di kolom Alasan buka akses, lalu tekan Buka akses untuk yang dipilih. Sekali proses maksimal 100 orang." },
       {
         text: "Untuk satu orang saja, tekan Detail di barisnya, lalu buka Buka akses ke kursus lain di bagian Akses kursus.",
         shot: "pengguna-akses",
@@ -206,8 +206,8 @@ export const GUIDES: TutorialGuide[] = [
     intro: "Ini untuk akun yang memang tidak dipakai, misalnya akun percobaan. Penghapusan tidak bisa dibatalkan, jadi mohon dipastikan dulu.",
     href: "/admin/pengguna",
     steps: [
-      { text: "Untuk satu akun, buka Pengguna, tekan Detail, lalu buka Hapus akun ini di paling bawah. Tulis alasannya, ketik email akun sebagai konfirmasi, lalu tekan Hapus permanen." },
-      { text: "Untuk beberapa akun, centang di daftar Pengguna, tulis alasannya di kolom Alasan, lalu tekan Hapus yang dipilih. Akun yang tidak boleh dihapus akan dilewati dan disebutkan alasannya." },
+      { text: "Untuk satu akun, buka Pengguna, tekan Detail, lalu buka Hapus akun ini di paling bawah. Ketik email akun sebagai konfirmasi, lalu tekan Hapus permanen." },
+      { text: "Untuk beberapa akun, centang di daftar Pengguna, lalu tekan Hapus yang dipilih dan setujui konfirmasinya. Akun yang tidak boleh dihapus akan dilewati dan disebutkan alasannya." },
     ],
     note: "Akun admin, pengajar, akun yang sudah pernah membeli atau punya sertifikat, dan akun dengan tagihan yang masih bisa dibayar tidak bisa dihapus. Untuk yang sudah membeli, cukup nonaktifkan aksesnya.",
   },

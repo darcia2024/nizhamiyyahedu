@@ -90,6 +90,7 @@
 /* Aksi massal, pencarian global, antrean tinjau */
 .bulk-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
 .bulk-bar .select,.bulk-bar .input{max-width:240px}
+.bulk-bar .bulk-danger{margin-left:auto}
 .admin-nav .badge{margin-left:auto}
 .admin-search-btn kbd{font-size:11px;padding:1px 6px;border:1px solid var(--line);border-radius:6px}
 .admin-search-back{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.35);display:flex;justify-content:center;align-items:flex-start;padding:12vh 16px 0}

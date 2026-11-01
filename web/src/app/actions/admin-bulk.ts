@@ -73,14 +73,12 @@ export async function deleteUser(_p: ActionResult, fd: FormData): Promise<Action
   const admin = await adminOnly();
   if (!admin) return fail("Hanya admin yang boleh melakukan ini.");
   const userId = String(fd.get("userId") ?? "");
-  const reason = String(fd.get("reason") ?? "").trim();
-  if (reason.length < 3) return fail("Alasan wajib diisi.", { reason: "Alasan wajib diisi." });
   const target = await db.user.findUnique({ where: { id: userId }, select: { email: true } });
   if (!target) return fail("User tidak ditemukan.");
   if (String(fd.get("confirm") ?? "").trim().toLowerCase() !== target.email.toLowerCase()) return fail("Email konfirmasi belum sama.", { confirm: "Ketik email akun ini persis." });
   const r = await deleteUserAccount(admin.id, userId);
   if (!r.ok) return fail(r.reason);
-  await audit(admin, "USER_DELETE", "User", userId, { before: { email: r.email, name: r.name }, reason });
+  await audit(admin, "USER_DELETE", "User", userId, { before: { email: r.email, name: r.name } });
   revalidatePath("/admin", "layout");
   redirect("/admin/pengguna");
 }
@@ -90,10 +88,8 @@ export async function bulkDeleteUsers(_p: ActionResult, fd: FormData): Promise<A
   const admin = await adminOnly();
   if (!admin) return fail("Hanya admin yang boleh melakukan ini.");
   const userIds = ids(fd);
-  const reason = String(fd.get("reason") ?? "").trim();
   if (!userIds.length) return fail("Pilih minimal satu user.");
   if (userIds.length > MAX_BULK) return fail(`Maksimal ${MAX_BULK} user sekali proses.`);
-  if (reason.length < 3) return fail("Alasan wajib diisi.", { reason: "Alasan wajib diisi." });
   const labels = new Map((await db.user.findMany({ where: { id: { in: userIds } }, select: { id: true, email: true } })).map((u) => [u.id, u.email]));
   let deleted = 0;
   const skipped: string[] = [];
@@ -101,7 +97,7 @@ export async function bulkDeleteUsers(_p: ActionResult, fd: FormData): Promise<A
     const r = await deleteUserAccount(admin.id, id);
     if (r.ok) {
       deleted++;
-      await audit(admin, "USER_DELETE", "User", id, { before: { email: r.email, name: r.name }, reason });
+      await audit(admin, "USER_DELETE", "User", id, { before: { email: r.email, name: r.name } });
     } else skipped.push(`${labels.get(id) ?? "User"}: ${r.reason}`);
   }
   revalidatePath("/admin", "layout");
