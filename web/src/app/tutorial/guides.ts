@@ -103,6 +103,7 @@ export const GUIDES: TutorialGuide[] = [
       },
       { text: "Pelajaran baru masih berstatus Draf. Untuk menayangkannya, kembali ke halaman kursus lalu tekan tanda Draf di barisnya sampai berubah menjadi Tayang. Tekan lagi kalau mau mengembalikannya ke draf." },
       { text: "Untuk mengubah urutan, pakai panah naik dan turun, atau buka Urutkan dengan seret dan lepas." },
+      { text: "Judul pelajaran bisa mengikuti judul video di YouTube. Kosongkan kolom judul saat menyimpan, atau tekan Samakan judul dengan YouTube di bagian Pelajaran untuk menyamakan semuanya. Jadi kalau Sidi ingin judulnya menjelaskan materi, ubah dulu judul videonya di YouTube, baru tekan tombol ini." },
     ],
   },
   {

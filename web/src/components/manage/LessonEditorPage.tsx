@@ -14,7 +14,7 @@ export async function LessonEditorPage({ courseId, lessonId }: { courseId: strin
       <ActionForm action={saveLesson} submit={lesson ? "Simpan pelajaran" : "Buat pelajaran (draf)"} testId="save-lesson">
         <input type="hidden" name="courseId" value={courseId} />
         {lesson && <input type="hidden" name="lessonId" value={lesson.id} />}
-        <Field name="title" label="Judul pelajaran" defaultValue={lesson?.title} full />
+        <Field name="title" label="Judul pelajaran" defaultValue={lesson?.title} hint="Kosongkan untuk memakai judul video YouTube." full />
         <Field name="durationMin" label="Durasi (menit)" type="number" defaultValue={lesson?.durationMin} min={0} max={600} />
         <Field name="videoUrl" label="URL video" defaultValue={lesson?.videoUrl} placeholder="https://www.youtube.com/watch?v=…" hint="YouTube atau file .mp4/.webm dari host yang diizinkan. Tautan lain ditolak." />
         <MatanEditor initial={parseMatan(lesson?.matan)} />

@@ -12,6 +12,7 @@ import { getContent, saveContent, DEFAULTS, type ContentKey } from "@/lib/conten
 import { validateSiteCopy } from "@/lib/site-copy";
 import { saveSiteImage, saveTeacherPhoto } from "@/lib/media";
 import { parseBundle, unlockedCourseIds } from "@/lib/bundle";
+import { fetchYoutubeTitle } from "@/lib/youtube-title";
 
 type Guard = { ok: true; user: CurrentUser } | { ok: false; result: ActionResult };
 
@@ -180,6 +181,11 @@ export async function saveLesson(_p: ActionResult, fd: FormData): Promise<Action
   const lessonId = String(raw.lessonId ?? "");
   const g = await asManager(courseId);
   if (!g.ok) return g.result;
+  // Judul dikosongkan: pakai judul video YouTube-nya.
+  if (!String(raw.title ?? "").trim()) {
+    const fromYoutube = await fetchYoutubeTitle(String(raw.videoUrl ?? ""));
+    if (fromYoutube) raw.title = fromYoutube;
+  }
   const parsed = lessonSchema.safeParse(raw);
   if (!parsed.success) return fromZod(parsed.error);
   const d = parsed.data;
@@ -200,6 +206,22 @@ export async function saveLesson(_p: ActionResult, fd: FormData): Promise<Action
   await db.lesson.update({ where: { id: lessonId, courseId }, data });
   refreshCourse(course?.slug);
   return { ok: true, message: "Pelajaran tersimpan." };
+}
+
+/** Samakan judul semua pelajaran dalam satu kursus dengan judul video YouTube-nya. */
+export async function syncLessonTitles(_p: ActionResult, fd: FormData): Promise<ActionResult> {
+  const courseId = String(fd.get("courseId") ?? "");
+  const g = await asManager(courseId);
+  if (!g.ok) return g.result;
+  const course = await db.course.findUnique({ where: { id: courseId }, select: { slug: true, lessons: { select: { id: true, title: true, videoUrl: true } } } });
+  if (!course) return fail("Kursus tidak ditemukan.");
+  const results = await Promise.all(course.lessons.map(async (l) => ({ l, title: await fetchYoutubeTitle(l.videoUrl) })));
+  const changed = results.filter((r) => r.title && r.title !== r.l.title);
+  for (const { l, title } of changed) await db.lesson.update({ where: { id: l.id }, data: { title: title! } });
+  const missing = results.filter((r) => !r.title).length;
+  if (changed.length) await audit(g.user, "LESSON_TITLE_SYNC", "Course", courseId, { before: changed.map((r) => r.l.title), after: changed.map((r) => r.title) });
+  refreshCourse(course.slug);
+  return { ok: true, message: `${changed.length} judul diperbarui${missing ? `, ${missing} pelajaran tidak punya judul YouTube yang bisa diambil` : ""}.` };
 }
 
 export async function setLessonFlags(_p: ActionResult, fd: FormData): Promise<ActionResult> {

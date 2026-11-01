@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowDown, ArrowUp, Pencil, Plus } from "lucide-react";
 import { ActionForm, Field, InlineAction } from "@/components/ActionForm";
-import { saveCourse, setCourseStatus, archiveCourse, deleteCourse, moveLesson, setLessonFlags, deleteLesson, requestPublication } from "@/app/actions/manage";
+import { saveCourse, setCourseStatus, archiveCourse, deleteCourse, moveLesson, setLessonFlags, deleteLesson, requestPublication, syncLessonTitles } from "@/app/actions/manage";
 import { FIELDS, FIELD_LABEL, LEVELS, LEVEL_LABEL } from "@/lib/constants";
 import { rupiah } from "@/lib/format";
 import { parseBundle } from "@/lib/bundle";
@@ -92,7 +92,10 @@ export async function CourseEditor({ courseId, base, isAdmin, teachers }: { cour
         <section className="card" aria-labelledby="pel-h">
           <div className="sec-hd" style={{ padding: "20px 24px 8px" }}>
             <h2 id="pel-h">Pelajaran ({course.lessons.length})</h2>
-            <Link className="btn btn-primary sm" href={`${base}/${course.id}/pelajaran/baru`}><Plus size={14} aria-hidden="true" /> Tambah pelajaran</Link>
+            <div className="row-actions" style={{ alignItems: "flex-start" }}>
+              {course.lessons.length > 0 && <InlineAction action={syncLessonTitles} fields={{ courseId: course.id }} label="Samakan judul dengan YouTube" pendingText="Mengambil judul…" />}
+              <Link className="btn btn-primary sm" href={`${base}/${course.id}/pelajaran/baru`}><Plus size={14} aria-hidden="true" /> Tambah pelajaran</Link>
+            </div>
           </div>
           {course.lessons.length>1&&<LessonSort courseId={course.id} lessons={course.lessons}/>}
           {course.lessons.length === 0 ? (
