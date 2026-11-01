@@ -1,11 +1,3 @@
 {
-  "regions": ["dub1"],
-  "redirects": [
-    {
-      "source": "/:path(.*)",
-      "has": [{ "type": "host", "value": "www.belajarditimurtengah.com" }],
-      "destination": "https://belajarditimurtengah.com/:path",
-      "permanent": true
-    }
-  ]
+  "regions": ["dub1"]
 }
