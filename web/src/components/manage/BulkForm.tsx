@@ -16,6 +16,9 @@ export function BulkForm({ action, children, controls, submit, submitClass = "bt
   submitClass?: string;
   danger?: { action: ActionFn; label: string; confirm: string };
 }) {
+  // Tombol mati sampai halaman siap. Kalau tidak, browser mengirim form biasa dan pilihan malah masuk ke alamat halaman.
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const [running, setRunning] = useState<"main" | "danger">("main");
   const [r, run, pending] = useActionState<ActionResult, FormData>((_p, fd) => (fd.get("intent") === "danger" && danger ? danger : { action }).action(idle, fd), idle);
   const ref = useRef<HTMLFormElement>(null);
@@ -41,8 +44,8 @@ export function BulkForm({ action, children, controls, submit, submitClass = "bt
       <div className="bulk-bar">
         <label className="check"><input type="checkbox" aria-label="Pilih semua di halaman ini" onChange={(e) => boxes().forEach((b) => { b.checked = e.target.checked; })} /><span>Pilih semua</span></label>
         {controls}
-        <button type="submit" className={submitClass} disabled={pending} aria-busy={pending && running === "main"}>{pending && running === "main" ? "Memproses…" : submit}</button>
-        {danger && <button type="submit" name="intent" value="danger" className="btn btn-danger bulk-danger" disabled={pending} aria-busy={pending && running === "danger"}>{pending && running === "danger" ? "Menghapus…" : danger.label}</button>}
+        <button type="submit" className={submitClass} disabled={!ready || pending} aria-busy={pending && running === "main"}>{pending && running === "main" ? "Memproses…" : submit}</button>
+        {danger && <button type="submit" name="intent" value="danger" className="btn btn-danger bulk-danger" disabled={!ready || pending} aria-busy={pending && running === "danger"}>{pending && running === "danger" ? "Menghapus…" : danger.label}</button>}
       </div>
       {!r.ok && r.error && <div className="alert err-box" role="alert">{r.error}</div>}
       {r.ok && r.message && <div className="alert ok-box" role="status">{r.message}</div>}
