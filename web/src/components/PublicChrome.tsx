@@ -3,7 +3,6 @@ import { Menu } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { HeaderAuth } from "@/components/HeaderAuth";
 import { BackButton } from "@/components/BackButton";
-import { PublicTabbar } from "@/components/PublicTabbar";
 import { getContent } from "@/lib/content";
 
 export async function PublicHeader({ landing = false }: { landing?: boolean }) {
@@ -79,7 +78,6 @@ export function PublicShell({ children, landing = false }: { children: React.Rea
       <PublicHeader landing={landing} />
       <main id="isi" className={landing ? "landing-page" : undefined}>{children}</main>
       <PublicFooter />
-      <PublicTabbar />
     </>
   );
 }
