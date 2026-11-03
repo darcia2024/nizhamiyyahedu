@@ -46,8 +46,9 @@ export async function saveVoucher(_p: ActionResult, fd: FormData): Promise<Actio
   const minPurchase = optionalWhole(fd.get("minPurchase"), 0);
   if (minPurchase === undefined) return fail("Minimum pembelian harus angka bulat, atau dikosongkan.", { minPurchase: "Periksa lagi angkanya." });
 
-  const courseId = String(fd.get("courseId") ?? "") || null;
-  if (courseId && !(await db.course.findUnique({ where: { id: courseId }, select: { id: true } }))) return fail("Kursus tidak ditemukan.");
+  const pickedCourses = fd.get("productType") === "SELECTED" ? [...new Set(fd.getAll("courseIds").map(String).filter(Boolean))] : [];
+  if (fd.get("productType") === "SELECTED" && !pickedCourses.length) return fail("Centang minimal satu kelas.");
+  if (pickedCourses.length && (await db.course.count({ where: { id: { in: pickedCourses } } })) !== pickedCourses.length) return fail("Ada kelas yang tidak ditemukan. Muat ulang halaman.");
 
   const singleUse = fd.get("couponType") === "SINGLE";
   const maxUses = optionalWhole(fd.get("maxUses"), 1);
@@ -67,10 +68,10 @@ export async function saveVoucher(_p: ActionResult, fd: FormData): Promise<Actio
     const v = await db.voucher.create({
       data: {
         code, name, discountType, percent: discountType === "PERCENT" ? value : 0, amountOff: discountType === "NOMINAL" ? value : null,
-        minPurchase: minPurchase || null, singleUse, courseId, allowedEmails: emails.join(", ") || null, maxUses, startsAt, expiresAt,
+        minPurchase: minPurchase || null, singleUse, courseIds: pickedCourses.length ? JSON.stringify(pickedCourses) : null, allowedEmails: emails.join(", ") || null, maxUses, startsAt, expiresAt,
       },
     });
-    await audit(admin, "VOUCHER_CREATE", "Voucher", v.id, { after: { code, name, discountType, value, courseId, singleUse, maxUses, minPurchase, startsAt, expiresAt, emails: emails.length } });
+    await audit(admin, "VOUCHER_CREATE", "Voucher", v.id, { after: { code, name, discountType, value, courses: pickedCourses, singleUse, maxUses, minPurchase, startsAt, expiresAt, emails: emails.length } });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") return fail("Kode ini sudah dipakai voucher lain.", { code: "Kode sudah dipakai." });
     throw e;

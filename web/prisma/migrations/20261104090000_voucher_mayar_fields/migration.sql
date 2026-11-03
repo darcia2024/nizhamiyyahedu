@@ -2,6 +2,7 @@
 
 -- AlterTable
 ALTER TABLE "Voucher" ADD COLUMN     "amountOff" INTEGER,
+ADD COLUMN     "courseIds" TEXT,
 ADD COLUMN     "discountType" TEXT NOT NULL DEFAULT 'PERCENT',
 ADD COLUMN     "minPurchase" INTEGER,
 ADD COLUMN     "name" TEXT NOT NULL DEFAULT '',

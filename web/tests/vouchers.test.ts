@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { discountedAmount, discountLabel, normalizeVoucherCode, parseEmailList, voucherProblem, type VoucherRule } from "@/lib/vouchers";
+import { discountedAmount, discountLabel, normalizeVoucherCode, parseEmailList, voucherCourseIds, voucherProblem, type VoucherRule } from "@/lib/vouchers";
 
 const { db, createInvoice } = vi.hoisted(() => {
   const db = {
@@ -19,7 +19,7 @@ vi.mock("@/lib/mayar", () => ({ createInvoice, fetchTransaction: vi.fn(), mayarS
 import { createOrder } from "@/lib/orders";
 import type { CurrentUser } from "@/lib/auth-guard";
 
-const rule: VoucherRule = { courseId: null, allowedEmails: null, maxUses: null, minPurchase: null, singleUse: false, startsAt: null, expiresAt: null, active: true };
+const rule: VoucherRule = { courseId: null, courseIds: null, allowedEmails: null, maxUses: null, minPurchase: null, singleUse: false, startsAt: null, expiresAt: null, active: true };
 const ctx = { courseId: "c1", price: 70000, email: "a@b.test", uses: 0, usedByUser: 0 };
 const pct = (percent: number) => ({ discountType: "PERCENT", percent, amountOff: null });
 const rp = (amountOff: number) => ({ discountType: "NOMINAL", percent: 0, amountOff });
@@ -44,6 +44,13 @@ describe("aturan voucher", () => {
     expect(voucherProblem({ ...rule, singleUse: true }, ctx)).toBeNull();
     expect(voucherProblem({ ...rule, singleUse: true }, { ...ctx, uses: 9 })).toBeNull();
     expect(voucherProblem({ ...rule, singleUse: true }, { ...ctx, uses: 1, usedByUser: 1 })).toMatch(/pernah kamu pakai/);
+  });
+  it("bisa untuk semua kelas, satu kelas, atau beberapa kelas", () => {
+    expect(voucherProblem(rule, ctx)).toBeNull();
+    expect(voucherProblem({ ...rule, courseIds: JSON.stringify(["c1", "c2"]) }, ctx)).toBeNull();
+    expect(voucherProblem({ ...rule, courseIds: JSON.stringify(["c2", "c3"]) }, ctx)).toMatch(/kelas ini/);
+    expect(voucherProblem({ ...rule, courseId: "c1" }, ctx)).toBeNull();
+    expect(voucherCourseIds({ courseId: "c1", courseIds: JSON.stringify(["c2"]) })).toEqual(["c2", "c1"]);
   });
   it("kupon berulang: akun yang sama boleh memakai lagi", () => {
     expect(voucherProblem(rule, { ...ctx, uses: 3, usedByUser: 3 })).toBeNull();

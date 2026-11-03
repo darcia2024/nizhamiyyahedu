@@ -2,17 +2,19 @@ import { db } from "@/lib/db";
 import { InlineAction } from "@/components/ActionForm";
 import { deleteVoucher, setVoucherActive } from "@/app/actions/admin-vouchers";
 import { dateTimeWib, rupiah } from "@/lib/format";
-import { discountLabel, parseEmailList } from "@/lib/vouchers";
+import { discountLabel, parseEmailList, voucherCourseIds } from "@/lib/vouchers";
 import { Empty, ManageHeading } from "./ManageUI";
 import { VoucherForm } from "./VoucherForm";
 
 export async function AdminVouchers() {
-  const [vouchers, courses, paid] = await Promise.all([
-    db.voucher.findMany({ orderBy: { createdAt: "desc" }, take: 200, include: { course: { select: { title: true } }, _count: { select: { orders: true } } } }),
+  const [vouchers, courses, allTitles, paid] = await Promise.all([
+    db.voucher.findMany({ orderBy: { createdAt: "desc" }, take: 200, include: { _count: { select: { orders: true } } } }),
     db.course.findMany({ where: { archivedAt: null }, orderBy: { title: "asc" }, select: { id: true, title: true } }),
+    db.course.findMany({ select: { id: true, title: true } }),
     db.order.groupBy({ by: ["voucherId"], where: { status: "PAID", voucherId: { not: null } }, _count: true }),
   ]);
   const paidBy = new Map(paid.map((p) => [p.voucherId, p._count]));
+  const titles = new Map(allTitles.map((c) => [c.id, c.title]));
   const now = Date.now();
   return (
     <>
@@ -31,12 +33,13 @@ export async function AdminVouchers() {
                 const waiting = Boolean(v.startsAt && v.startsAt.getTime() > now);
                 const used = paidBy.get(v.id) ?? 0;
                 const emails = parseEmailList(v.allowedEmails).length;
+                const forCourses = voucherCourseIds(v).map((id) => titles.get(id)).filter(Boolean);
                 const status = !v.active ? "Nonaktif" : expired ? "Kedaluwarsa" : v.maxUses !== null && used >= v.maxUses ? "Kuota habis" : waiting ? "Belum mulai" : "Aktif";
                 return (
                   <tr key={v.id}>
                     <td data-label="Kode"><b className="table-title">{v.code}</b>{v.name && <small className="muted">{v.name}</small>}{v.expiresAt && <small className="muted">Sampai {dateTimeWib(v.expiresAt)}</small>}</td>
                     <td data-label="Besaran">{discountLabel(v)}{v.minPurchase ? <small className="muted">Min. {rupiah(v.minPurchase)}</small> : null}</td>
-                    <td data-label="Untuk">{v.course?.title ?? "Semua produk"}<small className="muted">{emails ? `Khusus ${emails} email` : "Semua pelanggan"}</small></td>
+                    <td data-label="Untuk">{forCourses.length ? forCourses.join(", ") : "Semua kelas"}<small className="muted">{emails ? `Khusus ${emails} email` : "Semua pelanggan"}</small></td>
                     <td data-label="Terpakai">{used}{v.maxUses !== null ? ` dari ${v.maxUses}` : ""}<small className="muted">{v.singleUse ? "Sekali pakai per akun" : "Berulang"}</small></td>
                     <td data-label="Status"><span className={`badge ${status === "Aktif" ? "ok" : status === "Belum mulai" ? "wait" : "off"}`}>{status}</span></td>
                     <td data-label="Aksi">

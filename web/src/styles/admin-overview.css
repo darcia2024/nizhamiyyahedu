@@ -91,6 +91,7 @@
 .bulk-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
 .bulk-bar .select,.bulk-bar .input{max-width:240px}
 .bulk-bar .bulk-danger{margin-left:auto}
+.voucher-courses{display:grid;gap:8px;margin-top:10px;padding:12px 14px;border:1px solid #e3e7df;border-radius:10px}
 .voucher-code-row{display:flex;gap:10px}
 .voucher-code-row .input{flex:1;min-width:0;text-transform:uppercase}
 .admin-nav .badge{margin-left:auto}

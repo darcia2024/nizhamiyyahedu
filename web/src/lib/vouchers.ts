@@ -1,3 +1,5 @@
+import { parseBundle } from "@/lib/bundle";
+
 /** Aturan voucher tanpa akses database, supaya mudah diuji dan dipakai ulang. */
 export const VOUCHER_CODE = /^[A-Z0-9_-]{3,30}$/;
 
@@ -17,8 +19,14 @@ export const discountLabel = (d: VoucherDiscount) =>
 export const parseEmailList = (raw: string | null | undefined) =>
   (raw ?? "").split(/[\s,;]+/).map((s) => s.trim().toLowerCase()).filter(Boolean);
 
+/** Kursus tempat voucher berlaku. Daftar kosong berarti semua kursus. courseId dari voucher lama tetap dihormati. */
+export const voucherCourseIds = (v: { courseId: string | null; courseIds: string | null }) => {
+  const ids = parseBundle(v.courseIds);
+  return v.courseId && !ids.includes(v.courseId) ? [...ids, v.courseId] : ids;
+};
+
 export type VoucherRule = {
-  courseId: string | null; allowedEmails: string | null; maxUses: number | null; minPurchase: number | null;
+  courseId: string | null; courseIds: string | null; allowedEmails: string | null; maxUses: number | null; minPurchase: number | null;
   singleUse: boolean; startsAt: Date | null; expiresAt: Date | null; active: boolean;
 };
 
@@ -28,7 +36,8 @@ export function voucherProblem(v: VoucherRule, ctx: { courseId: string; price: n
   if (!v.active) return "Voucher ini sudah tidak aktif.";
   if (v.startsAt && v.startsAt.getTime() > now) return "Voucher ini belum bisa dipakai.";
   if (v.expiresAt && v.expiresAt.getTime() < now) return "Voucher ini sudah kedaluwarsa.";
-  if (v.courseId && v.courseId !== ctx.courseId) return "Voucher ini tidak berlaku untuk kelas ini.";
+  const courses = voucherCourseIds(v);
+  if (courses.length && !courses.includes(ctx.courseId)) return "Voucher ini tidak berlaku untuk kelas ini.";
   if (v.minPurchase && ctx.price < v.minPurchase) return `Voucher ini hanya untuk pembelian minimal Rp ${new Intl.NumberFormat("id-ID").format(v.minPurchase)}.`;
   const emails = parseEmailList(v.allowedEmails);
   if (emails.length && !emails.includes(ctx.email.trim().toLowerCase())) return "Voucher ini tidak berlaku untuk akunmu.";

@@ -178,7 +178,7 @@ model Order {
   @@index([voucherId])
 }
 
-/// Kode diskon. courseId kosong = berlaku semua kursus; allowedEmails kosong = siapa saja (pisah koma).
+/// Kode diskon. courseIds (JSON) dan courseId kosong = berlaku semua kursus; allowedEmails kosong = siapa saja (pisah koma).
 model Voucher {
   id            String    @id @default(cuid())
   code          String    @unique
@@ -189,6 +189,7 @@ model Voucher {
   minPurchase   Int?
   singleUse     Boolean   @default(false) // true = tiap akun hanya bisa memakai kode ini sekali
   startsAt      DateTime?
+  courseIds     String? // JSON: [courseId]; kursus yang boleh memakai voucher ini
   courseId      String?
   course        Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   allowedEmails String?
