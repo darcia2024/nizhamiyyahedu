@@ -31,13 +31,13 @@ export async function AdminVouchers() {
                 const waiting = Boolean(v.startsAt && v.startsAt.getTime() > now);
                 const used = paidBy.get(v.id) ?? 0;
                 const emails = parseEmailList(v.allowedEmails).length;
-                const status = !v.active ? "Nonaktif" : expired ? "Kedaluwarsa" : v.singleUse && used ? "Terpakai" : waiting ? "Belum mulai" : "Aktif";
+                const status = !v.active ? "Nonaktif" : expired ? "Kedaluwarsa" : v.maxUses !== null && used >= v.maxUses ? "Kuota habis" : waiting ? "Belum mulai" : "Aktif";
                 return (
                   <tr key={v.id}>
                     <td data-label="Kode"><b className="table-title">{v.code}</b>{v.name && <small className="muted">{v.name}</small>}{v.expiresAt && <small className="muted">Sampai {dateTimeWib(v.expiresAt)}</small>}</td>
                     <td data-label="Besaran">{discountLabel(v)}{v.minPurchase ? <small className="muted">Min. {rupiah(v.minPurchase)}</small> : null}</td>
                     <td data-label="Untuk">{v.course?.title ?? "Semua produk"}<small className="muted">{emails ? `Khusus ${emails} email` : "Semua pelanggan"}</small></td>
-                    <td data-label="Terpakai">{used}{v.singleUse ? " dari 1" : v.maxUses !== null ? ` dari ${v.maxUses}` : ""}<small className="muted">{v.singleUse ? "Sekali pakai" : "Berulang"}</small></td>
+                    <td data-label="Terpakai">{used}{v.maxUses !== null ? ` dari ${v.maxUses}` : ""}<small className="muted">{v.singleUse ? "Sekali pakai per akun" : "Berulang"}</small></td>
                     <td data-label="Status"><span className={`badge ${status === "Aktif" ? "ok" : status === "Belum mulai" ? "wait" : "off"}`}>{status}</span></td>
                     <td data-label="Aksi">
                       <div className="row-actions" style={{ alignItems: "flex-start" }}>

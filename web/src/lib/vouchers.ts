@@ -22,8 +22,8 @@ export type VoucherRule = {
   singleUse: boolean; startsAt: Date | null; expiresAt: Date | null; active: boolean;
 };
 
-/** Pesan penolakan, atau null bila voucher boleh dipakai. uses menghitung yang lunas ditambah tagihan aktif. */
-export function voucherProblem(v: VoucherRule, ctx: { courseId: string; price: number; email: string; uses: number; now?: Date }): string | null {
+/** Pesan penolakan, atau null bila voucher boleh dipakai. uses dan usedByUser menghitung yang lunas ditambah tagihan aktif. */
+export function voucherProblem(v: VoucherRule, ctx: { courseId: string; price: number; email: string; uses: number; usedByUser: number; now?: Date }): string | null {
   const now = (ctx.now ?? new Date()).getTime();
   if (!v.active) return "Voucher ini sudah tidak aktif.";
   if (v.startsAt && v.startsAt.getTime() > now) return "Voucher ini belum bisa dipakai.";
@@ -32,6 +32,7 @@ export function voucherProblem(v: VoucherRule, ctx: { courseId: string; price: n
   if (v.minPurchase && ctx.price < v.minPurchase) return `Voucher ini hanya untuk pembelian minimal Rp ${new Intl.NumberFormat("id-ID").format(v.minPurchase)}.`;
   const emails = parseEmailList(v.allowedEmails);
   if (emails.length && !emails.includes(ctx.email.trim().toLowerCase())) return "Voucher ini tidak berlaku untuk akunmu.";
-  if (v.singleUse ? ctx.uses >= 1 : v.maxUses !== null && ctx.uses >= v.maxUses) return v.singleUse ? "Voucher sekali pakai ini sudah terpakai." : "Kuota voucher ini sudah habis.";
+  if (v.singleUse && ctx.usedByUser > 0) return "Voucher ini sudah pernah kamu pakai.";
+  if (v.maxUses !== null && ctx.uses >= v.maxUses) return "Kuota voucher ini sudah habis.";
   return null;
 }

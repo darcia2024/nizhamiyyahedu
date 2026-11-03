@@ -241,7 +241,8 @@ export const GUIDES: TutorialGuide[] = [
     steps: [
       { text: "Buka menu Voucher, lalu isi Nama diskon dan pilih Untuk produk." },
       { text: "Pilih Tipe diskon, Persentase atau Nominal, lalu isi Besaran. Minimum pembelian boleh dikosongkan." },
-      { text: "Pilih Tipe kupon. Sekali pakai berarti kode hanya bisa dipakai satu kali lalu habis. Berulang berarti kode bisa dipakai berkali-kali sampai Batas pemakaian. Kalau batasnya dikosongkan, pemakaiannya tidak terbatas." },
+      { text: "Pilih Tipe kupon. Sekali pakai berarti tiap akun bisa memakai kode itu satu kali, jadi satu kode bisa dibagikan ke banyak murid. Berulang berarti satu akun bisa memakainya lagi, misalnya untuk kelas lain." },
+      { text: "Kalau jumlah pemakaiannya mau dibatasi, isi Batas pemakaian. Ini total dari semua akun. Kalau dikosongkan, pemakaiannya tidak terbatas." },
       { text: "Pilih Untuk pelanggan. Kalau khusus orang tertentu, pilih Pelanggan tertentu lalu tulis emailnya." },
       { text: "Isi Kode kupon, atau tekan Generate supaya dibuatkan otomatis. Waktu mulai dan Tanggal kedaluwarsa boleh dikosongkan. Setelah itu tekan Buat diskon." },
       { text: "Kirim kodenya ke pembeli. Mereka memasukkan kode itu di Ringkasan pembayaran, lalu menekan Pakai, dan harganya langsung berubah." },

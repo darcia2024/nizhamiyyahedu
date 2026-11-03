@@ -20,7 +20,7 @@ import { createOrder } from "@/lib/orders";
 import type { CurrentUser } from "@/lib/auth-guard";
 
 const rule: VoucherRule = { courseId: null, allowedEmails: null, maxUses: null, minPurchase: null, singleUse: false, startsAt: null, expiresAt: null, active: true };
-const ctx = { courseId: "c1", price: 70000, email: "a@b.test", uses: 0 };
+const ctx = { courseId: "c1", price: 70000, email: "a@b.test", uses: 0, usedByUser: 0 };
 const pct = (percent: number) => ({ discountType: "PERCENT", percent, amountOff: null });
 const rp = (amountOff: number) => ({ discountType: "NOMINAL", percent: 0, amountOff });
 
@@ -40,11 +40,18 @@ describe("aturan voucher", () => {
     expect(discountLabel(pct(25))).toBe("25%");
     expect(discountLabel(rp(20000))).toBe("Rp 20.000");
   });
-  it("kupon sekali pakai habis setelah satu kali, berulang mengikuti limit", () => {
+  it("kupon sekali pakai: tiap akun sekali, orang lain tetap bisa", () => {
     expect(voucherProblem({ ...rule, singleUse: true }, ctx)).toBeNull();
-    expect(voucherProblem({ ...rule, singleUse: true }, { ...ctx, uses: 1 })).toMatch(/terpakai/);
-    expect(voucherProblem(rule, { ...ctx, uses: 999 })).toBeNull();
+    expect(voucherProblem({ ...rule, singleUse: true }, { ...ctx, uses: 9 })).toBeNull();
+    expect(voucherProblem({ ...rule, singleUse: true }, { ...ctx, uses: 1, usedByUser: 1 })).toMatch(/pernah kamu pakai/);
+  });
+  it("kupon berulang: akun yang sama boleh memakai lagi", () => {
+    expect(voucherProblem(rule, { ...ctx, uses: 3, usedByUser: 3 })).toBeNull();
+  });
+  it("batas pemakaian berlaku untuk kedua tipe", () => {
     expect(voucherProblem({ ...rule, maxUses: 2 }, { ...ctx, uses: 1 })).toBeNull();
+    expect(voucherProblem({ ...rule, maxUses: 2 }, { ...ctx, uses: 2 })).toMatch(/Kuota/);
+    expect(voucherProblem({ ...rule, singleUse: true, maxUses: 2 }, { ...ctx, uses: 2 })).toMatch(/Kuota/);
   });
   it("mengikuti waktu mulai dan minimum pembelian", () => {
     expect(voucherProblem({ ...rule, startsAt: new Date(Date.now() + 60000) }, ctx)).toMatch(/belum/);
@@ -112,11 +119,14 @@ describe("tagihan dengan voucher", () => {
     expect(createInvoice).not.toHaveBeenCalled();
   });
 
-  it("menolak kupon sekali pakai yang sudah terpakai", async () => {
+  it("kupon sekali pakai ditolak hanya untuk akun yang sudah memakainya", async () => {
     db.voucher.findUnique.mockResolvedValue({ ...voucher, singleUse: true });
-    db.order.count.mockResolvedValue(1);
+    db.order.count.mockImplementation(async ({ where }: { where: { userId?: string } }) => (where.userId ? 1 : 5));
     expect(await createOrder(user, "c1", "081234567890", "HEMAT")).toMatchObject({ ok: false, field: "voucher" });
     expect(db.order.create).not.toHaveBeenCalled();
+    db.order.count.mockImplementation(async ({ where }: { where: { userId?: string } }) => (where.userId ? 0 : 5));
+    db.order.create.mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({ ...order, ...data }));
+    expect(await createOrder(user, "c1", "081234567890", "HEMAT")).toMatchObject({ ok: true, amount: 35000 });
   });
 
   it("menolak voucher kalau masih ada tagihan menunggu", async () => {

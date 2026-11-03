@@ -37,7 +37,7 @@ export function VoucherForm({ courses }: { courses: { id: string; title: string 
           <option value="REPEAT">Berulang</option>
           <option value="SINGLE">Sekali pakai</option>
         </select>
-        <span className="hint">{couponType === "SINGLE" ? "Kode hanya bisa dipakai satu kali, lalu habis." : "Kode bisa dipakai berkali-kali sampai batas pemakaian."}</span>
+        <span className="hint">{couponType === "SINGLE" ? "Tiap akun bisa memakai kode ini satu kali." : "Satu akun bisa memakai kode ini berkali-kali, misalnya untuk kelas lain."}</span>
       </div>
       <div className="field">
         <label htmlFor="v-customer">Untuk pelanggan</label>
@@ -54,7 +54,7 @@ export function VoucherForm({ courses }: { courses: { id: string; title: string 
           <button type="button" className="btn btn-ghost" onClick={() => setCode(randomCode())}>Generate</button>
         </div>
       </div>
-      {couponType === "REPEAT" && <Field name="maxUses" label="Batas pemakaian / limit" type="number" min={1} hint="Kosongkan jika tidak terbatas." full />}
+      <Field name="maxUses" label="Batas pemakaian / limit" type="number" min={1} hint="Total pemakaian dari semua akun. Kosongkan jika tidak terbatas." full />
       <div className="field">
         <label htmlFor="v-start">Waktu mulai penggunaan</label>
         <input id="v-start" className="input" type="datetime-local" name="startsAt" />

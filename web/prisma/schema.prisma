@@ -187,7 +187,7 @@ model Voucher {
   percent       Int // dipakai bila discountType PERCENT
   amountOff     Int? // rupiah, dipakai bila discountType NOMINAL
   minPurchase   Int?
-  singleUse     Boolean   @default(false) // true = satu kode hanya satu kali pakai
+  singleUse     Boolean   @default(false) // true = tiap akun hanya bisa memakai kode ini sekali
   startsAt      DateTime?
   courseId      String?
   course        Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)

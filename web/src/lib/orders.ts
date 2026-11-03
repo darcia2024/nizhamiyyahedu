@@ -14,12 +14,16 @@ export type CreateOrderResult =
 type VoucherClient = Pick<Prisma.TransactionClient, "voucher" | "order">;
 
 /** Cari voucher dan periksa aturannya. Tagihan aktif ikut dihitung supaya kuota tidak terlampaui. */
-export async function resolveVoucher(client: VoucherClient, rawCode: unknown, user: { email: string }, course: { id: string; priceRupiah: number }) {
+export async function resolveVoucher(client: VoucherClient, rawCode: unknown, user: { id: string; email: string }, course: { id: string; priceRupiah: number }) {
   const code = normalizeVoucherCode(rawCode);
   const v = await client.voucher.findUnique({ where: { code } });
   if (!v) return { ok: false as const, error: "Kode voucher tidak ditemukan." };
-  const uses = await client.order.count({ where: { voucherId: v.id, OR: [{ status: "PAID" }, { status: "PENDING", expiresAt: { gt: new Date() } }] } });
-  const problem = voucherProblem(v, { courseId: course.id, price: course.priceRupiah, email: user.email, uses });
+  const activeOrPaid = { OR: [{ status: "PAID" }, { status: "PENDING", expiresAt: { gt: new Date() } }] };
+  const [uses, usedByUser] = await Promise.all([
+    client.order.count({ where: { voucherId: v.id, ...activeOrPaid } }),
+    client.order.count({ where: { voucherId: v.id, userId: user.id, ...activeOrPaid } }),
+  ]);
+  const problem = voucherProblem(v, { courseId: course.id, price: course.priceRupiah, email: user.email, uses, usedByUser });
   return problem ? { ok: false as const, error: problem } : { ok: true as const, voucher: v };
 }
 

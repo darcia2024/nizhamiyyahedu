@@ -50,7 +50,7 @@ export async function saveVoucher(_p: ActionResult, fd: FormData): Promise<Actio
   if (courseId && !(await db.course.findUnique({ where: { id: courseId }, select: { id: true } }))) return fail("Kursus tidak ditemukan.");
 
   const singleUse = fd.get("couponType") === "SINGLE";
-  const maxUses = singleUse ? null : optionalWhole(fd.get("maxUses"), 1);
+  const maxUses = optionalWhole(fd.get("maxUses"), 1);
   if (maxUses === undefined) return fail("Batas pemakaian harus angka bulat minimal 1, atau dikosongkan.", { maxUses: "Minimal 1." });
 
   const emails = fd.get("customerType") === "SELECTED" ? parseEmailList(String(fd.get("allowedEmails") ?? "")) : [];
