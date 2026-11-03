@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, Users, GraduationCap, CreditCard, FileText, History, CircleHelp, ListChecks, BookMarked } from "lucide-react";
+import { LayoutDashboard, BookOpen, Users, GraduationCap, CreditCard, FileText, History, CircleHelp, ListChecks, BookMarked, TicketPercent } from "lucide-react";
 
 const items = [
   ["/admin", "Ringkasan", LayoutDashboard], ["/admin/tinjau", "Perlu ditinjau", ListChecks], ["/admin/kursus", "Kursus", BookOpen],
   ["/admin/pengajar", "Pengajar", GraduationCap], ["/admin/pengguna", "Pengguna", Users],
-  ["/admin/pembayaran", "Pembayaran", CreditCard], ["/admin/konten", "Konten website", FileText],
+  ["/admin/pembayaran", "Pembayaran", CreditCard], ["/admin/voucher", "Voucher", TicketPercent],["/admin/konten", "Konten website", FileText],
   ["/admin/log", "Aktivitas website", History], ["/admin/bantuan", "Bantuan", CircleHelp], ["/tutorial", "Tutorial", BookMarked],
 ] as const;
 export function AdminNav({ reviewCount = 0 }: { reviewCount?: number }) {

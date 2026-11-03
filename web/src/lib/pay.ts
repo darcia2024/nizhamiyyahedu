@@ -1,5 +1,8 @@
 /** Data yang dikirim server ke browser untuk membuka pop-up pembayaran. */
-export type PayData = { orderId: string; payUrl: string };
+export type PayData = { orderId: string; payUrl: string; amount?: number; free?: boolean };
+
+/** Hasil pengecekan voucher sebelum tagihan dibuat. */
+export type VoucherPreview = { code: string; percent: number; amount: number };
 
 /** Pesan dari halaman balasan Mayar (di dalam iframe) ke pop-up di halaman induk. */
 export const PAY_MESSAGE = "nz-pay-status";

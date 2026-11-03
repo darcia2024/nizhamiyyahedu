@@ -4,11 +4,28 @@ import { normalizePhone } from "@/lib/phone";
 import { createInvoice, fetchTransaction, mayarSimulated } from "@/lib/mayar";
 import { unlockedCourseIds } from "@/lib/bundle";
 import type { CurrentUser } from "@/lib/auth-guard";
+import { discountedAmount, normalizeVoucherCode, voucherProblem } from "@/lib/vouchers";
 import { Prisma } from "@prisma/client";
 
 export type CreateOrderResult =
-  | { ok: true; redirectUrl: string; orderId: string; reused: boolean }
+  | { ok: true; redirectUrl: string; orderId: string; reused: boolean; amount: number; free?: boolean }
   | { ok: false; error: string; field?: string };
+
+type VoucherClient = Pick<Prisma.TransactionClient, "voucher" | "order">;
+
+/** Cari voucher dan periksa aturannya. Tagihan aktif ikut dihitung supaya kuota tidak terlampaui. */
+export async function resolveVoucher(client: VoucherClient, rawCode: unknown, user: { id: string; email: string }, courseId: string) {
+  const code = normalizeVoucherCode(rawCode);
+  const v = await client.voucher.findUnique({ where: { code } });
+  if (!v) return { ok: false as const, error: "Kode voucher tidak ditemukan." };
+  const activeOrPaid = { OR: [{ status: "PAID" }, { status: "PENDING", expiresAt: { gt: new Date() } }] };
+  const [uses, usedByUser] = await Promise.all([
+    client.order.count({ where: { voucherId: v.id, ...activeOrPaid } }),
+    client.order.count({ where: { voucherId: v.id, userId: user.id, ...activeOrPaid } }),
+  ]);
+  const problem = voucherProblem(v, { courseId, email: user.email, uses, usedByUser });
+  return problem ? { ok: false as const, error: problem } : { ok: true as const, voucher: v };
+}
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const appUrl = () => (process.env.APP_URL ?? "").replace(/\/$/, "");
@@ -28,7 +45,7 @@ export async function expirePendingOrders(): Promise<number> {
 }
 
 /** PRD 10.1: satu PENDING aktif per (user, kursus); klik ganda mengembalikan order yang sama. */
-export async function createOrder(user: CurrentUser, courseId: string, whatsappRaw: string): Promise<CreateOrderResult> {
+export async function createOrder(user: CurrentUser, courseId: string, whatsappRaw: string, voucherCode?: string): Promise<CreateOrderResult> {
   const phone = normalizePhone(whatsappRaw);
   if (!phone.ok) return { ok: false, error: phone.message, field: "whatsapp" };
 
@@ -56,18 +73,27 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
       data: { status: "EXPIRED" },
     });
     const existing = await tx.order.findFirst({ where: { userId: user.id, courseId, status: "PENDING" } });
-    if (existing) return { order: existing, created: false };
+    if (existing) {
+      // Tagihan lama harganya sudah tetap dan tautannya masih hidup, jadi voucher tidak bisa ditempelkan ke sana.
+      if (voucherCode) return { rejected: "Masih ada tagihan yang menunggu pembayaran. Batalkan dulu di halaman Transaksi, lalu pakai vouchernya." };
+      return { order: existing, created: false };
+    }
+    const applied = voucherCode ? await resolveVoucher(tx, voucherCode, user, courseId) : null;
+    if (applied && !applied.ok) return { rejected: applied.error };
+    const voucher = applied?.ok ? applied.voucher : null;
     const o = await tx.order.create({
       data: {
         userId: user.id,
         courseId,
-        amount: course.priceRupiah,
+        amount: voucher ? discountedAmount(course.priceRupiah, voucher.percent) : course.priceRupiah,
         whatsapp: phone.value,
         expiresAt: new Date(now.getTime() + ORDER_TTL_HOURS * 3600 * 1000),
+        ...(voucher ? { voucherId: voucher.id, voucherCode: voucher.code, originalAmount: course.priceRupiah } : {}),
       },
     });
     return { order: o, created: true };
-  });
+    // Serializable hanya saat memakai voucher, supaya dua pembeli terakhir tidak melewati kuota bersamaan.
+  }, voucherCode ? { isolationLevel: Prisma.TransactionIsolationLevel.Serializable } : undefined);
   let reservation: Awaited<ReturnType<typeof reserve>> | undefined;
   for(let attempt=0;attempt<4;attempt++) {
     try { reservation=await reserve(); break; }
@@ -77,7 +103,15 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
     }
   }
   if(!reservation) return {ok:false,error:"Tagihan sedang diproses. Coba lagi sebentar."};
+  if ("rejected" in reservation) return { ok: false, error: reservation.rejected ?? "Voucher tidak bisa dipakai.", field: "voucher" };
   const {order,created}=reservation;
+
+  // Diskon 100%: tidak ada yang ditagih, jadi tidak melewati Mayar dan akses langsung dibuka.
+  if (created && order.amount === 0) {
+    const settled = await settleOrder(order.id, 0);
+    if (settled !== "paid") return { ok: false, error: "Voucher belum bisa diproses. Coba lagi sebentar." };
+    return { ok: true, redirectUrl: "", orderId: order.id, reused: false, amount: 0, free: true };
+  }
 
   if (!created) {
     // Mungkin request lain sedang membuat invoice. Tunggu sebentar bila belum ada tautan.
@@ -87,7 +121,7 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
       o = (await db.order.findUnique({ where: { id: order.id } })) ?? o;
     }
     if (!o.payUrl) return { ok: false, error: "Tagihan sedang dibuat. Coba lagi beberapa detik lagi." };
-    return { ok: true, redirectUrl: o.payUrl, orderId: o.id, reused: true };
+    return { ok: true, redirectUrl: o.payUrl, orderId: o.id, reused: true, amount: o.amount };
   }
 
   try {
@@ -103,7 +137,7 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
     });
     await db.order.update({ where: { id: order.id }, data: { mayarId: inv.id, payUrl: inv.link } });
     await db.event.create({ data: { name: "checkout_start", courseId, userId: user.id } });
-    return { ok: true, redirectUrl: inv.link, orderId: order.id, reused: false };
+    return { ok: true, redirectUrl: inv.link, orderId: order.id, reused: false, amount: order.amount };
   } catch (e) {
     console.error("[orders] gagal membuat invoice", e);
     await db.order.update({ where: { id: order.id }, data: { status: "FAILED", note: "Gagal membuat invoice" } });

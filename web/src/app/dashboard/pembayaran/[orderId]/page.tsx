@@ -96,6 +96,7 @@ export default async function OrderStatusPage({ params }: { params: Promise<{ or
         <dl style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "10px 24px", margin: 0 }}>
           <dt className="muted">Kursus</dt><dd style={{ margin: 0, fontWeight: 600 }}>{order.course.title}</dd>
           <dt className="muted">Nominal</dt><dd style={{ margin: 0 }} className="num">{rupiah(order.amount)}</dd>
+          {order.voucherCode && <><dt className="muted">Voucher</dt><dd style={{ margin: 0 }}>{order.voucherCode}, harga awal {rupiah(order.originalAmount ?? order.amount)}</dd></>}
           <dt className="muted">Status</dt><dd style={{ margin: 0 }}>{ORDER_LABEL[status]}</dd>
           <dt className="muted">Dibuat</dt><dd style={{ margin: 0 }}>{dateTimeWib(order.createdAt)}</dd>
         </dl>

@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { Check } from "lucide-react";
-import { startCheckout, enrollFree } from "./actions";
+import { startCheckout, enrollFree, previewVoucher } from "./actions";
 import { FieldError, SubmitButton } from "@/components/SubmitButton";
 import { idle } from "@/lib/action";
-import type { PayData } from "@/lib/pay";
+import { withBase } from "@/lib/base-path";
+import { rupiah } from "@/lib/format";
+import type { PayData, VoucherPreview } from "@/lib/pay";
 import { PayModal } from "./PayModal";
 
 export type BuyState =
@@ -44,15 +46,34 @@ export function BuyPanel(p: Props) {
   const [agree, setAgree] = useState(false);
   // Tagihan yang sedang dibayar di pop-up (halaman bayar Mayar tampil di dalam website ini).
   const [pay, setPay] = useState<PayData | null>(null);
+  const [code, setCode] = useState("");
+  const [voucher, setVoucher] = useState<VoucherPreview | null>(null);
+  const [voucherError, setVoucherError] = useState<string | null>(null);
+  const [checking, startChecking] = useTransition();
 
   useEffect(() => {
     if (p.autoOpen && p.state.kind === "paid") dialog.current?.showModal();
   }, [p.autoOpen, p.state.kind]);
 
-  // Tagihan berhasil dibuat: tutup ringkasan, buka pop-up pembayaran.
+  // Tagihan berhasil dibuat: tutup ringkasan, buka pop-up pembayaran. Voucher 100% langsung masuk kelas.
   useEffect(() => {
-    if (co.ok && co.data) { dialog.current?.close(); setPay(co.data); }
-  }, [co]);
+    if (!co.ok || !co.data) return;
+    dialog.current?.close();
+    if (co.data.free) window.location.assign(withBase(p.learnHref));
+    else setPay(co.data);
+  }, [co, p.learnHref]);
+
+  const applyVoucher = () => {
+    if (!code.trim()) { setVoucherError("Isi dulu kode vouchernya."); return; }
+    startChecking(async () => {
+      const r = await previewVoucher(p.courseId, code);
+      if (r.ok && r.data) { setVoucher(r.data); setVoucherError(null); }
+      else { setVoucher(null); setVoucherError(r.ok ? "Voucher tidak bisa dipakai." : r.error); }
+    });
+  };
+  const removeVoucher = () => { setVoucher(null); setCode(""); setVoucherError(null); };
+  const totalLabel = voucher ? (voucher.amount > 0 ? rupiah(voucher.amount) : "Rp 0") : p.priceLabel;
+  const payLabel = voucher?.amount === 0 ? "Ambil kelas dengan voucher" : `Bayar ${totalLabel} lewat Mayar`;
 
   const fe = !co.ok ? co.fieldErrors ?? {} : {};
   const coError = !co.ok && !Object.keys(fe).length ? co.error : undefined;
@@ -77,6 +98,7 @@ export function BuyPanel(p: Props) {
           <>
             <div className="alert info-box" role="status">Tagihan menunggu pembayaran, berlaku sampai {s.until}.</div>
             <button type="button" className="btn btn-primary block" onClick={() => setPay({ orderId: s.orderId, payUrl: s.payUrl })} data-testid="buy-pending">Lanjutkan bayar</button>
+            <p className="small muted">Punya kode voucher? <Link href={`/dashboard/pembayaran/${s.orderId}`}>Batalkan dulu tagihan ini</Link>, lalu pesan lagi dengan vouchernya.</p>
           </>
         );
       case "enrolled":
@@ -129,7 +151,7 @@ export function BuyPanel(p: Props) {
       </div>
 
       {pay && (
-        <PayModal key={pay.orderId} orderId={pay.orderId} payUrl={pay.payUrl} title={p.title} priceLabel={p.priceLabel} learnHref={p.learnHref} onClose={() => setPay(null)} />
+        <PayModal key={pay.orderId} orderId={pay.orderId} payUrl={pay.payUrl} title={p.title} priceLabel={pay.amount ? rupiah(pay.amount) : p.priceLabel} learnHref={p.learnHref} onClose={() => setPay(null)} />
       )}
 
       {p.state.kind === "paid" && (
@@ -144,10 +166,26 @@ export function BuyPanel(p: Props) {
             </div>
             <div className="sum-box">
               <div><span>{p.isBundle ? "Harga paket" : "Harga kursus"}</span><span className="num">{p.priceLabel}</span></div>
+              {voucher && <div><span>Voucher {voucher.code} ({voucher.percent}%)</span><span className="num">− {rupiah(p.priceNumber - voucher.amount)}</span></div>}
               <div><span>Biaya layanan</span><span>Rp 0</span></div>
-              <div><span>Total</span><span className="num">{p.priceLabel}</span></div>
+              <div><span>Total</span><span className="num">{totalLabel}</span></div>
             </div>
             <input type="hidden" name="courseId" value={p.courseId} />
+            <input type="hidden" name="voucher" value={voucher?.code ?? ""} />
+            <div className="field">
+              <label htmlFor="voucher-code">Kode voucher (kalau ada)</label>
+              <div className="voucher-row">
+                <input id="voucher-code" className="input" value={code} maxLength={40} autoComplete="off" autoCapitalize="characters" readOnly={Boolean(voucher)}
+                  onChange={(e) => { setCode(e.target.value.toUpperCase()); setVoucherError(null); }}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (!voucher) applyVoucher(); } }}
+                  aria-invalid={voucherError || fe.voucher ? true : undefined} aria-describedby={voucherError || fe.voucher ? "voucher-err" : undefined} data-testid="voucher-input" />
+                {voucher
+                  ? <button type="button" className="btn btn-ghost" onClick={removeVoucher}>Hapus</button>
+                  : <button type="button" className="btn btn-ghost" onClick={applyVoucher} disabled={checking} aria-busy={checking} data-testid="voucher-apply">{checking ? "Mengecek…" : "Pakai"}</button>}
+              </div>
+              {voucher && <span className="hint" role="status">Voucher dipakai, hemat {voucher.percent}%.</span>}
+              <FieldError id="voucher-err" message={voucherError ?? fe.voucher} />
+            </div>
             <div className="field">
               <label htmlFor="wa">Nomor WhatsApp</label>
               <input id="wa" name="whatsapp" type="tel" inputMode="tel" autoComplete="tel" className="input" value={wa} onChange={(e) => setWa(e.target.value)}
@@ -163,8 +201,8 @@ export function BuyPanel(p: Props) {
               <FieldError id="agree-err" message={fe.agree} />
             </div>
             {coError && <div className="alert err-box" role="alert">{coError}</div>}
-            <SubmitButton className="btn btn-primary block" pendingText="Membuat tagihan…" testId="pay-submit">Bayar {p.priceLabel} lewat Mayar</SubmitButton>
-            <p className="small muted">QRIS, virtual account, dan e-wallet lewat Mayar. Kelas terbuka otomatis setelah lunas.</p>
+            <SubmitButton className="btn btn-primary block" pendingText="Membuat tagihan…" testId="pay-submit">{payLabel}</SubmitButton>
+            <p className="small muted">{voucher?.amount === 0 ? "Tidak ada yang perlu dibayar. Kelas langsung terbuka." : "QRIS, virtual account, dan e-wallet lewat Mayar. Kelas terbuka otomatis setelah lunas."}</p>
           </form>
         </dialog>
       )}

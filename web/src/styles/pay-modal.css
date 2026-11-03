@@ -47,3 +47,8 @@
   .pay-modal { width: 100vw; height: 100dvh; border-radius: 0 }
 }
 @media (prefers-reduced-motion: reduce) { .pay-wait i { animation: none } }
+
+/* Kolom kode voucher di ringkasan pembayaran */
+.voucher-row {display:flex; gap:8px}
+.voucher-row .input {flex:1; min-width:0; text-transform:uppercase}
+

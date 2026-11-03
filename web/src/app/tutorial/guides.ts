@@ -5,7 +5,7 @@ export type TutorialGuide = { id: string; title: string; intro: string; href?: s
 export const GROUPS: { title: string; text: string; ids: string[] }[] = [
   { title: "Mulai dari sini", text: "Cara masuk dan hal yang paling sering dibuka setiap hari.", ids: ["masuk", "ringkasan", "tinjau", "cari"] },
   { title: "Kursus dan pengajar", text: "Dari membuat kelas baru sampai siap ditonton pembeli.", ids: ["kursus-baru", "pelajaran", "harga", "arsip", "pengajar"] },
-  { title: "User dan pembayaran", text: "Mengatur akses, peran, dan tagihan yang perlu diperiksa.", ids: ["akses", "peran", "hapus-user", "pembayaran"] },
+  { title: "User dan pembayaran", text: "Mengatur akses, peran, dan tagihan yang perlu diperiksa.", ids: ["akses", "peran", "hapus-user", "pembayaran", "voucher"] },
   { title: "Isi website", text: "Tulisan, gambar, kontak, dan kebijakan yang dilihat pengunjung.", ids: ["beranda", "gambar", "kontak", "kebijakan"] },
   { title: "Riwayat dan catatan", text: "Kalau ada yang salah ubah, atau ingin tahu siapa yang mengubah.", ids: ["riwayat", "aktivitas"] },
 ];
@@ -231,6 +231,19 @@ export const GUIDES: TutorialGuide[] = [
       { text: "Untuk memeriksa beberapa tagihan sekaligus, centang di halaman daftar, lalu tekan Cek ulang ke Mayar (yang dipilih). Yang bisa dicentang hanya tagihan yang masih menunggu pembayaran." },
     ],
     note: "Pengembalian dana dilakukan di dashboard Mayar, bukan dari panel ini. Sidi bisa mencatatnya di kolom Catatan internal supaya tim lain tahu.",
+  },
+  {
+    id: "voucher",
+    title: "Membuat voucher diskon",
+    intro: "Voucher dipakai kalau Sidi ingin memberi potongan harga, misalnya untuk murid lama. Diskonnya dalam persen, dari 1 sampai 100.",
+    href: "/admin/voucher",
+    steps: [
+      { text: "Buka menu Voucher. Isi kode vouchernya, atau kosongkan supaya dibuatkan kode acak, lalu isi besar diskonnya." },
+      { text: "Pilih kursusnya, atau biarkan Semua kursus. Kalau perlu, isi juga kuota pemakaian, tanggal berakhir, dan daftar email orang yang boleh memakainya. Setelah itu tekan Buat voucher." },
+      { text: "Kirim kodenya ke pembeli. Mereka memasukkan kode itu di Ringkasan pembayaran, lalu menekan Pakai, dan harganya langsung berubah." },
+      { text: "Untuk menghentikan voucher, tekan Nonaktifkan di daftarnya. Tombol Hapus hanya muncul untuk voucher yang belum pernah dipakai." },
+    ],
+    note: "Voucher 100% langsung membuka kelas tanpa lewat Mayar, jadi tidak ada uang yang masuk. Satu akun hanya bisa memakai voucher yang sama sekali. Pembeli yang masih punya tagihan menunggu harus membatalkannya dulu sebelum memakai voucher.",
   },
   {
     id: "beranda",

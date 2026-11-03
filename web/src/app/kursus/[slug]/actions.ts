@@ -4,13 +4,16 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth-guard";
 import { fail, fromZod, type ActionResult } from "@/lib/action";
-import { createOrder } from "@/lib/orders";
-import type { PayData } from "@/lib/pay";
+import { createOrder, resolveVoucher } from "@/lib/orders";
+import { rateLimit } from "@/lib/rate-limit";
+import { discountedAmount } from "@/lib/vouchers";
+import type { PayData, VoucherPreview } from "@/lib/pay";
 
 const checkoutSchema = z.object({
   courseId: z.string().min(1),
   whatsapp: z.string().max(40, "Nomor terlalu panjang."),
   agree: z.literal("on", { message: "Centang persetujuan Syarat dan ketentuan serta Kebijakan refund." }),
+  voucher: z.string().max(40).optional(),
 });
 
 /** Membuat (atau memakai ulang) tagihan lalu mengembalikan tautan bayar; pop-up di browser yang menampilkannya. */
@@ -21,12 +24,25 @@ export async function startCheckout(_prev: ActionResult<PayData>, fd: FormData):
     courseId: fd.get("courseId"),
     whatsapp: String(fd.get("whatsapp") ?? ""),
     agree: fd.get("agree") ?? undefined,
+    voucher: String(fd.get("voucher") ?? ""),
   });
   if (!parsed.success) return fromZod(parsed.error);
 
-  const r = await createOrder(user, parsed.data.courseId, parsed.data.whatsapp);
+  const r = await createOrder(user, parsed.data.courseId, parsed.data.whatsapp, parsed.data.voucher || undefined);
   if (!r.ok) return fail(r.error, r.field ? { [r.field]: r.error } : undefined);
-  return { ok: true, data: { orderId: r.orderId, payUrl: r.redirectUrl } };
+  return { ok: true, data: { orderId: r.orderId, payUrl: r.redirectUrl, amount: r.amount, free: r.free } };
+}
+
+/** Cek voucher sebelum tagihan dibuat, supaya pembeli melihat harga akhirnya. Dibatasi agar kode tidak bisa ditebak beruntun. */
+export async function previewVoucher(courseId: string, code: string): Promise<ActionResult<VoucherPreview>> {
+  const user = await getCurrentUser();
+  if (!user) return fail("Sesimu sudah berakhir. Masuk lagi dulu ya.");
+  if (!(await rateLimit(`voucher:${user.id}`, 15, 300))) return fail("Terlalu banyak percobaan. Coba lagi beberapa menit lagi.");
+  const course = await db.course.findUnique({ where: { id: courseId }, select: { priceRupiah: true } });
+  if (!course) return fail("Kursus ini tidak tersedia.");
+  const r = await resolveVoucher(db, code, user, courseId);
+  if (!r.ok) return fail(r.error);
+  return { ok: true, data: { code: r.voucher.code, percent: r.voucher.percent, amount: discountedAmount(course.priceRupiah, r.voucher.percent) } };
 }
 
 export async function enrollFree(_prev: ActionResult, fd: FormData): Promise<ActionResult> {
