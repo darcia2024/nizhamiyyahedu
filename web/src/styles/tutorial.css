@@ -14,7 +14,7 @@
 .tutorial-eyebrow {margin-top:18px; font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#f6e7b4}
 .tutorial-hero h1 {margin-top:8px; color:#fff; font-size:clamp(32px,5vw,48px); line-height:1.1; letter-spacing:-.02em}
 .tutorial-lead {margin-top:14px; max-width:62ch; font-size:17px; line-height:1.65; color:#e5f0e8}
-.tutorial-quick {margin-top:26px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+.tutorial-quick {margin-top:26px; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px}
 .tutorial-quick a {position:relative; display:flex; flex-direction:column; gap:6px; padding:18px 44px 18px 18px; border-radius:14px; background:#fff; color:var(--ink); text-decoration:none; transition:transform .15s}
 .tutorial-quick a:hover {transform:translateY(-2px)}
 .tutorial-quick b {font-size:15px; line-height:1.35}
@@ -64,6 +64,9 @@
 .tutorial-next:hover {text-decoration:underline; text-underline-offset:3px}
 .tutorial-end {padding:18px 20px; border-radius:12px; background:var(--brand-soft); line-height:1.65}
 
+@media (max-width:1100px) {
+  .tutorial-quick {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media (max-width:900px) {
   .tutorial-quick {grid-template-columns:1fr}
   .tutorial-layout {display:block; padding-top:0; box-sizing:border-box}

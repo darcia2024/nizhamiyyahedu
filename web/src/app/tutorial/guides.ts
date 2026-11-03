@@ -14,6 +14,7 @@ export const GROUPS: { title: string; text: string; ids: string[] }[] = [
 export const QUICK_LINKS = [
   { id: "kursus-baru", title: "Saya mau menambah kelas", text: "Buat kursus, isi pelajaran, lalu tayangkan." },
   { id: "pembayaran", title: "Ada yang sudah bayar tapi kelasnya belum terbuka", text: "Periksa tagihannya, lalu buka aksesnya." },
+  { id: "voucher", title: "Saya mau membuat voucher diskon", text: "Buat kode diskon untuk murid tertentu." },
   { id: "beranda", title: "Saya mau mengubah tulisan di website", text: "Ubah teks beranda, menu, sampai footer." },
 ];
 
