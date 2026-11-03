@@ -236,15 +236,18 @@ export const GUIDES: TutorialGuide[] = [
   {
     id: "voucher",
     title: "Membuat voucher diskon",
-    intro: "Voucher dipakai kalau Sidi ingin memberi potongan harga, misalnya untuk murid lama. Diskonnya dalam persen, dari 1 sampai 100.",
+    intro: "Voucher dipakai kalau Sidi ingin memberi potongan harga, misalnya untuk murid lama. Isiannya sama seperti form Buat Diskon di Mayar.",
     href: "/admin/voucher",
     steps: [
-      { text: "Buka menu Voucher. Isi kode vouchernya, atau kosongkan supaya dibuatkan kode acak, lalu isi besar diskonnya." },
-      { text: "Pilih kursusnya, atau biarkan Semua kursus. Kalau perlu, isi juga kuota pemakaian, tanggal berakhir, dan daftar email orang yang boleh memakainya. Setelah itu tekan Buat voucher." },
+      { text: "Buka menu Voucher, lalu isi Nama diskon dan pilih Untuk produk." },
+      { text: "Pilih Tipe diskon, Persentase atau Nominal, lalu isi Besaran. Minimum pembelian boleh dikosongkan." },
+      { text: "Pilih Tipe kupon. Sekali pakai berarti kode hanya bisa dipakai satu kali lalu habis. Berulang berarti kode bisa dipakai berkali-kali sampai Batas pemakaian. Kalau batasnya dikosongkan, pemakaiannya tidak terbatas." },
+      { text: "Pilih Untuk pelanggan. Kalau khusus orang tertentu, pilih Pelanggan tertentu lalu tulis emailnya." },
+      { text: "Isi Kode kupon, atau tekan Generate supaya dibuatkan otomatis. Waktu mulai dan Tanggal kedaluwarsa boleh dikosongkan. Setelah itu tekan Buat diskon." },
       { text: "Kirim kodenya ke pembeli. Mereka memasukkan kode itu di Ringkasan pembayaran, lalu menekan Pakai, dan harganya langsung berubah." },
       { text: "Untuk menghentikan voucher, tekan Nonaktifkan di daftarnya. Tombol Hapus hanya muncul untuk voucher yang belum pernah dipakai." },
     ],
-    note: "Voucher 100% langsung membuka kelas tanpa lewat Mayar, jadi tidak ada uang yang masuk. Satu akun hanya bisa memakai voucher yang sama sekali. Pembeli yang masih punya tagihan menunggu harus membatalkannya dulu sebelum memakai voucher.",
+    note: "Kalau harga setelah diskon jadi Rp 0, kelas langsung terbuka tanpa lewat Mayar, jadi tidak ada uang yang masuk. Pembeli yang masih punya tagihan menunggu harus membatalkannya dulu sebelum memakai voucher.",
   },
   {
     id: "beranda",

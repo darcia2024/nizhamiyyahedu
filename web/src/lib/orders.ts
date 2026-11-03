@@ -14,16 +14,12 @@ export type CreateOrderResult =
 type VoucherClient = Pick<Prisma.TransactionClient, "voucher" | "order">;
 
 /** Cari voucher dan periksa aturannya. Tagihan aktif ikut dihitung supaya kuota tidak terlampaui. */
-export async function resolveVoucher(client: VoucherClient, rawCode: unknown, user: { id: string; email: string }, courseId: string) {
+export async function resolveVoucher(client: VoucherClient, rawCode: unknown, user: { email: string }, course: { id: string; priceRupiah: number }) {
   const code = normalizeVoucherCode(rawCode);
   const v = await client.voucher.findUnique({ where: { code } });
   if (!v) return { ok: false as const, error: "Kode voucher tidak ditemukan." };
-  const activeOrPaid = { OR: [{ status: "PAID" }, { status: "PENDING", expiresAt: { gt: new Date() } }] };
-  const [uses, usedByUser] = await Promise.all([
-    client.order.count({ where: { voucherId: v.id, ...activeOrPaid } }),
-    client.order.count({ where: { voucherId: v.id, userId: user.id, ...activeOrPaid } }),
-  ]);
-  const problem = voucherProblem(v, { courseId, email: user.email, uses, usedByUser });
+  const uses = await client.order.count({ where: { voucherId: v.id, OR: [{ status: "PAID" }, { status: "PENDING", expiresAt: { gt: new Date() } }] } });
+  const problem = voucherProblem(v, { courseId: course.id, price: course.priceRupiah, email: user.email, uses });
   return problem ? { ok: false as const, error: problem } : { ok: true as const, voucher: v };
 }
 
@@ -78,14 +74,14 @@ export async function createOrder(user: CurrentUser, courseId: string, whatsappR
       if (voucherCode) return { rejected: "Masih ada tagihan yang menunggu pembayaran. Batalkan dulu di halaman Transaksi, lalu pakai vouchernya." };
       return { order: existing, created: false };
     }
-    const applied = voucherCode ? await resolveVoucher(tx, voucherCode, user, courseId) : null;
+    const applied = voucherCode ? await resolveVoucher(tx, voucherCode, user, course) : null;
     if (applied && !applied.ok) return { rejected: applied.error };
     const voucher = applied?.ok ? applied.voucher : null;
     const o = await tx.order.create({
       data: {
         userId: user.id,
         courseId,
-        amount: voucher ? discountedAmount(course.priceRupiah, voucher.percent) : course.priceRupiah,
+        amount: voucher ? discountedAmount(course.priceRupiah, voucher) : course.priceRupiah,
         whatsapp: phone.value,
         expiresAt: new Date(now.getTime() + ORDER_TTL_HOURS * 3600 * 1000),
         ...(voucher ? { voucherId: voucher.id, voucherCode: voucher.code, originalAmount: course.priceRupiah } : {}),

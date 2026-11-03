@@ -178,11 +178,17 @@ model Order {
   @@index([voucherId])
 }
 
-/// Kode diskon persen. courseId kosong = berlaku semua kursus; allowedEmails kosong = siapa saja (pisah koma).
+/// Kode diskon. courseId kosong = berlaku semua kursus; allowedEmails kosong = siapa saja (pisah koma).
 model Voucher {
   id            String    @id @default(cuid())
   code          String    @unique
-  percent       Int
+  name          String    @default("")
+  discountType  String    @default("PERCENT") // PERCENT | NOMINAL
+  percent       Int // dipakai bila discountType PERCENT
+  amountOff     Int? // rupiah, dipakai bila discountType NOMINAL
+  minPurchase   Int?
+  singleUse     Boolean   @default(false) // true = satu kode hanya satu kali pakai
+  startsAt      DateTime?
   courseId      String?
   course        Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   allowedEmails String?

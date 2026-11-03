@@ -166,7 +166,7 @@ export function BuyPanel(p: Props) {
             </div>
             <div className="sum-box">
               <div><span>{p.isBundle ? "Harga paket" : "Harga kursus"}</span><span className="num">{p.priceLabel}</span></div>
-              {voucher && <div><span>Voucher {voucher.code} ({voucher.percent}%)</span><span className="num">− {rupiah(p.priceNumber - voucher.amount)}</span></div>}
+              {voucher && <div><span>Voucher {voucher.code} ({voucher.label})</span><span className="num">− {rupiah(p.priceNumber - voucher.amount)}</span></div>}
               <div><span>Biaya layanan</span><span>Rp 0</span></div>
               <div><span>Total</span><span className="num">{totalLabel}</span></div>
             </div>
@@ -183,7 +183,7 @@ export function BuyPanel(p: Props) {
                   ? <button type="button" className="btn btn-ghost" onClick={removeVoucher}>Hapus</button>
                   : <button type="button" className="btn btn-ghost" onClick={applyVoucher} disabled={checking} aria-busy={checking} data-testid="voucher-apply">{checking ? "Mengecek…" : "Pakai"}</button>}
               </div>
-              {voucher && <span className="hint" role="status">Voucher dipakai, hemat {voucher.percent}%.</span>}
+              {voucher && <span className="hint" role="status">Voucher dipakai, hemat {voucher.label}.</span>}
               <FieldError id="voucher-err" message={voucherError ?? fe.voucher} />
             </div>
             <div className="field">

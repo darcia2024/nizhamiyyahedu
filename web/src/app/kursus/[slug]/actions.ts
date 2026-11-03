@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/auth-guard";
 import { fail, fromZod, type ActionResult } from "@/lib/action";
 import { createOrder, resolveVoucher } from "@/lib/orders";
 import { rateLimit } from "@/lib/rate-limit";
-import { discountedAmount } from "@/lib/vouchers";
+import { discountedAmount, discountLabel } from "@/lib/vouchers";
 import type { PayData, VoucherPreview } from "@/lib/pay";
 
 const checkoutSchema = z.object({
@@ -38,11 +38,11 @@ export async function previewVoucher(courseId: string, code: string): Promise<Ac
   const user = await getCurrentUser();
   if (!user) return fail("Sesimu sudah berakhir. Masuk lagi dulu ya.");
   if (!(await rateLimit(`voucher:${user.id}`, 15, 300))) return fail("Terlalu banyak percobaan. Coba lagi beberapa menit lagi.");
-  const course = await db.course.findUnique({ where: { id: courseId }, select: { priceRupiah: true } });
+  const course = await db.course.findUnique({ where: { id: courseId }, select: { id: true, priceRupiah: true } });
   if (!course) return fail("Kursus ini tidak tersedia.");
-  const r = await resolveVoucher(db, code, user, courseId);
+  const r = await resolveVoucher(db, code, user, course);
   if (!r.ok) return fail(r.error);
-  return { ok: true, data: { code: r.voucher.code, percent: r.voucher.percent, amount: discountedAmount(course.priceRupiah, r.voucher.percent) } };
+  return { ok: true, data: { code: r.voucher.code, label: discountLabel(r.voucher), amount: discountedAmount(course.priceRupiah, r.voucher) } };
 }
 
 export async function enrollFree(_prev: ActionResult, fd: FormData): Promise<ActionResult> {

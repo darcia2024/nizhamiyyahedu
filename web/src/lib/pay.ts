@@ -2,7 +2,7 @@
 export type PayData = { orderId: string; payUrl: string; amount?: number; free?: boolean };
 
 /** Hasil pengecekan voucher sebelum tagihan dibuat. */
-export type VoucherPreview = { code: string; percent: number; amount: number };
+export type VoucherPreview = { code: string; label: string; amount: number };
 
 /** Pesan dari halaman balasan Mayar (di dalam iframe) ke pop-up di halaman induk. */
 export const PAY_MESSAGE = "nz-pay-status";

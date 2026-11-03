@@ -1,5 +1,4 @@
 "use server";
-import { randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
@@ -14,27 +13,64 @@ async function adminOnly() {
 }
 const DENIED = "Hanya admin yang boleh melakukan ini.";
 
+/** Isian tanggal dan jam di form dianggap WIB. Kosong = null, format salah = undefined. */
+function wibDateTime(raw: FormDataEntryValue | null): Date | null | undefined {
+  const s = String(raw ?? "").trim();
+  if (!s) return null;
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(s)) return undefined;
+  const d = new Date(`${s}:00+07:00`);
+  return Number.isNaN(d.getTime()) ? undefined : d;
+}
+
+function optionalWhole(raw: FormDataEntryValue | null, min: number): number | null | undefined {
+  const s = String(raw ?? "").trim();
+  if (!s) return null;
+  const n = Number(s);
+  return Number.isInteger(n) && n >= min && n <= 1_000_000_000 ? n : undefined;
+}
+
 export async function saveVoucher(_p: ActionResult, fd: FormData): Promise<ActionResult> {
   const admin = await adminOnly();
   if (!admin) return fail(DENIED);
-  const code = normalizeVoucherCode(fd.get("code")) || `NZ-${randomBytes(4).toString("hex").toUpperCase()}`;
-  if (!VOUCHER_CODE.test(code)) return fail("Kode 3 sampai 30 karakter: huruf, angka, tanda - atau _.", { code: "Format kode belum benar." });
-  const percent = Number(fd.get("percent"));
-  if (!Number.isInteger(percent) || percent < 1 || percent > 100) return fail("Diskon harus angka bulat 1 sampai 100.", { percent: "Isi 1 sampai 100." });
+  const name = String(fd.get("name") ?? "").trim().slice(0, 120);
+  if (!name) return fail("Nama diskon wajib diisi.", { name: "Wajib diisi." });
+  const code = normalizeVoucherCode(fd.get("code"));
+  if (!code) return fail("Isi kode kupon, atau tekan Generate.", { code: "Wajib diisi." });
+  if (!VOUCHER_CODE.test(code)) return fail("Kode kupon 3 sampai 30 karakter: huruf, angka, tanda - atau _.", { code: "Format kode belum benar." });
+
+  const discountType = fd.get("discountType") === "NOMINAL" ? "NOMINAL" : "PERCENT";
+  const value = Number(fd.get("value"));
+  if (discountType === "PERCENT" && (!Number.isInteger(value) || value < 1 || value > 100)) return fail("Besaran persen harus angka bulat 1 sampai 100.", { value: "Isi 1 sampai 100." });
+  if (discountType === "NOMINAL" && (!Number.isInteger(value) || value < 1 || value > 1_000_000_000)) return fail("Besaran rupiah harus angka bulat minimal 1.", { value: "Isi nominal rupiah." });
+
+  const minPurchase = optionalWhole(fd.get("minPurchase"), 0);
+  if (minPurchase === undefined) return fail("Minimum pembelian harus angka bulat, atau dikosongkan.", { minPurchase: "Periksa lagi angkanya." });
+
   const courseId = String(fd.get("courseId") ?? "") || null;
-  if (courseId && !(await db.course.findUnique({ where: { id: courseId }, select: { id: true } }))) return fail("Kursus tidak ditemukan.", { courseId: "Kursus tidak ditemukan." });
-  const emails = parseEmailList(String(fd.get("allowedEmails") ?? ""));
+  if (courseId && !(await db.course.findUnique({ where: { id: courseId }, select: { id: true } }))) return fail("Kursus tidak ditemukan.");
+
+  const singleUse = fd.get("couponType") === "SINGLE";
+  const maxUses = singleUse ? null : optionalWhole(fd.get("maxUses"), 1);
+  if (maxUses === undefined) return fail("Batas pemakaian harus angka bulat minimal 1, atau dikosongkan.", { maxUses: "Minimal 1." });
+
+  const emails = fd.get("customerType") === "SELECTED" ? parseEmailList(String(fd.get("allowedEmails") ?? "")) : [];
+  if (fd.get("customerType") === "SELECTED" && !emails.length) return fail("Isi email pelanggan yang boleh memakai kupon ini.", { allowedEmails: "Wajib diisi." });
   const badEmail = emails.find((e) => !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e));
   if (badEmail) return fail(`Email belum benar: ${badEmail}`, { allowedEmails: "Periksa lagi daftar emailnya." });
-  const rawMax = String(fd.get("maxUses") ?? "").trim();
-  const maxUses = rawMax ? Number(rawMax) : null;
-  if (maxUses !== null && (!Number.isInteger(maxUses) || maxUses < 1)) return fail("Kuota harus angka bulat minimal 1, atau dikosongkan.", { maxUses: "Minimal 1." });
-  const rawDate = String(fd.get("expiresAt") ?? "").trim();
-  if (rawDate && !/^\d{4}-\d{2}-\d{2}$/.test(rawDate)) return fail("Tanggal belum benar.");
-  const expiresAt = rawDate ? new Date(`${rawDate}T23:59:59+07:00`) : null;
+
+  const startsAt = wibDateTime(fd.get("startsAt"));
+  const expiresAt = wibDateTime(fd.get("expiresAt"));
+  if (startsAt === undefined || expiresAt === undefined) return fail("Tanggal belum benar.");
+  if (startsAt && expiresAt && expiresAt <= startsAt) return fail("Tanggal kedaluwarsa harus setelah waktu mulai.");
+
   try {
-    const v = await db.voucher.create({ data: { code, percent, courseId, allowedEmails: emails.join(", ") || null, maxUses, expiresAt } });
-    await audit(admin, "VOUCHER_CREATE", "Voucher", v.id, { after: { code, percent, courseId, maxUses, expiresAt, emails: emails.length } });
+    const v = await db.voucher.create({
+      data: {
+        code, name, discountType, percent: discountType === "PERCENT" ? value : 0, amountOff: discountType === "NOMINAL" ? value : null,
+        minPurchase: minPurchase || null, singleUse, courseId, allowedEmails: emails.join(", ") || null, maxUses, startsAt, expiresAt,
+      },
+    });
+    await audit(admin, "VOUCHER_CREATE", "Voucher", v.id, { after: { code, name, discountType, value, courseId, singleUse, maxUses, minPurchase, startsAt, expiresAt, emails: emails.length } });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") return fail("Kode ini sudah dipakai voucher lain.", { code: "Kode sudah dipakai." });
     throw e;
